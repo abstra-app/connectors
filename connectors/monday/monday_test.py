@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from abstra_connectors.monday import Item, MondayConnector
+from connectors.monday import Item, MondayConnector
 
 SUBDOMAIN = "abstra-cast"
 API_KEY = os.environ.get("MONDAY_API_KEY", "")

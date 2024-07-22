@@ -58,7 +58,7 @@ Sends a message to a Slack channel or user.
 ## Example Usage
 
 ```python
-from abstra_connectors.slack import send_message
+from connectors.slack import send_message
 
 # Send a message to a specific channel
 send_message("Hello, Slack!", "#general")
