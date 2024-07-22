@@ -3,7 +3,7 @@ Simplified SDK for many APIs.
 # Installing
 
 ```bash
-pip install connectors
+pip install abstra-connectors
 ```
 
 # Connectors
