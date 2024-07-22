@@ -6,7 +6,7 @@ The `abstra_connectors.slack` package provides methods to interact with Slack's 
 
 ## Modules
 
-### `abstra_connectors.slack.methods`
+### `abstra_connectors.slack`
 
 This module contains functions to interact with Slack's API.
 
@@ -58,7 +58,7 @@ Sends a message to a Slack channel or user.
 ## Example Usage
 
 ```python
-from abstra_connectors.slack.methods import send_message
+from abstra_connectors.slack import send_message
 
 # Send a message to a specific channel
 send_message("Hello, Slack!", "#general")
