@@ -2,11 +2,11 @@
 
 ## Overview
 
-The `abstra_connectors.slack` package provides methods to interact with Slack's API, including sending messages to channels or users and retrieving user IDs from email addresses.
+The `connectors.slack` package provides methods to interact with Slack's API, including sending messages to channels or users and retrieving user IDs from email addresses.
 
 ## Modules
 
-### `abstra_connectors.slack`
+### `connectors.slack`
 
 This module contains functions to interact with Slack's API.
 
@@ -71,4 +71,4 @@ send_message("Hello, Slack!", "#general")
 send_message("Hello, User!", "user@example.com")
 ```
 
-For more details, refer to the source code in `abstra_connectors/slack/methods.py`.
+For more details, refer to the source code in `connectors/slack/methods.py`.
