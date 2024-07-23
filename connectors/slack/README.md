@@ -12,29 +12,6 @@ This module contains functions to interact with Slack's API.
 
 #### Functions
 
-##### `is_email(channel: str) -> bool`
-
-Checks if the given channel string is an email address.
-
-- **Parameters:**
-  - `channel` (str): The channel string to check.
-
-- **Returns:**
-  - `bool`: `True` if the channel is an email address, `False` otherwise.
-
-##### `get_user_id_from_email(email: str) -> str`
-
-Retrieves a Slack user ID from an email address.
-
-- **Parameters:**
-  - `email` (str): The email address to look up.
-
-- **Returns:**
-  - `str`: The Slack user ID associated with the email address.
-
-- **Raises:**
-  - `Exception`: If the `SLACK_BOT_TOKEN` environment variable is not set.
-
 ##### `send_message(msg: str, channel: Optional[str] = None)`
 
 Sends a message to a Slack channel or user.
