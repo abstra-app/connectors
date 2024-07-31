@@ -34,7 +34,7 @@ setup(
     python_requires=">=3.8, <4",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/abstra-app/abstra-connectors",
+    url="https://github.com/abstra-app/connectors",
     packages=find_packages(exclude=["tests"]),
     install_requires=REQUIREMENTS,
 )

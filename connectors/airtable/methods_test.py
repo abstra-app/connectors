@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock
-from .methods import AirtableConnector
+from connectors.airtable.methods import AirtableConnector
 from requests import Response
 
 
@@ -10,9 +10,9 @@ class TestAirtableConnector(TestCase):
         self.connector.api_token = "test_token"
         self.connector.requests = Mock()
         self.connector.requests.request.return_value = Response()
-        self.connector.requests.request.return_value.headers[
-            "Content-Type"
-        ] = "application/json"
+        self.connector.requests.request.return_value.headers["Content-Type"] = (
+            "application/json"
+        )
 
     def test_create_records(self):
         self.connector.requests.request.return_value._content = b"""{
