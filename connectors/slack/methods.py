@@ -275,7 +275,7 @@ class SlackMe:
     id: str
     name: str
     team_id: str
-    tem_name: str
+    team_name: str
 
     @staticmethod
     def from_dict(json: dict):
