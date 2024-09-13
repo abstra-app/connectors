@@ -250,7 +250,7 @@ class SlackUser:
             is_bot=json["is_bot"],
             updated=json["updated"],
             is_app_user=json["is_app_user"],
-            has_2fa=json["has_2fa"],
+            has_2fa=json.get("has_2fa"),
         )
 
 def get_user(user_id: str) -> SlackUser:
