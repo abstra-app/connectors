@@ -41,6 +41,11 @@ def _get_user_id_from_email(email: str) -> str:
 
     return response.json()["user"]["id"]
 
+def user_link(user_id: str) -> str:
+    if _is_email(user_id):
+        user_id = _get_user_id_from_email(user_id)
+    return f"<@{user_id}>"
+
 
 def send_message(
     msg: str, channel: Optional[str] = None, thread_ts: Optional[str] = None
