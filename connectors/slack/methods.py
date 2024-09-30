@@ -227,21 +227,21 @@ class SlackUser:
             tz=json["tz"],
             tz_label=json["tz_label"],
             tz_offset=json["tz_offset"],
-            profile_avatar_hash=json["profile"]["avatar_hash"],
-            profile_status_text=json["profile"]["status_text"],
-            profile_status_emoji=json["profile"]["status_emoji"],
-            profile_real_name=json["profile"]["real_name"],
-            profile_display_name=json["profile"]["display_name"],
-            profile_real_name_normalized=json["profile"]["real_name_normalized"],
-            profile_display_name_normalized=json["profile"]["display_name_normalized"],
-            profile_email=json["profile"]["email"],
-            profile_image_original=json["profile"]["image_original"],
-            profile_image_24=json["profile"]["image_24"],
-            profile_image_32=json["profile"]["image_32"],
-            profile_image_48=json["profile"]["image_48"],
-            profile_image_72=json["profile"]["image_72"],
-            profile_image_192=json["profile"]["image_192"],
-            profile_image_512=json["profile"]["image_512"],
+            profile_avatar_hash=json["profile"].get("avatar_hash", ""),
+            profile_status_text=json["profile"].get("status_text", ""),
+            profile_status_emoji=json["profile"].get("status_emoji", ""),
+            profile_real_name=json["profile"].get("real_name", ""),
+            profile_display_name=json["profile"].get("display_name", ""),
+            profile_real_name_normalized=json["profile"].get("real_name_normalized", ""),
+            profile_display_name_normalized=json["profile"].get("display_name_normalized", ""),
+            profile_email=json["profile"].get("email", ""),
+            profile_image_original=json["profile"].get("image_original", ""),
+            profile_image_24=json["profile"].get("image_24", ""),
+            profile_image_32=json["profile"].get("image_32", ""),
+            profile_image_48=json["profile"].get("image_48", ""),
+            profile_image_72=json["profile"].get("image_72", ""),
+            profile_image_192=json["profile"].get("image_192", ""),
+            profile_image_512=json["profile"].get("image_512", ""),
             is_admin=json["is_admin"],
             is_owner=json["is_owner"],
             is_primary_owner=json["is_primary_owner"],
@@ -256,7 +256,7 @@ class SlackUser:
 def get_user(user_id: str) -> SlackUser:
     token = os.getenv("SLACK_BOT_TOKEN")
     if token is None:
-        raise Exception("SLACK_BOt_TOKEN env var is not set")
+        raise Exception("SLACK_BOT_TOKEN env var is not set")
     
     response = requests.get(
         "https://slack.com/api/users.info",
@@ -289,7 +289,7 @@ class SlackMe:
 def get_me():
     token = os.getenv("SLACK_BOT_TOKEN")
     if token is None:
-        raise Exception("SLACK_BOt_TOKEN env var is not set")
+        raise Exception("SLACK_BOT_TOKEN env var is not set")
     
     response = requests.get(
         "https://slack.com/api/auth.test",
