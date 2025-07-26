@@ -1,0 +1,321 @@
+{
+    "tags": [
+        "Francesas"
+    ],
+    "operationId": "get/francesas/{id_francesa}/movimentacoes_resumidas",
+    "description": "Posição da francesa resumida de títulos de cobrança e títulos descontados.",
+    "parameters": [
+        {
+            "$ref": "#/components/parameters/x-itau-apikey"
+        },
+        {
+            "$ref": "#/components/parameters/x-itau-correlationid"
+        },
+        {
+            "in": "path",
+            "name": "id_francesa",
+            "required": true,
+            "description": "(4 dígitos agência)+(7 dígitos c/c)+(1 dígito do DAC)",
+            "example": 150000024015,
+            "schema": {
+                "type": "number"
+            }
+        },
+        {
+            "in": "query",
+            "name": "data",
+            "required": true,
+            "description": "Data da movimentação no formato yyyy-MM-dd",
+            "example": "2020-04-20",
+            "schema": {
+                "type": "string"
+            }
+        }
+    ],
+    "responses": {
+        "200": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/movimentacaoResumida"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data"
+                        ]
+                    },
+                    "examples": {
+                        "200_movimentacao_resumida": {
+                            "value": {
+                                "data": [
+                                    {
+                                        "resumida_cobranca": {
+                                            "posicao": {
+                                                "data_posicao": "2020-10-09",
+                                                "posicao_anterior": {
+                                                    "valor": "17104781.61",
+                                                    "quantidade": 852
+                                                },
+                                                "entradas": {
+                                                    "valor": "0.00",
+                                                    "quantidade": 0
+                                                },
+                                                "baixas": {
+                                                    "valor": "-50.00",
+                                                    "quantidade": 0
+                                                },
+                                                "liquidacoes": {
+                                                    "valor": "-128847.13",
+                                                    "quantidade": 14
+                                                },
+                                                "baixas_desconto": {
+                                                    "valor": "-10.00",
+                                                    "quantidade": 0
+                                                },
+                                                "posicao_atual": {
+                                                    "valor": "16975934.48",
+                                                    "quantidade": 838
+                                                },
+                                                "consolidado_vencer": [
+                                                    {
+                                                        "data_inicial": "2020-10-09",
+                                                        "data_final": "2020-10-31",
+                                                        "valor": "3845962.31",
+                                                        "quantidade": 263
+                                                    },
+                                                    {
+                                                        "data_inicial": "2020-11-01",
+                                                        "data_final": "2020-11-30",
+                                                        "valor": "3746751.81",
+                                                        "quantidade": 204
+                                                    },
+                                                    {
+                                                        "data_inicial": "2020-12-01",
+                                                        "data_final": "2020-12-31",
+                                                        "valor": "823106.98",
+                                                        "quantidade": 30
+                                                    },
+                                                    {
+                                                        "data_inicial": "2021-01-01",
+                                                        "data_final": "9999-12-31",
+                                                        "valor": "390843.32",
+                                                        "quantidade": 12
+                                                    }
+                                                ],
+                                                "vencidos": {
+                                                    "data_final": "2020-10-08",
+                                                    "valor": "8169270.06",
+                                                    "quantidade": 329
+                                                }
+                                            },
+                                            "movimentacao_financeira": {
+                                                "principal_liquidacoes": "128847.13",
+                                                "descontos_abatimentos": "0.00",
+                                                "juros_multas": "12.88",
+                                                "total": "128860.01"
+                                            },
+                                            "movimentacao_conta": {
+                                                "valores_disponiveis": "54428.27",
+                                                "valores_a_compensar": "74431.74",
+                                                "valores_nao_liberados": "0.00",
+                                                "valor_total_deducoes": "-87.37",
+                                                "deducoes": [
+                                                    {
+                                                        "descricao": "Custas",
+                                                        "valor": "0.00"
+                                                    },
+                                                    {
+                                                        "descricao": "IOF",
+                                                        "valor": "0.00"
+                                                    },
+                                                    {
+                                                        "descricao": "Tarifas",
+                                                        "valor": "-87.37"
+                                                    }
+                                                ],
+                                                "tarifacao_mensal": {
+                                                    "data_debito": "2020-10-09",
+                                                    "periodo_consolidado": {
+                                                        "data_inicial": "2020-10-01",
+                                                        "data_final": "2020-10-31"
+                                                    },
+                                                    "tarifas": [
+                                                        {
+                                                            "descricao": "liquidação",
+                                                            "quantidade": 5,
+                                                            "valor": "120.00"
+                                                        },
+                                                        {
+                                                            "descricao": "protestos solicitados",
+                                                            "quantidade": 10,
+                                                            "valor": "11.00"
+                                                        },
+                                                        {
+                                                            "descricao": "baixas",
+                                                            "quantidade": 5,
+                                                            "valor": "30.00"
+                                                        }
+                                                    ],
+                                                    "total_tarifas": {
+                                                        "quantidade": 20,
+                                                        "valor": "161.00"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "resumida_descontado": {
+                                            "posicao": {
+                                                "data_posicao": "2020-10-09",
+                                                "posicao_anterior": {
+                                                    "valor": "17104781.61",
+                                                    "quantidade": 852
+                                                },
+                                                "entradas": {
+                                                    "valor": "0.00",
+                                                    "quantidade": 0
+                                                },
+                                                "baixas": {
+                                                    "valor": "-50.00",
+                                                    "quantidade": 0
+                                                },
+                                                "liquidacoes": {
+                                                    "valor": "-128847.13",
+                                                    "quantidade": 14
+                                                },
+                                                "baixas_cobranca": {
+                                                    "valor": "-34.48",
+                                                    "quantidade": 1
+                                                },
+                                                "posicao_atual": {
+                                                    "valor": "16975934.48",
+                                                    "quantidade": 838
+                                                },
+                                                "consolidado_vencer": [
+                                                    {
+                                                        "data_inicial": "2020-10-09",
+                                                        "data_final": "2020-10-31",
+                                                        "valor": "3845962.31",
+                                                        "quantidade": 263
+                                                    },
+                                                    {
+                                                        "data_inicial": "2020-11-01",
+                                                        "data_final": "2020-11-30",
+                                                        "valor": "3746751.81",
+                                                        "quantidade": 204
+                                                    },
+                                                    {
+                                                        "data_inicial": "2020-12-01",
+                                                        "data_final": "2020-12-31",
+                                                        "valor": "823106.98",
+                                                        "quantidade": 30
+                                                    },
+                                                    {
+                                                        "data_inicial": "2021-01-01",
+                                                        "data_final": "9999-12-31",
+                                                        "valor": "390843.32",
+                                                        "quantidade": 12
+                                                    }
+                                                ],
+                                                "vencidos": {
+                                                    "data_final": "2020-10-09",
+                                                    "valor": "8169270.06",
+                                                    "quantidade": 329
+                                                }
+                                            },
+                                            "resumo_liquidacao_desconto": {
+                                                "liquidacao_desconto": "128847.13",
+                                                "credito_conta_corrente": "10.00",
+                                                "debito_conta_corrente": "-12.88",
+                                                "juros_moratorio": "-128860.01"
+                                            },
+                                            "resumo_entrada_desconto": {
+                                                "valor_creditado_conta_corrente_apos_deducoes": "54428.27",
+                                                "deducoes": [
+                                                    {
+                                                        "descricao": "Juros (encargos) de desconto",
+                                                        "valor": "0.00"
+                                                    },
+                                                    {
+                                                        "descricao": "IOF",
+                                                        "valor": "0.00"
+                                                    },
+                                                    {
+                                                        "descricao": "Tarifa de contratação de desconto",
+                                                        "valor": "-87.37"
+                                                    },
+                                                    {
+                                                        "descricao": "Tarifa por boleto descontado",
+                                                        "valor": "-87.37"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "description": "Relação resumida de movimentações de títulos de cobrança e descontados da francesa",
+            "headers": {
+                "Content-Location": {
+                    "description": "URI correspondente a pesquisa corrente",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "204": {
+            "$ref": "#/paths/~1boletos/get/responses/204"
+        },
+        "303": {
+            "$ref": "#/paths/~1boletos/get/responses/303"
+        },
+        "304": {
+            "$ref": "#/paths/~1boletos/get/responses/304"
+        },
+        "400": {
+            "$ref": "#/paths/~1boletos/get/responses/400"
+        },
+        "401": {
+            "$ref": "#/paths/~1boletos/get/responses/401"
+        },
+        "403": {
+            "$ref": "#/paths/~1boletos/get/responses/403"
+        },
+        "404": {
+            "$ref": "#/paths/~1boletos/get/responses/404"
+        },
+        "405": {
+            "$ref": "#/paths/~1boletos/get/responses/405"
+        },
+        "422": {
+            "$ref": "#/paths/~1boletos/get/responses/422"
+        },
+        "428": {
+            "$ref": "#/paths/~1boletos/get/responses/428"
+        },
+        "500": {
+            "$ref": "#/paths/~1boletos/get/responses/500"
+        },
+        "501": {
+            "$ref": "#/paths/~1boletos/get/responses/501"
+        },
+        "503": {
+            "$ref": "#/paths/~1boletos/get/responses/503"
+        }
+    },
+    "security": [
+        {
+            "APIGatewaySTSAuthorizer": []
+        }
+    ]
+}

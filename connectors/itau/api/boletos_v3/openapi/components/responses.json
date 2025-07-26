@@ -1,0 +1,305 @@
+{
+    "204_patch": {
+        "headers": {
+            "Content-Location": {
+                "description": "URI correspondente ao elemento atualizado.",
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "description": "O recurso foi atualizado com êxito, mas não está retornando a representação do recurso.\n"
+    },
+    "400_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_400": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "validation_error",
+                                    "mensagem": "Solicitação Imprópria",
+                                    "campos": [
+                                        {
+                                            "campo": "usuario.teste",
+                                            "mensagem": "Campo Obrigatório",
+                                            "valor": ""
+                                        },
+                                        {
+                                            "campo": "usuario.id",
+                                            "mensagem": "Campo Inválido",
+                                            "valor": "123-123"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Parâmetros incorretos"
+    },
+    "401_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_401": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Usuário não autenticado"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Não Autorizado"
+    },
+    "403_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_403": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Acesso não autorizado"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Acesso Proibido"
+    },
+    "404_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_404": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Recurso inexistente"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Recurso Inexistente"
+    },
+    "405_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_405": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Método não permitido"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Método não permitido"
+    },
+    "422_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_422": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Erro na execução da solicitação"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Erro semântico"
+    },
+    "428_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_428": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Pré-requisito necessário"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Pré requisito necessário"
+    },
+    "500_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_500": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Erro inesperado"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Erro Inesperado"
+    },
+    "501_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_501": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Não implementado"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Não implementado"
+    },
+    "503_patch": {
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "application_json": {
+                            "description": "",
+                            "type": "object"
+                        }
+                    }
+                },
+                "examples": {
+                    "erro_503": {
+                        "value": {
+                            "messages": [
+                                {
+                                    "codigo": "",
+                                    "mensagem": "Serviço Indisponível"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "description": "Serviço Indisponível"
+    }
+}

@@ -1,11 +1,11 @@
-from ..auth.credentials import Credentials
+from ...utils.auth import Credentials
 import requests
 import uuid
 from datetime import date
 import json
 from typing import List, Optional, Literal
 from dataclasses import dataclass, asdict
-from ..utils.currency import str_to_cents
+from ...utils.currency import str_to_cents
 
 
 @dataclass
@@ -568,7 +568,7 @@ class AccountStatementClient:
         Monta os headers necessários para autenticação e rastreio.
         """
         return {
-            "Authorization": f"Bearer {self.creds.token}",
+            "Authorization": f"Bearer {self.creds.get_token().access_token}",
             "x-itau-correlationid": correlation_id or str(uuid.uuid4()),
             "User-Agent": "Collection-by-itaú-for-developers",
             "Accept": "application/json",

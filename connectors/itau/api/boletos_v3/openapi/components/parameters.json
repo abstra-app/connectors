@@ -1,0 +1,32 @@
+{
+    "x-itau-apikey": {
+        "in": "header",
+        "name": "x-itau-apikey",
+        "description": "Client_id gerado pela autenticação Oauth2 utilizado para autorizar o consumo de uma aplicação requisitante.",
+        "required": true,
+        "schema": {
+            "type": "string"
+        },
+        "example": "2e48053a-bf4b-431d-bd56-e3443dcbf710"
+    },
+    "x-itau-correlationid": {
+        "in": "header",
+        "name": "x-itau-correlationID",
+        "description": "Identificador de correlação utilizado como um agrupar dentro da estrutura de audit trail e que permite relacionar uma mesma chamada passando em diversas aplicações/sistemas diferentes.",
+        "required": true,
+        "schema": {
+            "type": "string"
+        },
+        "example": "e75590c2-057c-4697-b993-317aa2e1591e"
+    },
+    "id_notificacao_boleto": {
+        "in": "path",
+        "name": "id_notificacao_boleto",
+        "required": true,
+        "description": "Identificador do registro de notificação do boleto. Composto por Agência (4) + Conta (7) + DAC (1) + Cód. Tipo Notificação (2) Tipos de notificação: 01 - Baixa Efetiva; 02 - Baixa Operacional",
+        "example": "15000012345902",
+        "schema": {
+            "type": "string"
+        }
+    }
+}

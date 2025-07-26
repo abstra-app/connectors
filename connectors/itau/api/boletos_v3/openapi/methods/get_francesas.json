@@ -1,0 +1,146 @@
+{
+    "tags": [
+        "Francesas"
+    ],
+    "operationId": "get/francesas",
+    "description": "Pesquisa das francesas disponíveis por Agência, Conta Corrente e Mês de Referência ou Data.",
+    "parameters": [
+        {
+            "$ref": "#/components/parameters/x-itau-apikey"
+        },
+        {
+            "$ref": "#/components/parameters/x-itau-correlationid"
+        },
+        {
+            "in": "query",
+            "name": "agencia",
+            "required": true,
+            "description": "4 dígitos da agência.",
+            "example": "1500",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "in": "query",
+            "name": "conta",
+            "required": true,
+            "description": "7 dígitos da conta corrente.",
+            "example": "0001560",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "in": "query",
+            "name": "dac",
+            "required": true,
+            "description": "1 dígito do dac",
+            "example": "1",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "in": "query",
+            "name": "mes_referencia",
+            "required": false,
+            "description": "Mês de referência para consulta de datas disponíveis para visualização da francesa (formato mmyyyy). Não deve ser informado em conjunto com a Data.",
+            "example": "122020",
+            "schema": {
+                "type": "string"
+            }
+        }
+    ],
+    "responses": {
+        "200": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/francesa"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data"
+                        ]
+                    },
+                    "examples": {
+                        "200_francesa_disponivel_lista": {
+                            "value": {
+                                "data": [
+                                    {
+                                        "posicao": null,
+                                        "data_posicao": "2020-03-12"
+                                    },
+                                    {
+                                        "posicao": null,
+                                        "data_posicao": "2020-03-13"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "description": "Lista relação de francesas disponíveis para os parâmetros informados.",
+            "headers": {
+                "Content-Location": {
+                    "description": "URI correspondente a pesquisa corrente",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "204": {
+            "$ref": "#/paths/~1boletos/get/responses/204"
+        },
+        "303": {
+            "$ref": "#/paths/~1boletos/get/responses/303"
+        },
+        "304": {
+            "$ref": "#/paths/~1boletos/get/responses/304"
+        },
+        "400": {
+            "$ref": "#/paths/~1boletos/get/responses/400"
+        },
+        "401": {
+            "$ref": "#/paths/~1boletos/get/responses/401"
+        },
+        "403": {
+            "$ref": "#/paths/~1boletos/get/responses/403"
+        },
+        "404": {
+            "$ref": "#/paths/~1boletos/get/responses/404"
+        },
+        "405": {
+            "$ref": "#/paths/~1boletos/get/responses/405"
+        },
+        "422": {
+            "$ref": "#/paths/~1boletos/get/responses/422"
+        },
+        "428": {
+            "$ref": "#/paths/~1boletos/get/responses/428"
+        },
+        "500": {
+            "$ref": "#/paths/~1boletos/get/responses/500"
+        },
+        "501": {
+            "$ref": "#/paths/~1boletos/get/responses/501"
+        },
+        "503": {
+            "$ref": "#/paths/~1boletos/get/responses/503"
+        }
+    },
+    "security": [
+        {
+            "APIGatewaySTSAuthorizer": []
+        }
+    ]
+}

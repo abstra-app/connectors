@@ -1,0 +1,257 @@
+{
+    "tags": [
+        "Francesas"
+    ],
+    "operationId": "get/francesas/{id_francesa}/movimentacoes",
+    "description": "Lista de movimentações efetuadas na posição da francesa.",
+    "parameters": [
+        {
+            "$ref": "#/components/parameters/x-itau-apikey"
+        },
+        {
+            "$ref": "#/components/parameters/x-itau-correlationid"
+        },
+        {
+            "in": "query",
+            "name": "data",
+            "required": true,
+            "description": "Data da movimentação no formato yyyy-MM-dd",
+            "example": "2020-04-20",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "in": "query",
+            "name": "tipo_cobranca",
+            "required": false,
+            "description": "Tipo de Cobrança para efetuar o filtro desejado. Quando não informado, serão retornados todos. Opções: 'cobranca_digital', 'boleto', 'bolecode'",
+            "example": "boleto",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "in": "query",
+            "name": "tipo_movimentacao",
+            "required": false,
+            "description": "Tipos de movimentação para efetuar o filtro desejado. Quando não informado, serão retornados todos. Opções 'entradas', 'liquidacoes', 'baixas'.",
+            "example": "entradas",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "in": "query",
+            "name": "nosso_numero",
+            "required": false,
+            "description": "Consulta pelo nosso número específico",
+            "example": 12343138,
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "in": "query",
+            "name": "seu_numero",
+            "required": false,
+            "description": "Consulta pelo seu número específico",
+            "example": "abc1234313",
+            "schema": {
+                "type": "string",
+                "maxLength": 10
+            }
+        },
+        {
+            "in": "query",
+            "name": "numero_carteira",
+            "required": false,
+            "description": "Consulta pelo número da carteira específica",
+            "example": 123,
+            "schema": {
+                "type": "number"
+            }
+        },
+        {
+            "in": "path",
+            "name": "id_francesa",
+            "required": true,
+            "description": "(4 dígitos agência)+(7 dígitos c/c)+(1 dígito do DAC)",
+            "example": 150000024015,
+            "schema": {
+                "type": "number"
+            }
+        },
+        {
+            "in": "query",
+            "name": "nome_pagador",
+            "required": false,
+            "description": "Consulta pelo nome do pagador do título",
+            "example": "João da Silva",
+            "schema": {
+                "type": "string",
+                "maxLength": 30,
+                "minLength": 3
+            }
+        }
+    ],
+    "responses": {
+        "200": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/movimentacao"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data"
+                        ]
+                    },
+                    "examples": {
+                        "200_movimentacao_detalhada": {
+                            "value": {
+                                "data": [
+                                    {
+                                        "agencia": 1234,
+                                        "conta": 1234567,
+                                        "data_movimentacao": "2020-03-12",
+                                        "numero_carteira": 109,
+                                        "codigo_status": "E",
+                                        "tipo_movimentacao": "entradas",
+                                        "nosso_numero": "1234678",
+                                        "seu_numero": "abc12346",
+                                        "dac_titulo": 7,
+                                        "tipo_cobranca": "Boleto",
+                                        "sequencia_titulo": 1,
+                                        "pagador": "Empresa Brasileira de Armaze LTDA",
+                                        "agencia_recebedora": 2861,
+                                        "data_movimentacao_titulo_carteira": "2020-03-12",
+                                        "data_inclusao": "2020-01-01",
+                                        "data_vencimento": "2020-03-12",
+                                        "valor_titulo": "100.00",
+                                        "valor_liquido_lancado": "110.00",
+                                        "valor_acrescimo": "100.00",
+                                        "valor_decrescimo": "100.00",
+                                        "indicador_pagamento_reserva_administrativa": "R",
+                                        "indicador_rateio_credito": true,
+                                        "dac_agencia_conta_beneficiario": 1,
+                                        "operacoes_cobranca": [
+                                            {
+                                                "codigo": "1",
+                                                "descricao": "Juros",
+                                                "valor": "-4.23"
+                                            },
+                                            {
+                                                "codigo": "2",
+                                                "descricao": "Multa",
+                                                "valor": "-4.23"
+                                            },
+                                            {
+                                                "codigo": "2",
+                                                "descricao": "desconto",
+                                                "valor": "-9.32"
+                                            }
+                                        ],
+                                        "operacoes_desconto": [
+                                            {
+                                                "codigo": "1",
+                                                "descricao": "Juros (encargos) de desconto",
+                                                "valor": "-1.87"
+                                            },
+                                            {
+                                                "codigo": "2",
+                                                "descricao": "IOF",
+                                                "valor": "-11.87"
+                                            },
+                                            {
+                                                "codigo": "3",
+                                                "descricao": "Tarifa de contratação de desconto",
+                                                "valor": "-1.87"
+                                            },
+                                            {
+                                                "codigo": "4",
+                                                "descricao": "Tarifa de boleto descontado",
+                                                "valor": "-1.87"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "pagination": {
+                                    "links": {
+                                        "first": "https://apigateway-ext.mbi.cloud.ihf/cash_management/v2/francesas/123411111111111/movimentacoes?data=2020-01-01&page=0&page_size=20",
+                                        "last": "https://apigateway-ext.mbi.cloud.ihf/cash_management/v2/francesas/123411111111111/movimentacoes?data=2020-01-01&page=15&page_size=20",
+                                        "previous": "",
+                                        "next": "https://apigateway-ext.mbi.cloud.ihf/cash_management/v2/francesas/123411111111111/movimentacoes?data=2020-01-01&page=1&page_size=20"
+                                    },
+                                    "page": 0,
+                                    "total_pages": 15,
+                                    "total_elements": 6,
+                                    "page_size": 20
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "description": "Relação detalhada de movimentações em títulos de cobrança e títulos descontados da francesa",
+            "headers": {
+                "Content-Location": {
+                    "description": "URI correspondente a pesquisa corrente",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "204": {
+            "$ref": "#/paths/~1boletos/get/responses/204"
+        },
+        "303": {
+            "$ref": "#/paths/~1boletos/get/responses/303"
+        },
+        "304": {
+            "$ref": "#/paths/~1boletos/get/responses/304"
+        },
+        "400": {
+            "$ref": "#/paths/~1boletos/get/responses/400"
+        },
+        "401": {
+            "$ref": "#/paths/~1boletos/get/responses/401"
+        },
+        "403": {
+            "$ref": "#/paths/~1boletos/get/responses/403"
+        },
+        "404": {
+            "$ref": "#/paths/~1boletos/get/responses/404"
+        },
+        "405": {
+            "$ref": "#/paths/~1boletos/get/responses/405"
+        },
+        "422": {
+            "$ref": "#/paths/~1boletos/get/responses/422"
+        },
+        "428": {
+            "$ref": "#/paths/~1boletos/get/responses/428"
+        },
+        "500": {
+            "$ref": "#/paths/~1boletos/get/responses/500"
+        },
+        "501": {
+            "$ref": "#/paths/~1boletos/get/responses/501"
+        },
+        "503": {
+            "$ref": "#/paths/~1boletos/get/responses/503"
+        }
+    },
+    "security": [
+        {
+            "APIGatewaySTSAuthorizer": []
+        }
+    ]
+}

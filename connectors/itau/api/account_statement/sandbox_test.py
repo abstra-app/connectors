@@ -1,6 +1,6 @@
 from unittest import TestCase
 from .client import AccountStatementClient, Statement, InterestBearingAccount
-from ..auth.credentials import Credentials
+from ...utils.auth import Credentials
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import date
@@ -10,7 +10,7 @@ load_dotenv(Path(__file__).parent.parent / '.env')
 class TestAccountStatementClient(TestCase):
 
     def setUp(self):
-        json_file = Path(__file__).parent / 'sandbox.json'
+        json_file = Path(__file__).parent.parent.parent / 'sandbox.json'
         creds = Credentials.from_json_file(json_file)
         self.client = AccountStatementClient(creds=creds)
 

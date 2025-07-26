@@ -1,0 +1,12 @@
+{
+    "sigv4": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+    },
+    "APIGatewaySTSAuthorizer": {
+        "in": "header",
+        "name": "auth",
+        "type": "apiKey"
+    }
+}

@@ -1,0 +1,706 @@
+{
+    "tags": [
+        "boletos"
+    ],
+    "operationId": "get/boletos",
+    "description": "Consulta lista de boletos por critérios específicos.",
+    "parameters": [
+        {
+            "$ref": "#/components/parameters/x-itau-apikey"
+        },
+        {
+            "$ref": "#/components/parameters/x-itau-correlationid"
+        },
+        {
+            "in": "header",
+            "name": "x-itau-flowid",
+            "description": "Key que identifica o fluxo",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "codigo_carteira",
+            "description": "Número da carteira utilizada na emissão do boleto",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "data_inicial",
+            "description": "Data inicial da pesquisa",
+            "example": "2021-01-23T00:00:00.000Z",
+            "schema": {
+                "type": "string"
+            },
+            "required": true
+        },
+        {
+            "in": "query",
+            "name": "data_final",
+            "description": "Data final da pesquisa",
+            "example": "2021-01-23T00:00:00.000Z",
+            "schema": {
+                "type": "string"
+            },
+            "required": true
+        },
+        {
+            "in": "query",
+            "name": "id_beneficiario",
+            "description": "(4 dígitos agência)(5 dígitos c/c)+(1 dígito DAC)",
+            "example": "1500010044",
+            "schema": {
+                "type": "string"
+            },
+            "required": true
+        },
+        {
+            "in": "query",
+            "name": "nome_pagador",
+            "description": "Nome do destinatário do boleto, pode ser informado apenas uma parte do nome para pesquisa, todavia, será pesquisado somente a frente do nome",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "numero_cpf_cnpj_pagador",
+            "description": "Número do CPF ou CNPJ do destinatário do boleto. Deve ser informado apenas números",
+            "schema": {
+                "type": "number"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "numero_nosso_numero",
+            "description": "Nosso número informado na emissão do boleto, importante, sempre o último digito será considerado como DAC",
+            "schema": {
+                "type": "number"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "seu_numero",
+            "description": "Seu número, informado pelo beneficiário de cobrança, do boleto de cobrança, provido do processor-boleto.",
+            "example": "1234",
+            "schema": {
+                "type": "string",
+                "maxLength": 14
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "situacao_geral_boleto",
+            "description": "Status do boleto a ser filtrado. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_situacao_geral_boleto'.",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "situacao_negativacao",
+            "description": "Informa a situação da negativação do boleto. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_situacao_negativacao'.",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "situacao_protesto",
+            "description": "Informa a situação do protesto do boleto. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_situacao_protesto'.",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "status_vencimento",
+            "description": "São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_status_vencimento'.",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "tipo_boleto",
+            "description": "Informa o tipo de boleto a ser pesquisado. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_tipo_boleto'.",
+            "schema": {
+                "type": "string"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "tipo_data",
+            "description": "Campo que indica onde a pesquisa será realizada, na data de emissão ou na data de vencimento. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_tipo_data'.",
+            "schema": {
+                "type": "string"
+            },
+            "required": true
+        },
+        {
+            "in": "query",
+            "name": "page",
+            "description": "Definir um número de página para obter informações desta coleção",
+            "example": 5,
+            "schema": {
+                "type": "integer"
+            },
+            "required": false
+        },
+        {
+            "in": "query",
+            "name": "page_size",
+            "description": "Limitar o número de elementos por página",
+            "example": 20,
+            "schema": {
+                "type": "integer"
+            },
+            "required": false
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "Retorna uma lista com as informações solicitadas, bem como as informações de paginação.",
+            "headers": {
+                "Content-Location": {
+                    "description": "URI correspondente a pesquisa corrente",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            },
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/boleto"
+                        }
+                    },
+                    "examples": {
+                        "200_listagem_boletos": {
+                            "summary": "Exemplo de retorno de uma lista de boletos",
+                            "value": {
+                                "data": [
+                                    {
+                                        "nome_pagador": "RICARDO DA SILVA",
+                                        "numero_cpf_cnpj_pagador": 8365025790,
+                                        "tipo_boleto": "BOLETO",
+                                        "numero_nosso_numero": "12345678",
+                                        "dac_titulo": "1",
+                                        "seu_numero": "1adcgre8-1",
+                                        "data_emissao": "2020-12-12",
+                                        "data_inclusao_boleto": "2020-12-12",
+                                        "data_vencimento": "2021-01-20",
+                                        "data_inclusao_pagamento": "2021-01-19",
+                                        "valor_titulo": 10.9,
+                                        "valor_pago_total": 10.9,
+                                        "situacao_geral_boleto": {
+                                            "codigo": "4",
+                                            "descricao": "PAGA"
+                                        },
+                                        "status_vencimento": {
+                                            "codigo": "402",
+                                            "descricao": "VENCIDO"
+                                        },
+                                        "emitir_segunda_via": true,
+                                        "codigo_carteira": "001",
+                                        "status_boleto_canal": {
+                                            "codigo": "4",
+                                            "descricao": "PAGA"
+                                        }
+                                    },
+                                    {
+                                        "nome_pagador": "EMPRESA QUE NAO EXISTE",
+                                        "numero_cpf_cnpj_pagador": "81874047000186",
+                                        "tipo_boleto": "BOLETO",
+                                        "numero_nosso_numero": "12345678",
+                                        "dac_titulo": "1",
+                                        "seu_numero": "AbCdEfG-10",
+                                        "data_emissao": "2020-12-12",
+                                        "data_inclusao_boleto": "2020-12-12",
+                                        "data_vencimento": "2021-10-20",
+                                        "data_inclusao_pagamento": "2021-05-13",
+                                        "valor_titulo": 3000,
+                                        "valor_pago_total": 3100,
+                                        "situacao_geral_boleto": {
+                                            "codigo": "4",
+                                            "descricao": "PAGA"
+                                        },
+                                        "status_vencimento": {
+                                            "codigo": "401",
+                                            "descricao": "A VENCER"
+                                        },
+                                        "emitir_segunda_via": false,
+                                        "codigo_carteira": "001",
+                                        "status_boleto_canal": {
+                                            "codigo": "4",
+                                            "descricao": "PAGA"
+                                        }
+                                    },
+                                    {
+                                        "nome_pagador": "EMPRESA QUE NAO EXISTE",
+                                        "numero_cpf_cnpj_pagador": "81874047000186",
+                                        "tipo_boleto": "BOLETO",
+                                        "numero_nosso_numero": "52984598",
+                                        "dac_titulo": "1",
+                                        "seu_numero": "13345ae1-1",
+                                        "data_emissao": "2020-12-12",
+                                        "data_inclusao_boleto": "2020-12-12",
+                                        "data_vencimento": "2020-12-15",
+                                        "data_inclusao_pagamento": null,
+                                        "valor_titulo": 3000,
+                                        "valor_pago_total": 0,
+                                        "situacao_geral_boleto": {
+                                            "codigo": "1",
+                                            "descricao": "EM ABERTO"
+                                        },
+                                        "status_vencimento": {
+                                            "codigo": "402",
+                                            "descricao": "VENCIDO"
+                                        },
+                                        "emitir_segunda_via": false,
+                                        "codigo_carteira": "100",
+                                        "status_boleto_canal": {
+                                            "codigo": "1",
+                                            "descricao": "EM ABERTO"
+                                        }
+                                    },
+                                    {
+                                        "nome_pagador": "EMPRESA QUE NAO EXISTE",
+                                        "numero_cpf_cnpj_pagador": "81874047000186",
+                                        "tipo_boleto": "BOLETO",
+                                        "numero_nosso_numero": "484878",
+                                        "dac_titulo": "1",
+                                        "seu_numero": "1-899008-1",
+                                        "data_emissao": "2020-12-12",
+                                        "data_inclusao_boleto": "2020-12-12",
+                                        "data_vencimento": "2020-12-13",
+                                        "data_inclusao_pagamento": null,
+                                        "valor_titulo": 2000,
+                                        "valor_pago_total": 0,
+                                        "situacao_geral_boleto": {
+                                            "codigo": "1",
+                                            "descricao": "EM ABERTO"
+                                        },
+                                        "status_vencimento": {
+                                            "codigo": "402",
+                                            "descricao": "VENCIDO"
+                                        },
+                                        "emitir_segunda_via": false,
+                                        "codigo_carteira": "101",
+                                        "status_boleto_canal": {
+                                            "codigo": "1",
+                                            "descricao": "EM ABERTO"
+                                        }
+                                    },
+                                    {
+                                        "nome_pagador": "EMPRESA NAO EXISTE LTDA",
+                                        "numero_cpf_cnpj_pagador": "31226990000104",
+                                        "tipo_boleto": "BOLETO",
+                                        "numero_nosso_numero": "5185795",
+                                        "dac_titulo": "0",
+                                        "seu_numero": "1efe0882-0",
+                                        "data_emissao": "2021-08-12",
+                                        "data_inclusao_boleto": "2021-08-16",
+                                        "data_vencimento": "2021-10-12",
+                                        "data_inclusao_pagamento": null,
+                                        "valor_titulo": 3471.81,
+                                        "valor_pago_total": null,
+                                        "situacao_geral_boleto": {
+                                            "codigo": "1",
+                                            "descricao": "EM ABERTO"
+                                        },
+                                        "status_vencimento": {
+                                            "codigo": "401",
+                                            "descricao": "A VENCER"
+                                        },
+                                        "emitir_segunda_via": true,
+                                        "codigo_carteira": "100",
+                                        "status_boleto_canal": {
+                                            "codigo": "1",
+                                            "descricao": "EM ABERTO"
+                                        }
+                                    }
+                                ],
+                                "pagination": {
+                                    "links": {
+                                        "first": "",
+                                        "last": "",
+                                        "previous": "",
+                                        "next": ""
+                                    },
+                                    "page": 0,
+                                    "total_pages": 1,
+                                    "total_elements": 4,
+                                    "page_size": 30
+                                }
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            }
+        },
+        "204": {
+            "headers": {
+                "Content-Location": {
+                    "description": "URI correspondente a pesquisa corrente",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            },
+            "description": "A consulta retorna informações:\n   - A coleção tem elementos mas nenhum atende aos filtros especificados possível.\n   - A coleção não contém elementos.\nBody não incluir resposta.\n"
+        },
+        "303": {
+            "headers": {
+                "Content-Location": {
+                    "description": "URI correspondente a consulta do status do processamento assíncrono.",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                "Location": {
+                    "description": "URI correspondente a consulta do elemento já processado assíncronamente.",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            },
+            "description": "See Other - Redirecionamento. A resposta da consulta será um redirecionamento com o HTTP status code 303.\nA localização do recurso é informado no no Header de resposta Location.\n"
+        },
+        "304": {
+            "headers": {
+                "Content-Location": {
+                    "description": "O recurso não foi atualizado (foi fornecido do cache). Apropriado apenas nos serviços que são susceptíveis de registrar suas respostas.",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            },
+            "description": "O recurso não foi atualizado (foi fornecido do cache). Apropriado apenas nos serviços que são susceptíveis de registrar suas respostas."
+        },
+        "400": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_400": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "validation_error",
+                                        "mensagem": "Solicitação Imprópria",
+                                        "campos": [
+                                            {
+                                                "campo": "usuario.teste",
+                                                "mensagem": "Campo Obrigatório",
+                                                "valor": ""
+                                            },
+                                            {
+                                                "campo": "usuario.id",
+                                                "mensagem": "Campo Inválido",
+                                                "valor": "123-123"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Parâmetros incorretos"
+        },
+        "401": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_401": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Usuário não autenticado"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Não Autorizado"
+        },
+        "403": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_403": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Acesso não autorizado"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Acesso Proibido"
+        },
+        "404": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_404": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Recurso inexistente"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Recurso Inexistente"
+        },
+        "405": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_405": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Método não permitido"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Método não permitido"
+        },
+        "422": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_422": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Erro na execução da solicitação"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Erro semântico"
+        },
+        "428": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_428": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Pré-requisito necessário"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Pré requisito necessário"
+        },
+        "500": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_500": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Erro inesperado"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Erro Inesperado"
+        },
+        "501": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_501": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Não implementado"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Não implementado"
+        },
+        "503": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "application_json": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "examples": {
+                        "erro_503": {
+                            "value": {
+                                "messages": [
+                                    {
+                                        "codigo": "",
+                                        "mensagem": "Serviço Indisponível"
+                                    }
+                                ]
+                            },
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "description": "Serviço Indisponível"
+        }
+    },
+    "security": [
+        {
+            "APIGatewaySTSAuthorizer": []
+        }
+    ]
+}
