@@ -1,0 +1,868 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API ACCOUNT STATEMENT",
+        "description": "Accounts Statement API - get statement information of your bank account.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://account-statement.${iupipes_env_dns}/account-statement/v1",
+            "description": "Account Statement API"
+        },
+        {
+            "url": "https://sandbox.devportal.itau.com.br/itau-x0-api-account-statement-v1-externo/v1",
+            "description": "Sandbox Account Statement API"
+        }
+    ],
+    "tags": [
+        {
+            "name": "ACCOUNT STATEMENT"
+        }
+    ],
+    "paths": {
+        "/statements/{statementId}": {
+            "get": {
+                "tags": [
+                    "ACCOUNT STATEMENT"
+                ],
+                "operationId": "get/statements/{statementId}",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/statementId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/type"
+                    },
+                    {
+                        "$ref": "#/components/parameters/authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/correlation_id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/start_date"
+                    },
+                    {
+                        "$ref": "#/components/parameters/end_date"
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/page_size"
+                    },
+                    {
+                        "$ref": "#/components/parameters/statement_type"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filter_by"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of details of the income from your interest-bearing account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/statement"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "statement": {
+                                        "$ref": "#/components/examples/statement"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "400 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "401 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "403 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "404 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "422 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "500 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "503 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": [
+                            "account-statement-account-statement.read"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/statements/{statementId}/interest-bearing-accounts": {
+            "get": {
+                "tags": [
+                    "APLIC AUT"
+                ],
+                "operationId": "get/statements/{statementId}/interest-bearing-accounts",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/statementId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/correlation_id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/start_date"
+                    },
+                    {
+                        "$ref": "#/components/parameters/end_date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of details of the income from your interest-bearing account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/interestBearingAccount"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "statement": {
+                                        "$ref": "#/components/examples/incomeDetails"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "400 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "401 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "403 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "404 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "422 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "500 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "503 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": [
+                            "account-statement-account-statement.read"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "statementId": {
+                "name": "statementId",
+                "in": "path",
+                "required": true,
+                "description": "Unique identifier that references a specific account. Use the Agency + Account + Validator Digit format, example: Ag. 1234 - CC. 5678901 - DV. 2 = Account - 123456789012",
+                "schema": {
+                    "type": "string"
+                },
+                "example": "150000581085"
+            },
+            "type": {
+                "name": "type",
+                "required": true,
+                "in": "query",
+                "description": "Select type of bank account ( Example - \"current_account\" or \"savings_account\")",
+                "schema": {
+                    "type": "string"
+                },
+                "example": "current_account"
+            },
+            "authorization": {
+                "name": "Authorization",
+                "in": "header",
+                "description": "Bearer Token authorization generated in the authorization flow in the \"https://sts.rdhi.com.br/api/oauth/token\" service.",
+                "required": true,
+                "allowReserved": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "correlation_id": {
+                "name": "x-itau-correlationid",
+                "in": "header",
+                "description": "Unique identifier (UUID) that allows reference to a specific transaction or chain of events, used to help track a flow of calls.",
+                "required": true,
+                "allowReserved": false,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "start_date": {
+                "name": "start_date",
+                "in": "query",
+                "description": "Start date of consultation",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "2022-11-03T00:00:00.000Z"
+            },
+            "end_date": {
+                "name": "end_date",
+                "in": "query",
+                "description": "End date of consultation",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "2022-11-03T00:00:00.000Z"
+            },
+            "page": {
+                "name": "page",
+                "in": "query",
+                "description": "Query page",
+                "required": false,
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "page_size": {
+                "name": "page_size",
+                "in": "query",
+                "description": "Query page size",
+                "required": false,
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "statement_type": {
+                "name": "statement_type",
+                "in": "query",
+                "description": "Get different views of the bank statement ( summarized / complete )",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "filter_by": {
+                "name": "filter_by",
+                "in": "query",
+                "description": "Filter your search by alloweds fields in the content.",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "[{ property\":\"literal.complete\",\"operand\":\"in\",\"value\":\"PIX\"}]"
+            }
+        },
+        "schemas": {
+            "statement": {
+                "type": "object",
+                "properties": {
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "description": "Unique event id",
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "description": "Kind of event",
+                                    "type": "string"
+                                },
+                                "operation": {
+                                    "description": "Operation type (C - Credit / D - Debit)",
+                                    "type": "string"
+                                },
+                                "reversal": {
+                                    "description": "Chargeback entry",
+                                    "type": "boolean"
+                                },
+                                "date": {
+                                    "type": "object",
+                                    "description": "information of the event date",
+                                    "properties": {
+                                        "event": {
+                                            "description": "Event date",
+                                            "type": "string"
+                                        },
+                                        "accounting": {
+                                            "description": "Accounting date",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "literal": {
+                                    "type": "object",
+                                    "description": "Event literal",
+                                    "properties": {
+                                        "code": {
+                                            "description": "Transaction reason code",
+                                            "type": "string"
+                                        },
+                                        "shortened": {
+                                            "description": "Short description of the event",
+                                            "type": "string"
+                                        },
+                                        "complete": {
+                                            "description": "Full description of the event",
+                                            "type": "string"
+                                        },
+                                        "tip": {
+                                            "description": "tip",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "amount": {
+                                    "type": "object",
+                                    "description": "Amount information",
+                                    "properties": {
+                                        "value": {
+                                            "description": "Amount value of event",
+                                            "type": "number"
+                                        },
+                                        "currency": {
+                                            "description": "Currency code of event",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "counterpart": {
+                                    "type": "object",
+                                    "description": "counterpart of the event",
+                                    "properties": {
+                                        "type": {
+                                            "description": "Account type code",
+                                            "type": "string"
+                                        },
+                                        "ispb": {
+                                            "description": "Brazilian payment system identifier",
+                                            "type": "string"
+                                        },
+                                        "agency": {
+                                            "description": "counterpart agency number",
+                                            "type": "string"
+                                        },
+                                        "account": {
+                                            "description": "counterpart account number",
+                                            "type": "string"
+                                        },
+                                        "digit": {
+                                            "description": "counterpart account digit",
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "description": "counterpart name",
+                                            "type": "string"
+                                        },
+                                        "person": {
+                                            "description": "counterpart person type",
+                                            "type": "string"
+                                        },
+                                        "document": {
+                                            "description": "counterpart document number",
+                                            "type": "string"
+                                        },
+                                        "institution": {
+                                            "description": "counterpart financial institution name",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "origin": {
+                                    "type": "object",
+                                    "description": "Information about the origin of the event",
+                                    "properties": {
+                                        "identifier": {
+                                            "description": "Unique Product identifier",
+                                            "type": "string"
+                                        },
+                                        "type": {
+                                            "description": "Origin type",
+                                            "type": "string"
+                                        },
+                                        "operation": {
+                                            "description": "description of type operation",
+                                            "type": "string"
+                                        },
+                                        "channel": {
+                                            "description": "information of the channel operation",
+                                            "type": "string"
+                                        },
+                                        "complement": {
+                                            "description": "the complement informed in the operation channel",
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "type",
+                                "date",
+                                "literal",
+                                "amount"
+                            ]
+                        },
+                        "description": "Account statement events"
+                    },
+                    "balances": {
+                        "description": "Account balance",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "description": "Type of balance amount",
+                                    "type": "string"
+                                },
+                                "date": {
+                                    "type": "object",
+                                    "description": "information of the event date",
+                                    "properties": {
+                                        "event": {
+                                            "description": "Balance date",
+                                            "type": "string"
+                                        },
+                                        "accounting": {
+                                            "description": "Accounting balance date",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "literal": {
+                                    "type": "object",
+                                    "description": "balance literal",
+                                    "properties": {
+                                        "shortened": {
+                                            "description": "Short description of the balance",
+                                            "type": "string"
+                                        },
+                                        "complete": {
+                                            "description": "Full description of the balance",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "amount": {
+                                    "type": "object",
+                                    "description": "Amount information",
+                                    "properties": {
+                                        "value": {
+                                            "description": "Amount value of event",
+                                            "type": "number"
+                                        },
+                                        "currency": {
+                                            "description": "Currency code of event",
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "type",
+                                "date",
+                                "literal",
+                                "amount"
+                            ]
+                        }
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "description": "Partner account statement pagination",
+                        "properties": {
+                            "page": {
+                                "description": "Current page",
+                                "type": "number"
+                            },
+                            "totalPages": {
+                                "description": "Total number of pages",
+                                "type": "number"
+                            },
+                            "totalElements": {
+                                "description": "Total number of postings for the selected period",
+                                "type": "number"
+                            },
+                            "pageSize": {
+                                "description": "Page size",
+                                "type": "number"
+                            }
+                        },
+                        "required": [
+                            "page",
+                            "totalPages",
+                            "totalElements",
+                            "pageSize"
+                        ]
+                    }
+                }
+            },
+            "error": {
+                "description": "Error model",
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number",
+                        "description": "Error code"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message"
+                    }
+                }
+            },
+            "interestBearingAccount": {
+                "type": "object",
+                "description": "Partner Income Datails",
+                "properties": {
+                    "date": {
+                        "type": "string"
+                    },
+                    "grossAmountValue": {
+                        "type": "string"
+                    },
+                    "netAmountValue": {
+                        "type": "string"
+                    },
+                    "iof": {
+                        "type": "string"
+                    },
+                    "ir": {
+                        "type": "string"
+                    },
+                    "grossIncome": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "examples": {
+            "400": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "400",
+                            "mensagem": "Parâmetros incorretos"
+                        }
+                    ]
+                }
+            },
+            "401": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "401",
+                            "mensagem": "Não Autorizado"
+                        }
+                    ]
+                }
+            },
+            "403": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "403",
+                            "mensagem": "Acesso Proibido"
+                        }
+                    ]
+                }
+            },
+            "404": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "404",
+                            "mensagem": "Recurso Inexistente"
+                        }
+                    ]
+                }
+            },
+            "405": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "405",
+                            "mensagem": "Método não permitido"
+                        }
+                    ]
+                }
+            },
+            "422": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "422",
+                            "mensagem": "Erro semântico"
+                        }
+                    ]
+                }
+            },
+            "500": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "500",
+                            "mensagem": "Erro Inesperado"
+                        }
+                    ]
+                }
+            },
+            "503": {
+                "value": {
+                    "messages": [
+                        {
+                            "codigo": "503",
+                            "mensagem": "Serviço Indisponível"
+                        }
+                    ]
+                }
+            },
+            "statement": {
+                "summary": "Account statements search",
+                "value": {
+                    "content": {
+                        "data": [
+                            {
+                                "events": [
+                                    {
+                                        "id": "104e2ce6-4b1d-3fba-adf0-694fde806773",
+                                        "type": "lancamento",
+                                        "operation": "C",
+                                        "reversal": false,
+                                        "date": {
+                                            "event": "2024-04-25T02:59:00.000Z",
+                                            "accounting": "2024-04-24T00:00:00.000Z"
+                                        },
+                                        "literal": {
+                                            "code": "9507",
+                                            "shortened": "SISPAG PIX PIX",
+                                            "complete": "SISPAG PIX PIX"
+                                        },
+                                        "amount": {
+                                            "value": 500,
+                                            "currency": "BRL"
+                                        },
+                                        "counterpart": {
+                                            "type": "CONTA_CORRENTE",
+                                            "ispb": "00000000",
+                                            "agency": "0001",
+                                            "account": "0123456",
+                                            "digit": "7",
+                                            "name": "BRUNO E. S. FRAUCHES",
+                                            "financial_institution": "BCO DO BRASIL S.A",
+                                            "document": "12345678925",
+                                            "type_person": "FISICA"
+                                        },
+                                        "origin": {
+                                            "identifier": "E01234567890123456789DY5FWG9GYPM",
+                                            "type": "PIX",
+                                            "operation": "PIX_EMISSAO",
+                                            "channel": "7E",
+                                            "complement": "INFORMED COMPLEMENT"
+                                        }
+                                    }
+                                ],
+                                "balances": [
+                                    {
+                                        "type": "saldo_disponivel",
+                                        "date": {
+                                            "event": "2024-06-23T02:59:59.999Z"
+                                        },
+                                        "literal": {
+                                            "shortened": "SALDO TOTAL DISPONÍVEL DIA",
+                                            "complete": "SALDO TOTAL DISPONÍVEL DIA"
+                                        },
+                                        "amount": {
+                                            "value": 163.97,
+                                            "currency": "BRL"
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "pagination": {
+                            "links": {
+                                "first": "/statements/150000999999?end_date=2024-06-26&page=1&type=current_account&start_date=2023-01-01&page_size=1000",
+                                "last": "/statements/150000999999?end_date=2024-06-26&page=10&type=current_account&start_date=2023-01-01&page_size=1000",
+                                "previous": "",
+                                "next": "/statements/150000999999?end_date=2024-06-26&page=2&type=current_account&start_date=2023-01-01&page_size=1000"
+                            },
+                            "page": 1,
+                            "total_pages": 10,
+                            "total_elements": 9109,
+                            "page_size": 1000
+                        }
+                    }
+                }
+            },
+            "incomeDetails": {
+                "summary": "Researching the income from your interest-bearing account",
+                "value": {
+                    "data": [
+                        {
+                            "date": "2024-05-01T00:00:00.000Z",
+                            "grossAmountValue": "22700.62",
+                            "netAmountValue": "22699.66",
+                            "iof": "0.73",
+                            "ir": "0.23",
+                            "grossIncome": "1.83"
+                        }
+                    ]
+                }
+            }
+        },
+        "securitySchemes": {
+            "APIGatewaySTSAuthorizer": {
+                "in": "header",
+                "name": "auth",
+                "type": "apiKey"
+            }
+        }
+    }
+}
