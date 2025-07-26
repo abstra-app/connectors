@@ -125,7 +125,7 @@ ConditionType = Literal[
     "ONE_OF_LIST",
     "BLANK",
     "NOT_BLANK",
-    "CUSTOM_FORMULA" "BOOLEAN" "TEXT_NOT_EQ" "DATE_NOT_EQ",
+    "CUSTOM_FORMULABOOLEANTEXT_NOT_EQDATE_NOT_EQ",
     "FILTER_EXPRESSION",
 ]
 SortOrder = Literal["SORT_ORDER_UNSPECIFIED", "ASCENDING", "DESCENDING"]
@@ -161,7 +161,7 @@ PivotValueSummarizeFunction = Literal[
     "STDEVP",
     "VAR",
     "VARP",
-    "CUSTOM" "NONE",
+    "CUSTOMNONE",
 ]
 PivotValueCalculatedDisplayType = Literal[
     "PIVOT_VALUE_CALCULATED_DISPLAY_TYPE_UNSPECIFIED",

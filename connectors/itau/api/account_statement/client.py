@@ -377,6 +377,7 @@ class StatementBalance:
             currency=data["amount"]["currency"],
         )
 
+
 @dataclass
 class StatementPagination:
     """

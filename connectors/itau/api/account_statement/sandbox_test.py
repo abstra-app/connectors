@@ -5,12 +5,12 @@ from dotenv import load_dotenv
 from pathlib import Path
 from datetime import date
 
-load_dotenv(Path(__file__).parent.parent / '.env')
+load_dotenv(Path(__file__).parent.parent / ".env")
+
 
 class TestAccountStatementClient(TestCase):
-
     def setUp(self):
-        json_file = Path(__file__).parent.parent.parent / 'sandbox.json'
+        json_file = Path(__file__).parent.parent.parent / "sandbox.json"
         creds = Credentials.from_json_file(json_file)
         self.client = AccountStatementClient(creds=creds)
 
@@ -31,4 +31,6 @@ class TestAccountStatementClient(TestCase):
         )
         self.assertIsInstance(response, list)
         if response:
-            all(self.assertIsInstance(item, InterestBearingAccount) for item in response)
+            all(
+                self.assertIsInstance(item, InterestBearingAccount) for item in response
+            )

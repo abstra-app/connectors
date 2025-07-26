@@ -1,7 +1,7 @@
 from typing import Optional, List
 import requests
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -41,6 +41,7 @@ def _get_user_id_from_email(email: str) -> str:
 
     return response.json()["user"]["id"]
 
+
 def user_link(user_id: str) -> str:
     if _is_email(user_id):
         user_id = _get_user_id_from_email(user_id)
@@ -79,6 +80,7 @@ def send_message(
     response.raise_for_status()
     return SlackPostMessageResponse.from_json(response.json())
 
+
 @dataclass
 class SlackMessage:
     user: str
@@ -103,6 +105,7 @@ class SlackMessage:
             ts=json["ts"],
         )
 
+
 @dataclass
 class SlackReply:
     user: str
@@ -122,7 +125,6 @@ class SlackReply:
         )
 
 
-
 @dataclass
 class SlackGetMessageResponse:
     messages: List[SlackMessage]
@@ -139,17 +141,18 @@ class SlackGetMessageResponse:
             response_metadata=json["response_metadata"],
         )
 
+
 def get_messages(
-        *,
-        channel: Optional[str] = None,
-        ts: str,
-        cursor: Optional[str] = None,
-        include_all_metadata: Optional[bool] = None,
-        inclusive: Optional[bool] = None,
-        latest: Optional[str] = None,
-        limit: Optional[int] = None,
-        oldest: Optional[str] = None,
-    ) -> List[dict]:
+    *,
+    channel: Optional[str] = None,
+    ts: str,
+    cursor: Optional[str] = None,
+    include_all_metadata: Optional[bool] = None,
+    inclusive: Optional[bool] = None,
+    latest: Optional[str] = None,
+    limit: Optional[int] = None,
+    oldest: Optional[str] = None,
+) -> List[dict]:
     if channel is None:
         channel = os.getenv("SLACK_CHANNEL")
     if channel is None:
@@ -157,14 +160,18 @@ def get_messages(
     token = os.getenv("SLACK_BOT_TOKEN")
     if token is None:
         raise Exception("SLACK_BOT_TOKEN env var is not set")
-    
+
     response = requests.get(
         "https://slack.com/api/conversations.replies",
         params={
             "channel": channel,
             "ts": ts,
             **({"cursor": cursor} if cursor else {}),
-            **({"include_all_metadata": include_all_metadata} if include_all_metadata else {}),
+            **(
+                {"include_all_metadata": include_all_metadata}
+                if include_all_metadata
+                else {}
+            ),
             **({"inclusive": inclusive} if inclusive else {}),
             **({"latest": latest} if latest else {}),
             **({"limit": limit} if limit else {}),
@@ -178,6 +185,7 @@ def get_messages(
         raise Exception(response.json()["error"])
 
     return response.json()["messages"]
+
 
 @dataclass
 class SlackUser:
@@ -232,8 +240,12 @@ class SlackUser:
             profile_status_emoji=json["profile"].get("status_emoji", ""),
             profile_real_name=json["profile"].get("real_name", ""),
             profile_display_name=json["profile"].get("display_name", ""),
-            profile_real_name_normalized=json["profile"].get("real_name_normalized", ""),
-            profile_display_name_normalized=json["profile"].get("display_name_normalized", ""),
+            profile_real_name_normalized=json["profile"].get(
+                "real_name_normalized", ""
+            ),
+            profile_display_name_normalized=json["profile"].get(
+                "display_name_normalized", ""
+            ),
             profile_email=json["profile"].get("email", ""),
             profile_image_original=json["profile"].get("image_original", ""),
             profile_image_24=json["profile"].get("image_24", ""),
@@ -253,11 +265,12 @@ class SlackUser:
             has_2fa=json.get("has_2fa"),
         )
 
+
 def get_user(user_id: str) -> SlackUser:
     token = os.getenv("SLACK_BOT_TOKEN")
     if token is None:
         raise Exception("SLACK_BOT_TOKEN env var is not set")
-    
+
     response = requests.get(
         "https://slack.com/api/users.info",
         params={"user": user_id},
@@ -269,6 +282,7 @@ def get_user(user_id: str) -> SlackUser:
         raise Exception(response.json()["error"])
 
     return SlackUser.from_dict(response.json()["user"])
+
 
 @dataclass
 class SlackMe:
@@ -286,11 +300,12 @@ class SlackMe:
             team_name=json["team"],
         )
 
+
 def get_me():
     token = os.getenv("SLACK_BOT_TOKEN")
     if token is None:
         raise Exception("SLACK_BOT_TOKEN env var is not set")
-    
+
     response = requests.get(
         "https://slack.com/api/auth.test",
         headers={"Authorization": "Bearer " + token},
