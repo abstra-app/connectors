@@ -1,0 +1,2405 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Cash Management",
+        "version": "1.14.14",
+        "description": "Aqui você visualiza as APIs do SISPAG, que possibilita a gestão dos pagamentos da sua empresa de forma segura e ainda mais rápida. A inclusão é exclusiva para Pix e as consultas estão disponíveis todas as formas de pagamento."
+    },
+    "servers": [
+        {
+            "url": "https://api.itau.com.br/sispag/v1",
+            "description": "Produção"
+        }
+    ],
+    "security": [
+        {
+            "oauth2": []
+        }
+    ],
+    "paths": {
+        "/transferencias": {
+            "post": {
+                "tags": [
+                    "Transferências"
+                ],
+                "operationId": "post/transferencias",
+                "description": "API responsável por inserir transferências de Pix e pagamentos de Pix QR Code na plataforma SISPAG do Banco Itaú.",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "x-itau-apikey",
+                        "required": true,
+                        "description": "Chave da API utilizado para autorizar o consumo de uma aplicação requisitante",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-itau-flowID",
+                        "required": false,
+                        "description": "Identificador da funcionalidade de negócio sendo executada na aplicação",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-itau-correlationID",
+                        "required": false,
+                        "description": "Identificador de correlação que serve como um agrupar dentro da estrutura de audit trail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/transferencia"
+                            },
+                            "examples": {
+                                "pix_por_chave": {
+                                    "$ref": "#/components/examples/pix_por_chave"
+                                },
+                                "pix_por_dados": {
+                                    "$ref": "#/components/examples/pix_por_dados"
+                                },
+                                "qrcode_por_emv": {
+                                    "$ref": "#/components/examples/qrcode_por_emv"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pagamento incluído com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/transferencia"
+                                },
+                                "examples": {
+                                    "200_pix_por_chave": {
+                                        "$ref": "#/components/examples/200_pix_por_chave"
+                                    },
+                                    "200_pix_por_dados": {
+                                        "$ref": "#/components/examples/200_pix_por_dados"
+                                    },
+                                    "200_qrcode_por_emv": {
+                                        "$ref": "#/components/examples/200_qrcode_por_emv"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitação de inclusão do Pagamento com erro",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "400_pix_por_dados": {
+                                        "$ref": "#/components/examples/400_pix_por_dados"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Inclusão do Pagamento rejeitado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/transferencia"
+                                },
+                                "examples": {
+                                    "422_qrcode_por_emv": {
+                                        "$ref": "#/components/examples/422_qrcode_por_emv"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pagamentos_sispag": {
+            "get": {
+                "tags": [
+                    "Consulta Pagamentos Sispag"
+                ],
+                "operationId": "get/pagamentos_sispag",
+                "description": "Detalhe da consulta de pagamentos e transferências",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "agencia_operacao",
+                        "required": true,
+                        "description": "Agência da operação",
+                        "example": "1500",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "[0-9]+",
+                            "maxLength": 4
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "conta_operacao",
+                        "required": true,
+                        "description": "Conta bancária da operação",
+                        "example": "00005201",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "[0-9]+",
+                            "maxLength": 8
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "cnpj_empresa",
+                        "required": true,
+                        "description": "Documento do Pagador",
+                        "example": 191,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "[0-9]+",
+                            "maxLength": 14
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "numero_lote",
+                        "required": false,
+                        "description": "Número de lote SISPAG",
+                        "example": 12345,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "[0-9]+"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "valor_minimo",
+                        "required": false,
+                        "description": "Valor mínimo do pagamento",
+                        "example": "10.00",
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "valor_maximo",
+                        "required": false,
+                        "description": "Valor máximo do pagamento",
+                        "example": "10000.00",
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "referencia_empresa",
+                        "required": false,
+                        "description": "Referência da empresa",
+                        "example": "Prestação 0123456789",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome_beneficiario",
+                        "required": false,
+                        "description": "Nome do Beneficiário",
+                        "example": "José da Silva",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_inicial",
+                        "required": false,
+                        "description": "Data de pagamento/transferência inicial para consulta",
+                        "example": "2020-06-01",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_final",
+                        "required": false,
+                        "description": "Data de pagamento/transferência final para consulta",
+                        "example": "2020-07-01",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_lista",
+                        "required": true,
+                        "description": "Tipo da lista",
+                        "example": "Detalhada",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Detalhada",
+                                "Lote"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "modalidade_fornecedores",
+                        "required": false,
+                        "description": "Filtro do tipo de modalidade de pagamento para fornecedores",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "modalidade_impostos",
+                        "required": false,
+                        "description": "Filtro do tipo de modalidade de pagamento para impostos e tributos",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "modalidade_salario",
+                        "required": false,
+                        "description": "Filtro do tipo de modalidade de pagamento para salário",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "required": false,
+                        "description": "Filtro do código do tipo do status<br/>\n  * `AE` - A Efetuar\n  * `EF` - Efetuados\n  * `TD` - Todos\n  * `NE` - Não Efetuados",
+                        "example": "AE",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "AE",
+                                "EF",
+                                "NE",
+                                "TD"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_pagamento",
+                        "required": false,
+                        "description": "Filtro do tipo de transação bancária<br/>\n  * `01` - Conta Corrente\n  * `02` - Cheque pagamento\n  * `03` - DOC\n  * `04` - OP (duas vias)\n  * `05` - Conta Poupança\n  * `06` - Conta Corrente Mesma Titularidade\n  * `07` - DOC D mesma titularidade\n  * `10` - OP (uma via)\n  * `11` - OP (acerto)\n  * `13` - Concessionária\n  * `16` - DARF normal\n  * `17` - GPS\n  * `18` - DARF simples\n  * `19` - IPTU/ISS e outros tributos\n  * `22` - GARE ICMS-SP\n  * `23` - GARE ICMS-SP Importação\n  * `25` - Banco Múltiplo\n  * `27` - DPVAT\n  * `30` - Boleto Itaú\n  * `31` - Boleto outros bancos\n  * `32` - Nota fiscal eletrônica\n  * `35` - FGTS\n  * `38` - Boleto outros bancos online\n  * `41` - TED outro titular\n  * `43` - TED mesmo titular\n  * `51` - Licenciamento\n  * `53` - Multa\n  * `63` - Concessionária com moeda variável\n  * `91` - Tributos com código de barras\n  * `92` - DARF código de barras\n  * `93` - DAS código barras\n  * `94` - GNRE ICMS-SP Importação\n  * `95` - IPVA\n  * `45` - PIX Transferências\n  * `47` - PIX Qr Code\n  * `60` - Cartão Salário           ",
+                        "example": "01",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "01",
+                                "02",
+                                "03",
+                                "04",
+                                "05",
+                                "06",
+                                "07",
+                                "10",
+                                "11",
+                                "13",
+                                "16",
+                                "17",
+                                "18",
+                                "19",
+                                "22",
+                                "23",
+                                "25",
+                                "27",
+                                "30",
+                                "31",
+                                "32",
+                                "35",
+                                "38",
+                                "41",
+                                "43",
+                                "51",
+                                "53",
+                                "63",
+                                "91",
+                                "92",
+                                "93",
+                                "94",
+                                "95",
+                                "45",
+                                "47",
+                                "60"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "order_by",
+                        "required": false,
+                        "description": "Opção para ordenação.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "required": false,
+                        "description": "Opção de ordenação ascendente ou descendente.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "required": false,
+                        "description": "Numero da página da consulta que deseja receber.",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "required": false,
+                        "description": "Quantidade de pagamentos por página.",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-itau-apikey",
+                        "required": true,
+                        "description": "Chave da API utilizado para autorizar o consumo de uma aplicação requisitante",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-itau-flowID",
+                        "required": false,
+                        "description": "Identificador da funcionalidade de negócio sendo executada na aplicação",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-itau-correlationID",
+                        "required": false,
+                        "description": "Identificador de correlação que serve como um agrupar dentro da estrutura de audit trail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pagamentoSispag"
+                                },
+                                "examples": {
+                                    "200_ted": {
+                                        "$ref": "#/components/examples/200_ted"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/pagamentos_sispag/{id_pagamento_sispag}": {
+            "get": {
+                "tags": [
+                    "Consulta Pagamentos Sispag"
+                ],
+                "operationId": "get/pagamentos_sispag/{id_pagamento_sispag}",
+                "description": "Operação responsável por recuperar o detalhamento do pagamento",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pagamentoSispag"
+                                },
+                                "examples": {
+                                    "200_detalhe_pagamento_ted": {
+                                        "$ref": "#/components/examples/200_detalhe_pagamento_ted"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "OK",
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a pesquisa corrente",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id_pagamento_sispag",
+                        "required": true,
+                        "description": "Identificador único do Pagamento",
+                        "example": "3ff2df99-704a-496e-a699-8b75dc522d10",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-itau-apikey",
+                        "required": true,
+                        "description": "Chave da API utilizado para autorizar o consumo de uma aplicação requisitante",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "examples": {
+            "pix_por_chave": {
+                "description": "Incluir Transferência Pix Chave",
+                "value": {
+                    "valor_pagamento": "1.00",
+                    "data_pagamento": "2022-03-21T15:03:56.000Z",
+                    "chave": "4004901d-bd85-4769-8e52-cb4c42c506dc",
+                    "referencia_empresa": "Prestação 0123456789",
+                    "identificacao_comprovante": "Prestação de serviço - empresa A",
+                    "informacoes_entre_usuarios": "Pagamento para prestação de serviço para empresa A",
+                    "pagador": {
+                        "tipo_conta": "CC",
+                        "agencia": 1500,
+                        "conta": "00592660",
+                        "tipo_pessoa": "J",
+                        "documento": 63237648000104,
+                        "modulo_sispag": "Fornecedores"
+                    }
+                }
+            },
+            "pix_por_dados": {
+                "description": "Incluir Transferência Pix Dados",
+                "value": {
+                    "valor_pagamento": "1.00",
+                    "data_pagamento": "2022-03-21T15:03:56.000Z",
+                    "ispb": 60701190,
+                    "tipo_identificacao_conta": "CC",
+                    "agencia_recebedor": 1500,
+                    "conta_recebedor": "00590466",
+                    "tipo_de_identificacao_do_recebedor": "J",
+                    "identificacao_recebedor": 60701190000104,
+                    "referencia_empresa": "Prestação 0123456789",
+                    "identificacao_comprovante": "Prestação de serviço - empresa A",
+                    "informacoes_entre_usuarios": "Pagamento para prestação de serviço para empresa A",
+                    "pagador": {
+                        "tipo_conta": "CC",
+                        "agencia": 1500,
+                        "conta": "00592660",
+                        "tipo_pessoa": "J",
+                        "documento": 63237648000104,
+                        "modulo_sispag": "Fornecedores"
+                    }
+                }
+            },
+            "qrcode_por_emv": {
+                "description": "Incluir Pagamento QR Code",
+                "value": {
+                    "valor_pagamento": "1.00",
+                    "data_pagamento": "2022-03-21T15:03:56.000Z",
+                    "emv": "00020101021226860014BR.GOV.BCB.PIX2564spi-h.itau.com.br/pix/qr/v2/f914bb92-e6c0-4d0f-80f7-c5c1f1204b9e5204000053039865802BR5908EST UNIF6009SAO PAULO62070503***630490E9",
+                    "referencia_empresa": "Prestação 0123456789",
+                    "identificacao_comprovante": "Prestação de serviço - empresa A",
+                    "informacoes_entre_usuarios": "Pagamento para prestação de serviço para empresa A",
+                    "pagador": {
+                        "tipo_conta": "CC",
+                        "agencia": 1500,
+                        "conta": "00592660",
+                        "tipo_pessoa": "J",
+                        "documento": 63237648000104,
+                        "modulo_sispag": "Fornecedores"
+                    }
+                }
+            },
+            "200_pix_por_chave": {
+                "description": "Transferência Pix incluída",
+                "value": {
+                    "status_pagamento": "Sucesso",
+                    "cod_pagamento": "3ff2df99-704a-496e-a699-8b75dc522d10",
+                    "numero_lote": 500001394,
+                    "numero_lancamento": 22683,
+                    "tipo_pagamento": "PIX",
+                    "data_pagamento": "2022-03-21T15:03:56.000Z",
+                    "valor_pagamento": 1,
+                    "referencia_empresa": "Prestação 0123456789",
+                    "identificacao_comprovante": "Prestação de serviço - empresa A",
+                    "informacoes_entre_usuarios": "Pagamento para prestação de serviço para empresa A",
+                    "pagador": {
+                        "tipo_conta": "Conta Corrente",
+                        "agencia": 1500,
+                        "conta": "00052012",
+                        "tipo_pessoa": "J",
+                        "documento": "00000000000191",
+                        "modulo_sispag": "Fornecedores"
+                    },
+                    "recebedor": {
+                        "ispb": 99999008,
+                        "documento": 11111111000191,
+                        "nome": "TESTE DE INTEROPERABILIDADE",
+                        "tipo_conta": "Conta Corrente",
+                        "tipo_pessoa": "J",
+                        "identificacao_chave": "4004901d-bd85-4769-8e52-cb4c42c506dc"
+                    },
+                    "motivo_recusa": []
+                }
+            },
+            "200_pix_por_dados": {
+                "description": "Transferência Pix incluída",
+                "value": {
+                    "status_pagamento": "Sucesso",
+                    "cod_pagamento": "ff16996e-44d2-4ea1-91fd-6c751ceea6d2",
+                    "numero_lote": 500001394,
+                    "numero_lancamento": 22683,
+                    "tipo_pagamento": "PIX",
+                    "data_pagamento": "2022-03-21T15:03:56.000Z",
+                    "valor_pagamento": 1,
+                    "referencia_empresa": "Prestação 0123456789",
+                    "identificacao_comprovante": "Prestação de serviço - empresa A",
+                    "informacoes_entre_usuarios": "Pagamento para prestação de serviço para empresa A",
+                    "pagador": {
+                        "tipo_conta": "Conta Corrente",
+                        "agencia": 1500,
+                        "conta": "00052012",
+                        "tipo_pessoa": "J",
+                        "documento": "00000000000191",
+                        "modulo_sispag": "Fornecedores"
+                    },
+                    "recebedor": {
+                        "ispb": 60701190,
+                        "agencia": 1500,
+                        "conta": "00626062",
+                        "documento": 60701190000104,
+                        "nome": "CASTELO E ASSOCIADOS",
+                        "tipo_conta": "Conta Corrente",
+                        "tipo_pessoa": "J"
+                    },
+                    "motivo_recusa": []
+                }
+            },
+            "200_qrcode_por_emv": {
+                "description": "Pagamento QR Code incluído",
+                "value": {
+                    "status_pagamento": "Sucesso",
+                    "cod_pagamento": "48b1991f-7be7-460f-a3fc-e977f4589a8c",
+                    "numero_lote": 500001398,
+                    "numero_lancamento": 23480,
+                    "tipo_pagamento": "QRCODE",
+                    "data_pagamento": "2022-03-21T18:55:34.000Z",
+                    "valor_pagamento": 10,
+                    "referencia_empresa": "Prestação 0123456789",
+                    "identificacao_comprovante": "Prestação de serviço - empresa A",
+                    "informacoes_entre_usuarios": "Pagamento para prestação de serviço para empresa A",
+                    "pagador": {
+                        "tipo_conta": "Conta Corrente",
+                        "agencia": 1500,
+                        "conta": "00594138",
+                        "tipo_pessoa": "J",
+                        "documento": 63237648000104,
+                        "modulo_sispag": "Fornecedores"
+                    },
+                    "recebedor": {
+                        "banco": "ITAÚ UNIBANCO S.A.",
+                        "ispb": 60701190,
+                        "documento": 60701190000104,
+                        "nome": "CASTELO E ASSOCIADOS",
+                        "tipo_conta": "Conta Corrente",
+                        "tipo_pessoa": "J",
+                        "identificacao_chave": 60701190000104
+                    },
+                    "motivo_recusa": []
+                }
+            },
+            "200_ted": {
+                "value": {
+                    "value": {
+                        "data": {
+                            "itens": [
+                                {
+                                    "nome_favorecido": "Teste nome favorecido 1",
+                                    "id_pagamento": "3a2a32d3-37c3-4bf9-b526-b8e3a17592b9",
+                                    "cpf_cnpj": "89057409011",
+                                    "cod_banco": "123",
+                                    "numero_agencia": "1500",
+                                    "numero_conta": "2011500",
+                                    "numero_lancamento": "123456789",
+                                    "referencia_empresa": " ",
+                                    "data_pagamento": "2020-07-01",
+                                    "valor_pagamento": "100.00",
+                                    "status": "Efetuados",
+                                    "comprovante": "link",
+                                    "motivo": "",
+                                    "tipo_pagamento": "TED"
+                                },
+                                {
+                                    "nome_favorecido": "Teste nome favorecido 1",
+                                    "id_pagamento": "3a2a32d3-37c3-4bf9-b526-b8e3a17592b8",
+                                    "cpf_cnpj": "89057409011",
+                                    "cod_banco": "123",
+                                    "numero_agencia": "1500",
+                                    "numero_conta": "2011500",
+                                    "numero_lancamento": "123456789",
+                                    "referencia_empresa": " ",
+                                    "data_pagamento": "2020-07-01",
+                                    "valor_pagamento": "100.00",
+                                    "status": "Efetuados",
+                                    "comprovante": "link",
+                                    "motivo": "",
+                                    "tipo_pagamento": "TED"
+                                }
+                            ],
+                            "total": "200.00"
+                        },
+                        "pagination": {
+                            "links": {
+                                "first": "https://des-apigateway-int.mbi.cloud.ihf/cash_management/v1/lista_detalhada_pagamentos/",
+                                "last": "https://des-apigateway-int.mbi.cloud.ihf/cash_management/v1/lista_detalhada_pagamentos/?page=2",
+                                "previous": "",
+                                "next": "https://des-apigateway-int.mbi.cloud.ihf/cash_management/v1/lista_detalhada_pagamentos/?page=1"
+                            },
+                            "page": 0,
+                            "total_pages": 3,
+                            "total_elements": 6,
+                            "page_size": 2
+                        }
+                    },
+                    "description": ""
+                },
+                "description": ""
+            },
+            "200_detalhe_pagamento_ted": {
+                "value": {
+                    "value": {
+                        "data": {
+                            "dados_debito": {
+                                "numero_agencia_debito": "1500",
+                                "numero_conta_debito": "052020",
+                                "nome_empresa_debito": "NOME RDZD",
+                                "cnpj_debito": "34727090000139"
+                            },
+                            "dados_pagamento": {
+                                "id_pagamento": "3a2a32d3-37c3-4bf9-b526-b8e3a17592b9",
+                                "cod_tipo_pessoa": "",
+                                "cpf_cnpj_favorecido": "",
+                                "cod_banco_favorecido": "341",
+                                "nome_banco_favorecido": "BANCO ITAU S/A",
+                                "numero_agencia_favorecido": "1500",
+                                "numero_conta_favorecido": "2011500",
+                                "nome_favorecido": "TESTE",
+                                "valor_pagamento": "1000.00",
+                                "numero_lote": "123",
+                                "numero_lancamento": "456",
+                                "referencia_empresa": "0197 256771",
+                                "data_pagamento": "2020-06-15",
+                                "status": "Efetuado",
+                                "descricao_pagamento": "",
+                                "identificacao_comprovante": "Teste Identificação",
+                                "codigo_isbp": "00360305",
+                                "descricao_finalidade": "",
+                                "modalidade_pagto": "",
+                                "tipo_pagamento": "",
+                                "indicador_motivo": "",
+                                "dados_ted": {
+                                    "complemento_finalidade_ted": "",
+                                    "numero_ted": "140950"
+                                },
+                                "dados_doc": null,
+                                "dados_darf": null,
+                                "dados_cheque": null,
+                                "dados_op": null,
+                                "dados_gps": null,
+                                "dados_iptu_inss": null,
+                                "dados_gare_icms_sp": null,
+                                "dados_gare_icms_sp_importacao": null,
+                                "dados_gnre_icms_sp_importacao": null,
+                                "dados_ipva": null,
+                                "dados_fgts": null,
+                                "dados_dpvat": null,
+                                "dados_licenciamento": null,
+                                "dados_multa": null,
+                                "dados_trib_cod_barras": null,
+                                "motivo_rejeicao": [
+                                    {
+                                        "codigo_motivo": "001",
+                                        "descricao_motivo": "Teste Motivo rejeicao 1"
+                                    },
+                                    {
+                                        "codigo_motivo": "002",
+                                        "descricao_motivo": "Teste Motivo rejeicao 2"
+                                    }
+                                ]
+                            },
+                            "historico_pagamento": [
+                                {
+                                    "status": "Efetivação",
+                                    "data": "2020-01-01",
+                                    "nome_operador": "Oper Ex",
+                                    "cod_operador": "999999999",
+                                    "cpf_operador": ""
+                                },
+                                {
+                                    "status": "Autorização",
+                                    "data": "2020-01-01",
+                                    "nome_operador": "Oper Ex",
+                                    "cod_operador": "999999999",
+                                    "cpf_operador": ""
+                                },
+                                {
+                                    "status": "Inclusão Online",
+                                    "data": "2020-01-01",
+                                    "nome_operador": "Oper Ex",
+                                    "cod_operador": "999999999",
+                                    "cpf_operador": ""
+                                }
+                            ]
+                        }
+                    },
+                    "description": ""
+                },
+                "description": ""
+            },
+            "400_pix_por_dados": {
+                "description": "Transferência Pix rejeitada",
+                "value": {
+                    "codigo": 400,
+                    "mensagem": "CNPJ inválido"
+                }
+            },
+            "422_qrcode_por_emv": {
+                "description": "Pagamento QR Code rejeitado",
+                "value": {
+                    "status_pagamento": "Rejeitado",
+                    "tipo_pagamento": "QRCODE",
+                    "data_pagamento": "2022-03-22T13:01:02.000Z",
+                    "valor_pagamento": 1,
+                    "referencia_empresa": "Prestação 0123456789",
+                    "identificacao_comprovante": "Prestação de serviço - empresa A",
+                    "informacoes_entre_usuarios": "Pagamento para prestação de serviço para empresa A",
+                    "pagador": {
+                        "tipo_conta": "Conta Corrente",
+                        "agencia": 1500,
+                        "conta": "00594138",
+                        "tipo_pessoa": "J",
+                        "documento": 63237648000104,
+                        "modulo_sispag": "CONTAS"
+                    },
+                    "recebedor": {
+                        "banco": "ITAÚ UNIBANCO S.A.",
+                        "ispb": 60701190,
+                        "documento": 60701190000104,
+                        "nome": "CASTELO E ASSOCIADOS",
+                        "tipo_conta": "Conta Corrente",
+                        "tipo_pessoa": "J",
+                        "identificacao_chave": 60701190000104
+                    },
+                    "motivo_recusa": [
+                        {
+                            "codigo": 908,
+                            "nome": "Valor do pagamento divergente do valor do qrcode."
+                        }
+                    ]
+                }
+            }
+        },
+        "schemas": {
+            "summary": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "field": {
+                        "description": "Campos que sofrerão a sumarização.\n",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "Agrupamento onde conterá o valor da sumarização.\n",
+                        "type": "object",
+                        "properties": {
+                            "amount": {
+                                "description": "Valor da sumarização.\n",
+                                "type": "number"
+                            },
+                            "unity": {
+                                "description": "Tipo de unidade calculada.\n",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "pagador": {
+                "type": "object",
+                "description": "Dados da Conta Pagadora",
+                "properties": {
+                    "tipo_conta": {
+                        "description": "Tipo da Conta do Pagador * `CC` - Conta Corrente * `CP` - Conta Pagamento * `PP` - Conta Poupança",
+                        "type": "string",
+                        "enum": [
+                            "CC",
+                            "CP",
+                            "PP"
+                        ],
+                        "example": "CC"
+                    },
+                    "agencia": {
+                        "description": "Agencia do Pagador",
+                        "type": "string",
+                        "example": "1500",
+                        "pattern": "[0-9]+",
+                        "maxLength": 4
+                    },
+                    "conta": {
+                        "description": "Conta do Pagador",
+                        "type": "string",
+                        "example": "00052012",
+                        "pattern": "[0-9]+",
+                        "maxLength": 20
+                    },
+                    "tipo_pessoa": {
+                        "description": "Identificacao do Pagador * `F` - Pessoa Física * `J` - Pessoa Jurídica",
+                        "type": "string",
+                        "enum": [
+                            "F",
+                            "J"
+                        ],
+                        "example": "J"
+                    },
+                    "documento": {
+                        "description": "Documento do Pagador (CPF ou CNPJ)",
+                        "type": "string",
+                        "example": "00000000000191",
+                        "pattern": "[0-9]+",
+                        "maxLength": 14
+                    },
+                    "modulo_sispag": {
+                        "description": "Módulo SISPAG utilizado para o pagamento",
+                        "type": "string",
+                        "enum": [
+                            "Fornecedores",
+                            "Diversos"
+                        ],
+                        "example": "Fornecedores"
+                    }
+                }
+            },
+            "recebedor": {
+                "type": "object",
+                "description": "Dados do Recebedor",
+                "properties": {
+                    "banco": {
+                        "description": "Nome do Banco do Recebedor",
+                        "type": "string",
+                        "example": "ITAÚ UNIBANCO S.A."
+                    },
+                    "ispb": {
+                        "description": "ISPB do Recebedor",
+                        "type": "string",
+                        "pattern": "[0-9]+"
+                    },
+                    "agencia": {
+                        "description": "Agencia do Recebedor",
+                        "type": "string",
+                        "example": "1500",
+                        "pattern": "[0-9]+",
+                        "maxLength": 4
+                    },
+                    "conta": {
+                        "description": "Conta do Recebedor",
+                        "type": "string",
+                        "example": "00626062",
+                        "pattern": "[0-9]+",
+                        "maxLength": 20
+                    },
+                    "documento": {
+                        "description": "Documento do Recebedor (CPF ou CNPJ)",
+                        "type": "string",
+                        "pattern": "[0-9]+",
+                        "maxLength": 14
+                    },
+                    "nome": {
+                        "description": "Nome do Recebedor",
+                        "type": "string"
+                    },
+                    "tipo_conta": {
+                        "description": "Tipo da Conta do Recebedor",
+                        "type": "string",
+                        "enum": [
+                            "Conta Corrente",
+                            "Conta Poupanca",
+                            "Conta Pagamento"
+                        ],
+                        "example": "Conta Corrente"
+                    },
+                    "tipo_pessoa": {
+                        "description": "Identificacao do Recebedor * `F` - Pessoa Física * `J` - Pessoa Jurídica",
+                        "type": "string",
+                        "enum": [
+                            "F",
+                            "J"
+                        ],
+                        "example": "J"
+                    },
+                    "identificacao_chave": {
+                        "description": "Chave de endereçamento do Sistema DICT - BACEN",
+                        "type": "string"
+                    }
+                }
+            },
+            "transferencia": {
+                "type": "object",
+                "description": "Dados da transferência de Pix ou pagamento de Pix QR Code incluído",
+                "properties": {
+                    "pix_link": {
+                        "description": "Link do Pix QR Code",
+                        "type": "string",
+                        "example": "https://pix.bcb.gov.br/qr/MDAwMjAxMDEwMjEyMjY4NjAwMTRCUi5HT1YuQkNCLlBJWDI1NjRzcGktaC5pdGF1LmNvbS5ici9waXgvcXIvdjIvYTcyOTkwOTctMjdmNC00YTIxLTgzZmItNmRmYjhlNjhhZjFkNTIwNDAwMDA1MzAzOTg2NTgwMkJSNTkwOEVTVCBVTklGNjAwOVNBTyBQQVVMTzYyMDcwNTAzKioqNjMwNEJEN0E="
+                    },
+                    "emv": {
+                        "description": "EMV do Pix QR Code (Pix Copia e Cola)",
+                        "type": "string",
+                        "example": "00020101021226860014BR.GOV.BCB.PIX2564spi-h.itau.com.br/pix/qr/v2/a7299097-27f4-4a21-83fb-6dfb8e68af1d5204000053039865802BR5908EST UNIF6009SAO PAULO62070503***6304BD7A"
+                    },
+                    "url": {
+                        "description": "Url do Pix QR Code",
+                        "type": "string",
+                        "example": "spi-h.itau.com.br/pix/qr/v2/a7299097-27f4-4a21-83fb-6dfb8e68af1d"
+                    },
+                    "chave": {
+                        "description": "Chave de endereçamento do Sistema DICT - BACEN",
+                        "type": "string"
+                    },
+                    "ispb": {
+                        "description": "ISPB do Recebedor",
+                        "type": "string",
+                        "pattern": "[0-9]+"
+                    },
+                    "tipo_identificacao_conta": {
+                        "description": "Tipo da Conta do Recebedor * `CC` - Conta Corrente * `CP` - Conta Pagamento * `PP` - Conta Poupança",
+                        "type": "string",
+                        "enum": [
+                            "CC",
+                            "CP",
+                            "PP"
+                        ],
+                        "example": "CC"
+                    },
+                    "agencia_recebedor": {
+                        "description": "Agencia do Recebedor",
+                        "type": "string",
+                        "example": "1500",
+                        "pattern": "[0-9]+",
+                        "maxLength": 4
+                    },
+                    "conta_recebedor": {
+                        "description": "Conta do Recebedor",
+                        "type": "string",
+                        "example": "00626062",
+                        "pattern": "[0-9]+",
+                        "maxLength": 20
+                    },
+                    "tipo_de_identificacao_do_recebedor": {
+                        "description": "Identificacao do Recebedor * `F` - Pessoa Física * `J` - Pessoa Jurídica",
+                        "type": "string",
+                        "enum": [
+                            "F",
+                            "J"
+                        ],
+                        "example": "J"
+                    },
+                    "identificacao_recebedor": {
+                        "description": "Documento do Recebedor (CPF ou CNPJ)",
+                        "type": "string",
+                        "pattern": "[0-9]+",
+                        "maxLength": 14
+                    },
+                    "status_pagamento": {
+                        "description": "Status do Pagamento",
+                        "type": "string",
+                        "enum": [
+                            "Sucesso",
+                            "Sucesso (pre-autorizado)",
+                            "Rejeitado",
+                            "Nao incluido"
+                        ],
+                        "example": "Sucesso"
+                    },
+                    "cod_pagamento": {
+                        "description": "Identificador único do Pagamento",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "3ff2df99-704a-496e-a699-8b75dc522d10"
+                    },
+                    "numero_lote": {
+                        "description": "Número de lote SISPAG",
+                        "type": "string",
+                        "pattern": "[0-9]+"
+                    },
+                    "numero_lancamento": {
+                        "description": "Número do lançamento SISPAG dentro do Lote",
+                        "type": "string",
+                        "pattern": "[0-9]+"
+                    },
+                    "tipo_pagamento": {
+                        "description": "Tipo do pagamento",
+                        "type": "string",
+                        "enum": [
+                            "PIX",
+                            "QRCODE"
+                        ],
+                        "example": "PIX"
+                    },
+                    "data_pagamento": {
+                        "description": "Data em que será realizado o pagamento",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2022-01-01"
+                    },
+                    "valor_pagamento": {
+                        "description": "Valor do pagamento PIX a ser incluído",
+                        "type": "number",
+                        "format": "double",
+                        "example": "10.00"
+                    },
+                    "referencia_empresa": {
+                        "description": "Mensagem para auxiliar nas consultas SISPAG para conciliação de pagamentos",
+                        "type": "string",
+                        "example": "Prestação 0123456789",
+                        "maxLength": 20
+                    },
+                    "identificacao_comprovante": {
+                        "description": "Informação que será disponibilizada no comprovante do pagamento",
+                        "type": "string",
+                        "example": "Prestação de serviço - empresa A"
+                    },
+                    "informacoes_entre_usuarios": {
+                        "description": "Mensagem que será enviada ao recebedor<br/> Essa mensagem será trafegada pelo BACEN",
+                        "type": "string",
+                        "example": "Pagamento para prestação de serviço para empresa A"
+                    },
+                    "pagador": {
+                        "$ref": "#/components/schemas/pagador"
+                    },
+                    "recebedor": {
+                        "$ref": "#/components/schemas/recebedor"
+                    },
+                    "motivo_recusa": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/motivoRecusa"
+                        }
+                    }
+                },
+                "required": [
+                    "data_pagamento",
+                    "valor_pagamento",
+                    "pagador"
+                ]
+            },
+            "motivoRecusa": {
+                "type": "object",
+                "description": "Dados do Motivo Recusa da Inclusão",
+                "properties": {
+                    "codigo": {
+                        "description": "Código do Motivo Recusa",
+                        "type": "string",
+                        "example": 218
+                    },
+                    "nome": {
+                        "description": "Descrição do Motivo Recusa",
+                        "type": "string",
+                        "example": "AGE/CTA FAVORECIDO INVALIDA"
+                    }
+                }
+            },
+            "itensDetalhePagamento": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "id_pagamento": {
+                        "description": "Número identificador do pagamento",
+                        "type": "string",
+                        "example": "3a2a32d3-37c3-4bf9-b526-b8e3a17592b9"
+                    },
+                    "numero_lote": {
+                        "description": "Número identificador do lote de pagamentos",
+                        "type": "string",
+                        "example": "199003876"
+                    },
+                    "nome_favorecido": {
+                        "description": "Nome do favorecido",
+                        "type": "string",
+                        "example": "Favorecido Lorem Ipsum"
+                    },
+                    "nome_proprietario": {
+                        "description": "Nome do proprietario",
+                        "type": "string",
+                        "example": "Proprietario Lorem Ipsum"
+                    },
+                    "nome_beneficiario": {
+                        "description": "Nome do beneficiario",
+                        "type": "string",
+                        "example": "Favorecido Lorem Ipsum"
+                    },
+                    "cpf_cnpj": {
+                        "description": "Número do cpf ou cnpj",
+                        "type": "string",
+                        "example": "89057409011"
+                    },
+                    "codigo_banco": {
+                        "description": "Identificador Banco",
+                        "type": "string",
+                        "example": "51"
+                    },
+                    "numero_agencia": {
+                        "description": "Número da agência em operação",
+                        "type": "string",
+                        "example": "1234"
+                    },
+                    "numero_conta": {
+                        "description": "Número da conta em operação",
+                        "type": "string",
+                        "example": "15000005201"
+                    },
+                    "referencia_empresa": {
+                        "description": "Referência da empresa",
+                        "type": "string"
+                    },
+                    "data_pagamento": {
+                        "description": "Data do pagamento",
+                        "type": "string",
+                        "example": "2020-07-01"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento para o pagamento",
+                        "type": "string",
+                        "example": "2020-08-01"
+                    },
+                    "data_apuracao": {
+                        "description": "Data de apuração",
+                        "type": "string",
+                        "example": "2020-08-01"
+                    },
+                    "data_infracao": {
+                        "description": "Data de infracao da multa",
+                        "type": "string",
+                        "example": "2020-08-01"
+                    },
+                    "valor_pagamento": {
+                        "description": "Valor do pagamento",
+                        "type": "string",
+                        "example": "100.00"
+                    },
+                    "valor_principal": {
+                        "description": "Outros valores []",
+                        "type": "string",
+                        "example": "100,00"
+                    },
+                    "numero_parcela": {
+                        "description": "Número da parcela",
+                        "type": "string",
+                        "example": "1"
+                    },
+                    "valor_parcela": {
+                        "description": "Valor da parcela",
+                        "type": "string",
+                        "example": "100,00"
+                    },
+                    "status": {
+                        "description": "Status",
+                        "type": "string",
+                        "example": "EF"
+                    },
+                    "comprovante": {
+                        "description": "Comprovante de pagamento",
+                        "type": "string"
+                    },
+                    "motivo": {
+                        "description": "Motivo de recusa",
+                        "type": "string"
+                    },
+                    "numero_lancamento": {
+                        "description": "Número do lançamento",
+                        "type": "string",
+                        "example": "15"
+                    },
+                    "tipo_pagamento": {
+                        "description": "Tipo do pagamento",
+                        "type": "string",
+                        "example": "TED"
+                    },
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "7895461233168132194319841498149813216"
+                    },
+                    "atualizacao_monetaria": {
+                        "description": "Valor de taxas, multa, juros",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "valor_boleto": {
+                        "description": "Valor do boleto",
+                        "type": "string",
+                        "example": "100,00"
+                    },
+                    "boleto_seu_numero": {
+                        "description": "Código Identificador do boleto",
+                        "type": "string",
+                        "example": 5689
+                    },
+                    "boleto_nosso_numero": {
+                        "description": "Código Identificador do boleto",
+                        "type": "string",
+                        "example": "015632"
+                    },
+                    "numero_cheque": {
+                        "description": "Código Identificador do cheque",
+                        "type": "string",
+                        "example": "0154"
+                    },
+                    "numero_op": {
+                        "description": "Código Identificador OP",
+                        "type": "string",
+                        "example": "0154"
+                    },
+                    "periodo_competencia": {
+                        "description": "Período de competencia",
+                        "type": "string",
+                        "example": "07/2020"
+                    },
+                    "ano_exercicio": {
+                        "description": "Ano do exercicio do licenciamento",
+                        "type": "string",
+                        "example": "2020"
+                    },
+                    "nome_prefeitura": {
+                        "description": "Nome da prefeitura",
+                        "type": "string"
+                    },
+                    "cod_receita": {
+                        "description": "Código da receita",
+                        "type": "string"
+                    },
+                    "documento_importacao": {
+                        "description": "Identificador do documento de importacao",
+                        "type": "string"
+                    },
+                    "cod_renavam": {
+                        "description": "Código identificador do renavam",
+                        "type": "string"
+                    },
+                    "cod_placa": {
+                        "description": "Código identificador da placa do veiculo",
+                        "type": "string"
+                    },
+                    "tipo_guia": {
+                        "description": "Código do tipo da guia",
+                        "type": "string"
+                    },
+                    "descricao": {
+                        "description": "Anotacoes",
+                        "type": "string"
+                    },
+                    "uf": {
+                        "description": "Código UF",
+                        "type": "string"
+                    },
+                    "cod_pagamento": {
+                        "description": "Código identificador do pagamento",
+                        "type": "string",
+                        "example": "2003"
+                    },
+                    "valor_inss": {
+                        "description": "Valor do INSS",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "valor_dpvat": {
+                        "description": "Valor da DPVAT",
+                        "type": "string",
+                        "example": "16,21"
+                    },
+                    "descontos": {
+                        "description": "Valor de descontos",
+                        "type": "string",
+                        "example": "0"
+                    }
+                },
+                "required": [
+                    "id_pagamento",
+                    "numero_agencia",
+                    "numero_conta",
+                    "data_pagamento",
+                    "valor_pagamento"
+                ]
+            },
+            "dadosDebito": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "numero_agencia_debito": {
+                        "description": "Número da agência de débito",
+                        "type": "string",
+                        "example": "1500"
+                    },
+                    "numero_conta_debito": {
+                        "description": "Número da conta de débito",
+                        "type": "string",
+                        "example": "052020"
+                    },
+                    "nome_empresa_debito": {
+                        "description": "Nome da empresa de débito",
+                        "type": "string",
+                        "example": "NOME RDZD"
+                    },
+                    "cnpj_debito": {
+                        "description": "CNPJ da empresa de débito",
+                        "type": "string",
+                        "example": "34727090000139"
+                    }
+                },
+                "required": [
+                    "numero_agencia_debito",
+                    "numero_conta_debito",
+                    "nome_empresa_debito",
+                    "cnpj_debito"
+                ]
+            },
+            "listaMotivoRejeicao": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "codigo_motivo": {
+                        "description": "Código do motivo de recusa do pagamento",
+                        "type": "string"
+                    },
+                    "descricao_motivo": {
+                        "description": "Descrição do motivo de recusa do pagamento",
+                        "type": "string"
+                    }
+                }
+            },
+            "dadosTed": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "numero_ted": {
+                        "description": "Número da TED",
+                        "type": "string",
+                        "example": 1584156
+                    },
+                    "complemento_finalidade_ted": {
+                        "description": "Descrição de complemento",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "numero_ted",
+                    "complemento_finalidade_ted"
+                ]
+            },
+            "dadosDpvat": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuinte",
+                        "type": "string",
+                        "example": "AMANDA DUARTE A C 3522726"
+                    },
+                    "numero_renavam": {
+                        "description": "Número identificador do renavam",
+                        "type": "string",
+                        "example": 167810146
+                    },
+                    "cod_placa": {
+                        "description": "Código da placa do veículo",
+                        "type": "string",
+                        "example": "PXY-1206"
+                    },
+                    "valor_dpvat": {
+                        "description": "Valor da DPVAT",
+                        "type": "string",
+                        "example": "16,21"
+                    },
+                    "descontos": {
+                        "description": "Valor de descontos",
+                        "type": "string",
+                        "example": "0"
+                    }
+                },
+                "required": [
+                    "nome_contribuinte",
+                    "numero_renavam",
+                    "cod_placa",
+                    "valor_dpvat"
+                ]
+            },
+            "dadosFgts": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "78945641984516984359465946494"
+                    },
+                    "tipo_guia": {
+                        "description": "Tipo da guia",
+                        "type": "string",
+                        "example": "0050"
+                    },
+                    "cnpj_cei": {
+                        "description": "Identificador CNPJ/CEI",
+                        "type": "string",
+                        "example": "26065101000134"
+                    },
+                    "data_vencimento": {
+                        "description": "Data vencimento para o pagamento",
+                        "type": "string",
+                        "example": "2020-03-18"
+                    }
+                },
+                "required": [
+                    "linha_digitavel",
+                    "tipo_guia",
+                    "cnpj_cei",
+                    "data_vencimento"
+                ]
+            },
+            "dadosGareIcmsSp": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "valor_multa_mora": {
+                        "description": "Valor de multa/mora",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "acrescimo_financeiro": {
+                        "description": "valor de acrescimo",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "horarios_advocativos": {
+                        "description": "Valor de horário advocativo",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "cod_receita": {
+                        "description": "Código da receita",
+                        "type": "string",
+                        "example": "0462"
+                    },
+                    "periodo_referencia": {
+                        "description": "Período de referência",
+                        "type": "string",
+                        "example": "03/2020"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento para o pagamento",
+                        "type": "string",
+                        "example": "2020-04-20"
+                    },
+                    "valor_receita": {
+                        "description": "Valor da receita",
+                        "type": "string",
+                        "example": "12523,91"
+                    },
+                    "valor_juros_mora": {
+                        "description": "valor de juros/mora",
+                        "type": "string",
+                        "example": "0"
+                    }
+                },
+                "required": [
+                    "valor_multa_mora",
+                    "acrescimo_financeiro",
+                    "horarios_advocativos",
+                    "cod_receita",
+                    "periodo_referencia",
+                    "data_vencimento",
+                    "valor_receita",
+                    "valor_juros_mora"
+                ]
+            },
+            "dadosGareIcmsSpImportacao": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuinte",
+                        "type": "string",
+                        "example": "ELKEM MATERIAL S SOUTH AME"
+                    },
+                    "documento_importacao": {
+                        "description": "Número do documento de importacao",
+                        "type": "string",
+                        "example": 2006550569
+                    },
+                    "cod_receita": {
+                        "description": "Código da receita",
+                        "type": "string",
+                        "example": "1200"
+                    }
+                },
+                "required": [
+                    "nome_contribuinte",
+                    "documento_importacao",
+                    "cod_receita"
+                ]
+            },
+            "dadosGnreIcmsSpImportacao": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "78954612318746132984134984134984324198413249"
+                    },
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuinte",
+                        "type": "string",
+                        "example": "ELKEM MAT SOUTH AMERICA LTDA"
+                    }
+                },
+                "required": [
+                    "linha_digitavel",
+                    "nome_contribuinte"
+                ]
+            },
+            "dadosGps": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuinte",
+                        "type": "string",
+                        "example": "GPS"
+                    },
+                    "cpf_cnpj": {
+                        "description": "Número de cpf/cnpj do contribuinte",
+                        "type": "string",
+                        "example": "26065101000134"
+                    },
+                    "cod_pagamento": {
+                        "description": "Código identificador do pagamento",
+                        "type": "string",
+                        "example": "2003"
+                    },
+                    "periodo_competencia": {
+                        "description": "Período de competência",
+                        "type": "string",
+                        "example": "09/2019"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento para o pagamento",
+                        "type": "string",
+                        "example": "2019-10-18"
+                    },
+                    "valor_inss": {
+                        "description": "Valor do INSS",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "valor_outras_entidades": {
+                        "description": "Valor de outras entidades",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "atualizacao_monetaria": {
+                        "description": "Atualização monetária de Juros/Multa/Mora",
+                        "type": "string",
+                        "example": "0"
+                    }
+                },
+                "required": [
+                    "nome_contribuinte",
+                    "cpf_cnpj",
+                    "periodo_competencia",
+                    "data_vencimento"
+                ]
+            },
+            "dadosIptuInss": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "1236548794654131984231986513213"
+                    },
+                    "nome_prefeitura": {
+                        "description": "Nome da prefeitura",
+                        "type": "string",
+                        "example": "PM B.HORIZONTE"
+                    }
+                },
+                "required": [
+                    "linha_digitavel",
+                    "nome_prefeitura"
+                ]
+            },
+            "dadosIpva": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuint",
+                        "type": "string",
+                        "example": "MAJA COMERCIO OPTICO EIRE"
+                    },
+                    "numero_renavam": {
+                        "description": "Número identificador do renavam",
+                        "type": "string",
+                        "example": 1090321810
+                    },
+                    "cod_placa": {
+                        "description": "Código da placa do veículo",
+                        "type": "string",
+                        "example": "PXY-1206"
+                    },
+                    "data_vencimento": {
+                        "description": "Data vencimento para o pagamento",
+                        "type": "string",
+                        "example": "2020-03-18"
+                    },
+                    "numero_parcela": {
+                        "description": "Número da parcela",
+                        "type": "number",
+                        "example": 3
+                    },
+                    "valor_parcela": {
+                        "description": "Valor da parcela",
+                        "type": "string",
+                        "example": "641,28"
+                    },
+                    "valor_descontos": {
+                        "description": "Valor de descontos",
+                        "type": "string",
+                        "example": "0"
+                    }
+                },
+                "required": [
+                    "nome_contribuinte",
+                    "numero_renavam",
+                    "cod_placa",
+                    "data_vencimento",
+                    "numero_parcela",
+                    "valor_parcela"
+                ]
+            },
+            "dadosMulta": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuinte",
+                        "type": "string",
+                        "example": "AMANDA DUARTE A C 3522726"
+                    },
+                    "numero_renavam": {
+                        "description": "Número identificador do renavam",
+                        "type": "string",
+                        "example": 167810146
+                    },
+                    "cod_placa": {
+                        "description": "Código da placa do veículo",
+                        "type": "string",
+                        "example": "PXY-1206"
+                    },
+                    "cod_infracao": {
+                        "description": "Código identificador da infração",
+                        "type": "string",
+                        "example": "001K9288736"
+                    },
+                    "numero_guia": {
+                        "description": "Número identificador da guia",
+                        "type": "string",
+                        "example": 549575030
+                    },
+                    "nome_orgao_autuador": {
+                        "description": "Nome do órgão autuador",
+                        "type": "string",
+                        "example": "D.E.R"
+                    },
+                    "data_vecimento": {
+                        "description": "Data de vencimento para o pagamento",
+                        "type": "string",
+                        "example": "2020-05-20"
+                    }
+                },
+                "required": [
+                    "nome_contribuinte",
+                    "numero_renavam",
+                    "cod_placa",
+                    "cod_infracao",
+                    "numero_guia",
+                    "nome_orgao_autuador",
+                    "data_vecimento"
+                ]
+            },
+            "dadosOp": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "numero_op": {
+                        "description": "Código identificador OP",
+                        "type": "string",
+                        "example": "991116"
+                    }
+                },
+                "required": [
+                    "numero_op"
+                ]
+            },
+            "dadosDoc": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "numero_doc": {
+                        "description": "Número da DOC",
+                        "type": "string",
+                        "example": 1584156
+                    }
+                },
+                "required": [
+                    "numero_doc"
+                ]
+            },
+            "dadosDarf": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuinte",
+                        "type": "string",
+                        "example": "S PIRES S BATISTA"
+                    },
+                    "cnpj_contribuinte": {
+                        "description": "Número do CNPJ",
+                        "type": "string",
+                        "example": "26065101000134"
+                    },
+                    "cod_receita": {
+                        "description": "Número da receita",
+                        "type": "string",
+                        "example": "0561"
+                    },
+                    "data_apuracao": {
+                        "description": "Data da apuração",
+                        "type": "string",
+                        "example": "2019-09-30"
+                    },
+                    "data_vencimento": {
+                        "description": "Data do vencimento",
+                        "type": "string",
+                        "example": "2019-10-18"
+                    },
+                    "valor_principal": {
+                        "description": "Valor principal do pagamento",
+                        "type": "string",
+                        "example": "203.19"
+                    },
+                    "valor_multa": {
+                        "description": "Valor de multa",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "valor_juros": {
+                        "description": "Valor de Juros",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "descricao": {
+                        "description": "Descrição DARF",
+                        "type": "string",
+                        "example": "SEFAZ/SP"
+                    }
+                },
+                "required": [
+                    "nome_contribuinte",
+                    "cnpj_contribuinte",
+                    "cod_receita",
+                    "data_apuracao",
+                    "data_vencimento",
+                    "valor_principal",
+                    "valor_multa",
+                    "valor_juros"
+                ]
+            },
+            "dadosCheque": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "numero_cheque": {
+                        "description": "Número do cheque",
+                        "type": "string",
+                        "example": 27916
+                    }
+                },
+                "required": [
+                    "numero_cheque"
+                ]
+            },
+            "dadosTributosCodBarras": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "7899514562313578524566852346"
+                    }
+                },
+                "required": [
+                    "linha_digitavel"
+                ]
+            },
+            "dadosBoleto": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_beneficiario": {
+                        "description": "Nome do beneficiario",
+                        "type": "string"
+                    },
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "95813654654987465613493213564616313"
+                    },
+                    "razao_social": {
+                        "description": "Código da razão social",
+                        "type": "string"
+                    },
+                    "documento_beneficiario": {
+                        "description": "Documento do beneficiário",
+                        "type": "string"
+                    },
+                    "nome_sacador_avalista": {
+                        "description": "Nome do sacador avalista",
+                        "type": "string"
+                    },
+                    "nome_pagador": {
+                        "description": "Nome do pagador do boleto",
+                        "type": "string"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento do boleto",
+                        "type": "string"
+                    },
+                    "valor_boleto": {
+                        "description": "Valor do boleto",
+                        "type": "string"
+                    },
+                    "valor_descontos": {
+                        "description": "Valor de descontos do boleto",
+                        "type": "string"
+                    },
+                    "valor_multa": {
+                        "description": "Valor de multa do boleto",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "nome_beneficiario",
+                    "linha_digitavel",
+                    "nome_sacador_avalista",
+                    "nome_pagador",
+                    "data_vencimento",
+                    "valor_boleto"
+                ]
+            },
+            "dadosConcessionaria": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_concessionaria": {
+                        "description": "Nome do contribuinte",
+                        "type": "string",
+                        "example": "GPS"
+                    },
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "95813654654987465613493213564616313"
+                    }
+                },
+                "required": [
+                    "nome_concessionaria",
+                    "linha_digitavel"
+                ]
+            },
+            "dadosDasCodBarras": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_contribuinte": {
+                        "description": "Nome do contribuinte",
+                        "type": "string"
+                    },
+                    "linha_digitavel": {
+                        "description": "Código de barras",
+                        "type": "string",
+                        "example": "95813654654987465613493213564616313"
+                    }
+                },
+                "required": [
+                    "nome_contribuinte",
+                    "linha_digitavel"
+                ]
+            },
+            "dadosPixTransferencia": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "chave_enderecamento": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "mensagem_ao_recebedor": {
+                        "description": "Campo de mensagem para o recebedor do pagamento",
+                        "type": "string",
+                        "example": "LOREM IPSUM"
+                    }
+                }
+            },
+            "dadosPixQrCode": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_pagador_qr_code": {
+                        "description": "Nome do pagador do qr code",
+                        "type": "string",
+                        "example": "S PIRES S BATISTA"
+                    },
+                    "documento_pagador_qr_code": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "chave_enderecamento": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "data_expiracao": {
+                        "description": "Data de expiração do qr code",
+                        "type": "string",
+                        "example": "2019-10-18T12:00:00"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento para o pagamento",
+                        "type": "string",
+                        "example": "2019-10-18T12:00:00"
+                    },
+                    "valor_documento": {
+                        "description": "Valor do documento",
+                        "type": "string",
+                        "example": "203.19"
+                    },
+                    "multa": {
+                        "description": "Valor de multa",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "juros": {
+                        "description": "Valor de juros",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "desconto": {
+                        "description": "Valor de desconto",
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "identificador_qr_code": {
+                        "description": "Identificador do qr code",
+                        "type": "string"
+                    },
+                    "mensagem_ao_recebedor": {
+                        "description": "Campo de mensagem",
+                        "type": "string"
+                    },
+                    "mensagem_do_recebedor": {
+                        "description": "Campo de mensagem",
+                        "type": "string"
+                    }
+                }
+            },
+            "dadosLicenciamentoVeiculo": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "exercicio": {
+                        "description": "Ano do exercício",
+                        "type": "string",
+                        "example": "2020"
+                    },
+                    "valor": {
+                        "description": "Valor do exercício",
+                        "type": "string",
+                        "example": "25.00"
+                    }
+                }
+            },
+            "dadosMultaLicenciamentoVeiculo": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "numero_guia": {
+                        "description": "Número da guia da multa",
+                        "type": "string"
+                    },
+                    "data_infracao": {
+                        "description": "Data da infração da multa",
+                        "type": "string",
+                        "example": "2016-10-11T12:00:00"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento para o pagamento do exercício",
+                        "type": "string",
+                        "example": "2016-10-11T12:00:00"
+                    },
+                    "valor": {
+                        "description": "Valor do exercício",
+                        "type": "string",
+                        "example": "25.00"
+                    }
+                }
+            },
+            "dadosLicenciamento": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "dados_ipva": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dadosLicenciamentoVeiculo"
+                        }
+                    },
+                    "dados_dpvat": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dadosLicenciamentoVeiculo"
+                        }
+                    },
+                    "dados_multa": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dadosMultaLicenciamentoVeiculo"
+                        }
+                    }
+                }
+            },
+            "dadosPagamento": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "id_pagamento": {
+                        "description": "Número identificador do pagamento",
+                        "type": "string",
+                        "example": "3a2a32d3-37c3-4bf9-b526-b8e3a17592b9"
+                    },
+                    "cod_tipo_pessoa": {
+                        "description": "Tipo pessoa",
+                        "type": "string"
+                    },
+                    "cpf_cnpj_favorecido": {
+                        "description": "Número do cpf cnpj do favorecido",
+                        "type": "string",
+                        "example": "53082160026"
+                    },
+                    "cod_banco_favorecido": {
+                        "description": "Identificador Banco do favorecido",
+                        "type": "string",
+                        "example": "341"
+                    },
+                    "nome_banco_favorecido": {
+                        "description": "Nome / Descrição do banco",
+                        "type": "string",
+                        "example": "BANCO ITAU S/A"
+                    },
+                    "numero_agencia_favorecido": {
+                        "description": "Número da agência do favorecido",
+                        "type": "string",
+                        "example": "1500"
+                    },
+                    "numero_conta_favorecido": {
+                        "description": "Número da contado favorecido",
+                        "type": "string",
+                        "example": "2011500"
+                    },
+                    "nome_favorecido": {
+                        "description": "Nome do favorecido",
+                        "type": "string",
+                        "example": "Favorecido Lorem Ipsiumn"
+                    },
+                    "valor_pagamento": {
+                        "description": "Valor do pagamento",
+                        "type": "string",
+                        "example": "100.00"
+                    },
+                    "numero_lote": {
+                        "description": "Número do lote",
+                        "type": "string",
+                        "example": "12"
+                    },
+                    "numero_lancamento": {
+                        "description": "Número do lancamento",
+                        "type": "string",
+                        "example": "3"
+                    },
+                    "referencia_empresa": {
+                        "description": "Número de referência da empresa",
+                        "type": "string",
+                        "example": "0197 256771"
+                    },
+                    "data_pagamento": {
+                        "description": "Data do pagamento",
+                        "type": "string",
+                        "example": "2020-07-01"
+                    },
+                    "status": {
+                        "description": "Status",
+                        "type": "string",
+                        "example": "EF"
+                    },
+                    "descricao_pagamento": {
+                        "description": "Texto contendo a descrição do pagamento",
+                        "type": "string"
+                    },
+                    "identificacao_comprovante": {
+                        "description": "Código de identificação do comprovante",
+                        "type": "string"
+                    },
+                    "codigo_isbp": {
+                        "description": "Código isbp",
+                        "type": "string"
+                    },
+                    "complemento_finalidade_ted": {
+                        "description": "Texto de complemento",
+                        "type": "string"
+                    },
+                    "descricao_finalidade": {
+                        "description": "Texto contendo a descrição",
+                        "type": "string"
+                    },
+                    "modalidade_pagamento": {
+                        "description": "Código da modalidade de pagamento",
+                        "type": "string"
+                    },
+                    "tipo_pagamento": {
+                        "description": "Código do tipo do pagamento",
+                        "type": "string"
+                    },
+                    "indicador_motivo": {
+                        "description": "Código do motivo",
+                        "type": "string"
+                    },
+                    "motivo_rejeicao": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/listaMotivoRejeicao"
+                        }
+                    },
+                    "dados_ted": {
+                        "$ref": "#/components/schemas/dadosTed"
+                    },
+                    "dados_dpvat": {
+                        "$ref": "#/components/schemas/dadosDpvat"
+                    },
+                    "dados_fgts": {
+                        "$ref": "#/components/schemas/dadosFgts"
+                    },
+                    "dados_gare_icms_sp": {
+                        "$ref": "#/components/schemas/dadosGareIcmsSp"
+                    },
+                    "dados_gare_icms_sp_importacao": {
+                        "$ref": "#/components/schemas/dadosGareIcmsSpImportacao"
+                    },
+                    "dados_gnre_icms_sp_importacao": {
+                        "$ref": "#/components/schemas/dadosGnreIcmsSpImportacao"
+                    },
+                    "dados_gps": {
+                        "$ref": "#/components/schemas/dadosGps"
+                    },
+                    "dados_iptu_inss": {
+                        "$ref": "#/components/schemas/dadosIptuInss"
+                    },
+                    "dados_ipva": {
+                        "$ref": "#/components/schemas/dadosIpva"
+                    },
+                    "dados_multa": {
+                        "$ref": "#/components/schemas/dadosMulta"
+                    },
+                    "dados_op": {
+                        "$ref": "#/components/schemas/dadosOp"
+                    },
+                    "dados_doc": {
+                        "$ref": "#/components/schemas/dadosDoc"
+                    },
+                    "dados_darf": {
+                        "$ref": "#/components/schemas/dadosDarf"
+                    },
+                    "dados_cheque": {
+                        "$ref": "#/components/schemas/dadosCheque"
+                    },
+                    "dados_tributos_cod_barras": {
+                        "$ref": "#/components/schemas/dadosTributosCodBarras"
+                    },
+                    "dados_boleto": {
+                        "$ref": "#/components/schemas/dadosBoleto"
+                    },
+                    "dados_concessionaria": {
+                        "$ref": "#/components/schemas/dadosConcessionaria"
+                    },
+                    "dados_das_cod_barras": {
+                        "$ref": "#/components/schemas/dadosDasCodBarras"
+                    },
+                    "dados_pix_transferencia": {
+                        "$ref": "#/components/schemas/dadosPixTransferencia"
+                    },
+                    "dados_pix_qr_code": {
+                        "$ref": "#/components/schemas/dadosPixQrCode"
+                    },
+                    "dados_licenciamento": {
+                        "$ref": "#/components/schemas/dadosLicenciamento"
+                    }
+                },
+                "required": [
+                    "id_pagamento",
+                    "nome_banco_favorecido",
+                    "numero_agencia_favorecido",
+                    "numero_conta_favorecido",
+                    "nome_favorecido",
+                    "valor_pagamento",
+                    "numero_lote",
+                    "numero_lancamento",
+                    "referencia_empresa",
+                    "data_pagamento"
+                ]
+            },
+            "listaEtapasPagamento": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "status": {
+                        "description": "tipo do status",
+                        "type": "string"
+                    },
+                    "data": {
+                        "description": "Data do status",
+                        "type": "string"
+                    },
+                    "nome_operador": {
+                        "description": "Nome do operador",
+                        "type": "string",
+                        "example": "Operador 1"
+                    },
+                    "cod_operador": {
+                        "description": "Código do operador",
+                        "type": "string",
+                        "example": "999999999"
+                    },
+                    "cpf_operador": {
+                        "description": "Cpf do operador",
+                        "type": "string",
+                        "example": "23735251005"
+                    }
+                }
+            },
+            "pagamentoSispag": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "itens": {
+                        "description": "Array com todos os pagamentos",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/itensDetalhePagamento"
+                        }
+                    },
+                    "total": {
+                        "description": "",
+                        "type": "string",
+                        "example": "2500.00"
+                    },
+                    "dados_debito": {
+                        "$ref": "#/components/schemas/dadosDebito"
+                    },
+                    "dados_pagamento": {
+                        "$ref": "#/components/schemas/dadosPagamento"
+                    },
+                    "historico_pagamento": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/listaEtapasPagamento"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "oauth2": {
+                "type": "oauth2",
+                "description": "Modelo de segurança aplicado a API.",
+                "flows": {
+                    "clientCredentials": {
+                        "scopes": {},
+                        "tokenUrl": "https://oauthd.itau/identity/connect/token"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,3153 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Boletos (v3)",
+        "description": "Api do produto de recebimentos Boletos de Cash Management (Francesa, Boletos e Notificações boleto)",
+        "version": "1.33.0"
+    },
+    "servers": [
+        {
+            "url": "https://boletos.cloud.itau.com.br/boletos/v3"
+        }
+    ],
+    "paths": {
+        "/francesas": {
+            "get": {
+                "tags": [
+                    "Francesas"
+                ],
+                "operationId": "get/francesas",
+                "description": "Pesquisa das francesas disponíveis por Agência, Conta Corrente e Mês de Referência ou Data.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "in": "query",
+                        "name": "agencia",
+                        "required": true,
+                        "description": "4 dígitos da agência.",
+                        "example": "1500",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "conta",
+                        "required": true,
+                        "description": "7 dígitos da conta corrente.",
+                        "example": "0001560",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "dac",
+                        "required": true,
+                        "description": "1 dígito do dac",
+                        "example": "1",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "mes_referencia",
+                        "required": false,
+                        "description": "Mês de referência para consulta de datas disponíveis para visualização da francesa (formato mmyyyy). Não deve ser informado em conjunto com a Data.",
+                        "example": "122020",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/francesa"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "200_francesa_disponivel_lista": {
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "posicao": null,
+                                                    "data_posicao": "2020-03-12"
+                                                },
+                                                {
+                                                    "posicao": null,
+                                                    "data_posicao": "2020-03-13"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Lista relação de francesas disponíveis para os parâmetros informados.",
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a pesquisa corrente",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "$ref": "#/paths/~1boletos/get/responses/204"
+                    },
+                    "303": {
+                        "$ref": "#/paths/~1boletos/get/responses/303"
+                    },
+                    "304": {
+                        "$ref": "#/paths/~1boletos/get/responses/304"
+                    },
+                    "400": {
+                        "$ref": "#/paths/~1boletos/get/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/paths/~1boletos/get/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/paths/~1boletos/get/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/paths/~1boletos/get/responses/404"
+                    },
+                    "405": {
+                        "$ref": "#/paths/~1boletos/get/responses/405"
+                    },
+                    "422": {
+                        "$ref": "#/paths/~1boletos/get/responses/422"
+                    },
+                    "428": {
+                        "$ref": "#/paths/~1boletos/get/responses/428"
+                    },
+                    "500": {
+                        "$ref": "#/paths/~1boletos/get/responses/500"
+                    },
+                    "501": {
+                        "$ref": "#/paths/~1boletos/get/responses/501"
+                    },
+                    "503": {
+                        "$ref": "#/paths/~1boletos/get/responses/503"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            }
+        },
+        "/francesas/{id_francesa}/movimentacoes": {
+            "get": {
+                "tags": [
+                    "Francesas"
+                ],
+                "operationId": "get/francesas/{id_francesa}/movimentacoes",
+                "description": "Lista de movimentações efetuadas na posição da francesa.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data",
+                        "required": true,
+                        "description": "Data da movimentação no formato yyyy-MM-dd",
+                        "example": "2020-04-20",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_cobranca",
+                        "required": false,
+                        "description": "Tipo de Cobrança para efetuar o filtro desejado. Quando não informado, serão retornados todos. Opções: 'cobranca_digital', 'boleto', 'bolecode'",
+                        "example": "boleto",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_movimentacao",
+                        "required": false,
+                        "description": "Tipos de movimentação para efetuar o filtro desejado. Quando não informado, serão retornados todos. Opções 'entradas', 'liquidacoes', 'baixas'.",
+                        "example": "entradas",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "nosso_numero",
+                        "required": false,
+                        "description": "Consulta pelo nosso número específico",
+                        "example": 12343138,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "seu_numero",
+                        "required": false,
+                        "description": "Consulta pelo seu número específico",
+                        "example": "abc1234313",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 10
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "numero_carteira",
+                        "required": false,
+                        "description": "Consulta pelo número da carteira específica",
+                        "example": 123,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "id_francesa",
+                        "required": true,
+                        "description": "(4 dígitos agência)+(7 dígitos c/c)+(1 dígito do DAC)",
+                        "example": 150000024015,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome_pagador",
+                        "required": false,
+                        "description": "Consulta pelo nome do pagador do título",
+                        "example": "João da Silva",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 30,
+                            "minLength": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/movimentacao"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "200_movimentacao_detalhada": {
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "agencia": 1234,
+                                                    "conta": 1234567,
+                                                    "data_movimentacao": "2020-03-12",
+                                                    "numero_carteira": 109,
+                                                    "codigo_status": "E",
+                                                    "tipo_movimentacao": "entradas",
+                                                    "nosso_numero": "1234678",
+                                                    "seu_numero": "abc12346",
+                                                    "dac_titulo": 7,
+                                                    "tipo_cobranca": "Boleto",
+                                                    "sequencia_titulo": 1,
+                                                    "pagador": "Empresa Brasileira de Armaze LTDA",
+                                                    "agencia_recebedora": 2861,
+                                                    "data_movimentacao_titulo_carteira": "2020-03-12",
+                                                    "data_inclusao": "2020-01-01",
+                                                    "data_vencimento": "2020-03-12",
+                                                    "valor_titulo": "100.00",
+                                                    "valor_liquido_lancado": "110.00",
+                                                    "valor_acrescimo": "100.00",
+                                                    "valor_decrescimo": "100.00",
+                                                    "indicador_pagamento_reserva_administrativa": "R",
+                                                    "indicador_rateio_credito": true,
+                                                    "dac_agencia_conta_beneficiario": 1,
+                                                    "operacoes_cobranca": [
+                                                        {
+                                                            "codigo": "1",
+                                                            "descricao": "Juros",
+                                                            "valor": "-4.23"
+                                                        },
+                                                        {
+                                                            "codigo": "2",
+                                                            "descricao": "Multa",
+                                                            "valor": "-4.23"
+                                                        },
+                                                        {
+                                                            "codigo": "2",
+                                                            "descricao": "desconto",
+                                                            "valor": "-9.32"
+                                                        }
+                                                    ],
+                                                    "operacoes_desconto": [
+                                                        {
+                                                            "codigo": "1",
+                                                            "descricao": "Juros (encargos) de desconto",
+                                                            "valor": "-1.87"
+                                                        },
+                                                        {
+                                                            "codigo": "2",
+                                                            "descricao": "IOF",
+                                                            "valor": "-11.87"
+                                                        },
+                                                        {
+                                                            "codigo": "3",
+                                                            "descricao": "Tarifa de contratação de desconto",
+                                                            "valor": "-1.87"
+                                                        },
+                                                        {
+                                                            "codigo": "4",
+                                                            "descricao": "Tarifa de boleto descontado",
+                                                            "valor": "-1.87"
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "pagination": {
+                                                "links": {
+                                                    "first": "https://apigateway-ext.mbi.cloud.ihf/cash_management/v2/francesas/123411111111111/movimentacoes?data=2020-01-01&page=0&page_size=20",
+                                                    "last": "https://apigateway-ext.mbi.cloud.ihf/cash_management/v2/francesas/123411111111111/movimentacoes?data=2020-01-01&page=15&page_size=20",
+                                                    "previous": "",
+                                                    "next": "https://apigateway-ext.mbi.cloud.ihf/cash_management/v2/francesas/123411111111111/movimentacoes?data=2020-01-01&page=1&page_size=20"
+                                                },
+                                                "page": 0,
+                                                "total_pages": 15,
+                                                "total_elements": 6,
+                                                "page_size": 20
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Relação detalhada de movimentações em títulos de cobrança e títulos descontados da francesa",
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a pesquisa corrente",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "$ref": "#/paths/~1boletos/get/responses/204"
+                    },
+                    "303": {
+                        "$ref": "#/paths/~1boletos/get/responses/303"
+                    },
+                    "304": {
+                        "$ref": "#/paths/~1boletos/get/responses/304"
+                    },
+                    "400": {
+                        "$ref": "#/paths/~1boletos/get/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/paths/~1boletos/get/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/paths/~1boletos/get/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/paths/~1boletos/get/responses/404"
+                    },
+                    "405": {
+                        "$ref": "#/paths/~1boletos/get/responses/405"
+                    },
+                    "422": {
+                        "$ref": "#/paths/~1boletos/get/responses/422"
+                    },
+                    "428": {
+                        "$ref": "#/paths/~1boletos/get/responses/428"
+                    },
+                    "500": {
+                        "$ref": "#/paths/~1boletos/get/responses/500"
+                    },
+                    "501": {
+                        "$ref": "#/paths/~1boletos/get/responses/501"
+                    },
+                    "503": {
+                        "$ref": "#/paths/~1boletos/get/responses/503"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            }
+        },
+        "/francesas/{id_francesa}/movimentacoes_resumidas": {
+            "get": {
+                "tags": [
+                    "Francesas"
+                ],
+                "operationId": "get/francesas/{id_francesa}/movimentacoes_resumidas",
+                "description": "Posição da francesa resumida de títulos de cobrança e títulos descontados.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "in": "path",
+                        "name": "id_francesa",
+                        "required": true,
+                        "description": "(4 dígitos agência)+(7 dígitos c/c)+(1 dígito do DAC)",
+                        "example": 150000024015,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "data",
+                        "required": true,
+                        "description": "Data da movimentação no formato yyyy-MM-dd",
+                        "example": "2020-04-20",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/movimentacaoResumida"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "200_movimentacao_resumida": {
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "resumida_cobranca": {
+                                                        "posicao": {
+                                                            "data_posicao": "2020-10-09",
+                                                            "posicao_anterior": {
+                                                                "valor": "17104781.61",
+                                                                "quantidade": 852
+                                                            },
+                                                            "entradas": {
+                                                                "valor": "0.00",
+                                                                "quantidade": 0
+                                                            },
+                                                            "baixas": {
+                                                                "valor": "-50.00",
+                                                                "quantidade": 0
+                                                            },
+                                                            "liquidacoes": {
+                                                                "valor": "-128847.13",
+                                                                "quantidade": 14
+                                                            },
+                                                            "baixas_desconto": {
+                                                                "valor": "-10.00",
+                                                                "quantidade": 0
+                                                            },
+                                                            "posicao_atual": {
+                                                                "valor": "16975934.48",
+                                                                "quantidade": 838
+                                                            },
+                                                            "consolidado_vencer": [
+                                                                {
+                                                                    "data_inicial": "2020-10-09",
+                                                                    "data_final": "2020-10-31",
+                                                                    "valor": "3845962.31",
+                                                                    "quantidade": 263
+                                                                },
+                                                                {
+                                                                    "data_inicial": "2020-11-01",
+                                                                    "data_final": "2020-11-30",
+                                                                    "valor": "3746751.81",
+                                                                    "quantidade": 204
+                                                                },
+                                                                {
+                                                                    "data_inicial": "2020-12-01",
+                                                                    "data_final": "2020-12-31",
+                                                                    "valor": "823106.98",
+                                                                    "quantidade": 30
+                                                                },
+                                                                {
+                                                                    "data_inicial": "2021-01-01",
+                                                                    "data_final": "9999-12-31",
+                                                                    "valor": "390843.32",
+                                                                    "quantidade": 12
+                                                                }
+                                                            ],
+                                                            "vencidos": {
+                                                                "data_final": "2020-10-08",
+                                                                "valor": "8169270.06",
+                                                                "quantidade": 329
+                                                            }
+                                                        },
+                                                        "movimentacao_financeira": {
+                                                            "principal_liquidacoes": "128847.13",
+                                                            "descontos_abatimentos": "0.00",
+                                                            "juros_multas": "12.88",
+                                                            "total": "128860.01"
+                                                        },
+                                                        "movimentacao_conta": {
+                                                            "valores_disponiveis": "54428.27",
+                                                            "valores_a_compensar": "74431.74",
+                                                            "valores_nao_liberados": "0.00",
+                                                            "valor_total_deducoes": "-87.37",
+                                                            "deducoes": [
+                                                                {
+                                                                    "descricao": "Custas",
+                                                                    "valor": "0.00"
+                                                                },
+                                                                {
+                                                                    "descricao": "IOF",
+                                                                    "valor": "0.00"
+                                                                },
+                                                                {
+                                                                    "descricao": "Tarifas",
+                                                                    "valor": "-87.37"
+                                                                }
+                                                            ],
+                                                            "tarifacao_mensal": {
+                                                                "data_debito": "2020-10-09",
+                                                                "periodo_consolidado": {
+                                                                    "data_inicial": "2020-10-01",
+                                                                    "data_final": "2020-10-31"
+                                                                },
+                                                                "tarifas": [
+                                                                    {
+                                                                        "descricao": "liquidação",
+                                                                        "quantidade": 5,
+                                                                        "valor": "120.00"
+                                                                    },
+                                                                    {
+                                                                        "descricao": "protestos solicitados",
+                                                                        "quantidade": 10,
+                                                                        "valor": "11.00"
+                                                                    },
+                                                                    {
+                                                                        "descricao": "baixas",
+                                                                        "quantidade": 5,
+                                                                        "valor": "30.00"
+                                                                    }
+                                                                ],
+                                                                "total_tarifas": {
+                                                                    "quantidade": 20,
+                                                                    "valor": "161.00"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "resumida_descontado": {
+                                                        "posicao": {
+                                                            "data_posicao": "2020-10-09",
+                                                            "posicao_anterior": {
+                                                                "valor": "17104781.61",
+                                                                "quantidade": 852
+                                                            },
+                                                            "entradas": {
+                                                                "valor": "0.00",
+                                                                "quantidade": 0
+                                                            },
+                                                            "baixas": {
+                                                                "valor": "-50.00",
+                                                                "quantidade": 0
+                                                            },
+                                                            "liquidacoes": {
+                                                                "valor": "-128847.13",
+                                                                "quantidade": 14
+                                                            },
+                                                            "baixas_cobranca": {
+                                                                "valor": "-34.48",
+                                                                "quantidade": 1
+                                                            },
+                                                            "posicao_atual": {
+                                                                "valor": "16975934.48",
+                                                                "quantidade": 838
+                                                            },
+                                                            "consolidado_vencer": [
+                                                                {
+                                                                    "data_inicial": "2020-10-09",
+                                                                    "data_final": "2020-10-31",
+                                                                    "valor": "3845962.31",
+                                                                    "quantidade": 263
+                                                                },
+                                                                {
+                                                                    "data_inicial": "2020-11-01",
+                                                                    "data_final": "2020-11-30",
+                                                                    "valor": "3746751.81",
+                                                                    "quantidade": 204
+                                                                },
+                                                                {
+                                                                    "data_inicial": "2020-12-01",
+                                                                    "data_final": "2020-12-31",
+                                                                    "valor": "823106.98",
+                                                                    "quantidade": 30
+                                                                },
+                                                                {
+                                                                    "data_inicial": "2021-01-01",
+                                                                    "data_final": "9999-12-31",
+                                                                    "valor": "390843.32",
+                                                                    "quantidade": 12
+                                                                }
+                                                            ],
+                                                            "vencidos": {
+                                                                "data_final": "2020-10-09",
+                                                                "valor": "8169270.06",
+                                                                "quantidade": 329
+                                                            }
+                                                        },
+                                                        "resumo_liquidacao_desconto": {
+                                                            "liquidacao_desconto": "128847.13",
+                                                            "credito_conta_corrente": "10.00",
+                                                            "debito_conta_corrente": "-12.88",
+                                                            "juros_moratorio": "-128860.01"
+                                                        },
+                                                        "resumo_entrada_desconto": {
+                                                            "valor_creditado_conta_corrente_apos_deducoes": "54428.27",
+                                                            "deducoes": [
+                                                                {
+                                                                    "descricao": "Juros (encargos) de desconto",
+                                                                    "valor": "0.00"
+                                                                },
+                                                                {
+                                                                    "descricao": "IOF",
+                                                                    "valor": "0.00"
+                                                                },
+                                                                {
+                                                                    "descricao": "Tarifa de contratação de desconto",
+                                                                    "valor": "-87.37"
+                                                                },
+                                                                {
+                                                                    "descricao": "Tarifa por boleto descontado",
+                                                                    "valor": "-87.37"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Relação resumida de movimentações de títulos de cobrança e descontados da francesa",
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a pesquisa corrente",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "$ref": "#/paths/~1boletos/get/responses/204"
+                    },
+                    "303": {
+                        "$ref": "#/paths/~1boletos/get/responses/303"
+                    },
+                    "304": {
+                        "$ref": "#/paths/~1boletos/get/responses/304"
+                    },
+                    "400": {
+                        "$ref": "#/paths/~1boletos/get/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/paths/~1boletos/get/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/paths/~1boletos/get/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/paths/~1boletos/get/responses/404"
+                    },
+                    "405": {
+                        "$ref": "#/paths/~1boletos/get/responses/405"
+                    },
+                    "422": {
+                        "$ref": "#/paths/~1boletos/get/responses/422"
+                    },
+                    "428": {
+                        "$ref": "#/paths/~1boletos/get/responses/428"
+                    },
+                    "500": {
+                        "$ref": "#/paths/~1boletos/get/responses/500"
+                    },
+                    "501": {
+                        "$ref": "#/paths/~1boletos/get/responses/501"
+                    },
+                    "503": {
+                        "$ref": "#/paths/~1boletos/get/responses/503"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            }
+        },
+        "/boletos": {
+            "get": {
+                "tags": [
+                    "boletos"
+                ],
+                "operationId": "get/boletos",
+                "description": "Consulta lista de boletos por critérios específicos.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "in": "header",
+                        "name": "x-itau-flowid",
+                        "description": "Key que identifica o fluxo",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "codigo_carteira",
+                        "description": "Número da carteira utilizada na emissão do boleto",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_inicial",
+                        "description": "Data inicial da pesquisa",
+                        "example": "2021-01-23T00:00:00.000Z",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_final",
+                        "description": "Data final da pesquisa",
+                        "example": "2021-01-23T00:00:00.000Z",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "id_beneficiario",
+                        "description": "(4 dígitos agência)(5 dígitos c/c)+(1 dígito DAC)",
+                        "example": "1500010044",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome_pagador",
+                        "description": "Nome do destinatário do boleto, pode ser informado apenas uma parte do nome para pesquisa, todavia, será pesquisado somente a frente do nome",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "numero_cpf_cnpj_pagador",
+                        "description": "Número do CPF ou CNPJ do destinatário do boleto. Deve ser informado apenas números",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "numero_nosso_numero",
+                        "description": "Nosso número informado na emissão do boleto, importante, sempre o último digito será considerado como DAC",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "seu_numero",
+                        "description": "Seu número, informado pelo beneficiário de cobrança, do boleto de cobrança, provido do processor-boleto.",
+                        "example": "1234",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 14
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "situacao_geral_boleto",
+                        "description": "Status do boleto a ser filtrado. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_situacao_geral_boleto'.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "situacao_negativacao",
+                        "description": "Informa a situação da negativação do boleto. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_situacao_negativacao'.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "situacao_protesto",
+                        "description": "Informa a situação do protesto do boleto. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_situacao_protesto'.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "status_vencimento",
+                        "description": "São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_status_vencimento'.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_boleto",
+                        "description": "Informa o tipo de boleto a ser pesquisado. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_tipo_boleto'.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_data",
+                        "description": "Campo que indica onde a pesquisa será realizada, na data de emissão ou na data de vencimento. São aceitos somente os valores (chave) retornados no end-point de configuração na chave 'filtro_tipo_data'.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "Definir um número de página para obter informações desta coleção",
+                        "example": 5,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "description": "Limitar o número de elementos por página",
+                        "example": 20,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna uma lista com as informações solicitadas, bem como as informações de paginação.",
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a pesquisa corrente",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/boleto"
+                                    }
+                                },
+                                "examples": {
+                                    "200_listagem_boletos": {
+                                        "summary": "Exemplo de retorno de uma lista de boletos",
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "nome_pagador": "RICARDO DA SILVA",
+                                                    "numero_cpf_cnpj_pagador": 8365025790,
+                                                    "tipo_boleto": "BOLETO",
+                                                    "numero_nosso_numero": "12345678",
+                                                    "dac_titulo": "1",
+                                                    "seu_numero": "1adcgre8-1",
+                                                    "data_emissao": "2020-12-12",
+                                                    "data_inclusao_boleto": "2020-12-12",
+                                                    "data_vencimento": "2021-01-20",
+                                                    "data_inclusao_pagamento": "2021-01-19",
+                                                    "valor_titulo": 10.9,
+                                                    "valor_pago_total": 10.9,
+                                                    "situacao_geral_boleto": {
+                                                        "codigo": "4",
+                                                        "descricao": "PAGA"
+                                                    },
+                                                    "status_vencimento": {
+                                                        "codigo": "402",
+                                                        "descricao": "VENCIDO"
+                                                    },
+                                                    "emitir_segunda_via": true,
+                                                    "codigo_carteira": "001",
+                                                    "status_boleto_canal": {
+                                                        "codigo": "4",
+                                                        "descricao": "PAGA"
+                                                    }
+                                                },
+                                                {
+                                                    "nome_pagador": "EMPRESA QUE NAO EXISTE",
+                                                    "numero_cpf_cnpj_pagador": "81874047000186",
+                                                    "tipo_boleto": "BOLETO",
+                                                    "numero_nosso_numero": "12345678",
+                                                    "dac_titulo": "1",
+                                                    "seu_numero": "AbCdEfG-10",
+                                                    "data_emissao": "2020-12-12",
+                                                    "data_inclusao_boleto": "2020-12-12",
+                                                    "data_vencimento": "2021-10-20",
+                                                    "data_inclusao_pagamento": "2021-05-13",
+                                                    "valor_titulo": 3000,
+                                                    "valor_pago_total": 3100,
+                                                    "situacao_geral_boleto": {
+                                                        "codigo": "4",
+                                                        "descricao": "PAGA"
+                                                    },
+                                                    "status_vencimento": {
+                                                        "codigo": "401",
+                                                        "descricao": "A VENCER"
+                                                    },
+                                                    "emitir_segunda_via": false,
+                                                    "codigo_carteira": "001",
+                                                    "status_boleto_canal": {
+                                                        "codigo": "4",
+                                                        "descricao": "PAGA"
+                                                    }
+                                                },
+                                                {
+                                                    "nome_pagador": "EMPRESA QUE NAO EXISTE",
+                                                    "numero_cpf_cnpj_pagador": "81874047000186",
+                                                    "tipo_boleto": "BOLETO",
+                                                    "numero_nosso_numero": "52984598",
+                                                    "dac_titulo": "1",
+                                                    "seu_numero": "13345ae1-1",
+                                                    "data_emissao": "2020-12-12",
+                                                    "data_inclusao_boleto": "2020-12-12",
+                                                    "data_vencimento": "2020-12-15",
+                                                    "data_inclusao_pagamento": null,
+                                                    "valor_titulo": 3000,
+                                                    "valor_pago_total": 0,
+                                                    "situacao_geral_boleto": {
+                                                        "codigo": "1",
+                                                        "descricao": "EM ABERTO"
+                                                    },
+                                                    "status_vencimento": {
+                                                        "codigo": "402",
+                                                        "descricao": "VENCIDO"
+                                                    },
+                                                    "emitir_segunda_via": false,
+                                                    "codigo_carteira": "100",
+                                                    "status_boleto_canal": {
+                                                        "codigo": "1",
+                                                        "descricao": "EM ABERTO"
+                                                    }
+                                                },
+                                                {
+                                                    "nome_pagador": "EMPRESA QUE NAO EXISTE",
+                                                    "numero_cpf_cnpj_pagador": "81874047000186",
+                                                    "tipo_boleto": "BOLETO",
+                                                    "numero_nosso_numero": "484878",
+                                                    "dac_titulo": "1",
+                                                    "seu_numero": "1-899008-1",
+                                                    "data_emissao": "2020-12-12",
+                                                    "data_inclusao_boleto": "2020-12-12",
+                                                    "data_vencimento": "2020-12-13",
+                                                    "data_inclusao_pagamento": null,
+                                                    "valor_titulo": 2000,
+                                                    "valor_pago_total": 0,
+                                                    "situacao_geral_boleto": {
+                                                        "codigo": "1",
+                                                        "descricao": "EM ABERTO"
+                                                    },
+                                                    "status_vencimento": {
+                                                        "codigo": "402",
+                                                        "descricao": "VENCIDO"
+                                                    },
+                                                    "emitir_segunda_via": false,
+                                                    "codigo_carteira": "101",
+                                                    "status_boleto_canal": {
+                                                        "codigo": "1",
+                                                        "descricao": "EM ABERTO"
+                                                    }
+                                                },
+                                                {
+                                                    "nome_pagador": "EMPRESA NAO EXISTE LTDA",
+                                                    "numero_cpf_cnpj_pagador": "31226990000104",
+                                                    "tipo_boleto": "BOLETO",
+                                                    "numero_nosso_numero": "5185795",
+                                                    "dac_titulo": "0",
+                                                    "seu_numero": "1efe0882-0",
+                                                    "data_emissao": "2021-08-12",
+                                                    "data_inclusao_boleto": "2021-08-16",
+                                                    "data_vencimento": "2021-10-12",
+                                                    "data_inclusao_pagamento": null,
+                                                    "valor_titulo": 3471.81,
+                                                    "valor_pago_total": null,
+                                                    "situacao_geral_boleto": {
+                                                        "codigo": "1",
+                                                        "descricao": "EM ABERTO"
+                                                    },
+                                                    "status_vencimento": {
+                                                        "codigo": "401",
+                                                        "descricao": "A VENCER"
+                                                    },
+                                                    "emitir_segunda_via": true,
+                                                    "codigo_carteira": "100",
+                                                    "status_boleto_canal": {
+                                                        "codigo": "1",
+                                                        "descricao": "EM ABERTO"
+                                                    }
+                                                }
+                                            ],
+                                            "pagination": {
+                                                "links": {
+                                                    "first": "",
+                                                    "last": "",
+                                                    "previous": "",
+                                                    "next": ""
+                                                },
+                                                "page": 0,
+                                                "total_pages": 1,
+                                                "total_elements": 4,
+                                                "page_size": 30
+                                            }
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a pesquisa corrente",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "A consulta retorna informações:\n   - A coleção tem elementos mas nenhum atende aos filtros especificados possível.\n   - A coleção não contém elementos.\nBody não incluir resposta.\n"
+                    },
+                    "303": {
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a consulta do status do processamento assíncrono.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Location": {
+                                "description": "URI correspondente a consulta do elemento já processado assíncronamente.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "See Other - Redirecionamento. A resposta da consulta será um redirecionamento com o HTTP status code 303.\nA localização do recurso é informado no no Header de resposta Location.\n"
+                    },
+                    "304": {
+                        "headers": {
+                            "Content-Location": {
+                                "description": "O recurso não foi atualizado (foi fornecido do cache). Apropriado apenas nos serviços que são susceptíveis de registrar suas respostas.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "O recurso não foi atualizado (foi fornecido do cache). Apropriado apenas nos serviços que são susceptíveis de registrar suas respostas."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_400": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "validation_error",
+                                                    "mensagem": "Solicitação Imprópria",
+                                                    "campos": [
+                                                        {
+                                                            "campo": "usuario.teste",
+                                                            "mensagem": "Campo Obrigatório",
+                                                            "valor": ""
+                                                        },
+                                                        {
+                                                            "campo": "usuario.id",
+                                                            "mensagem": "Campo Inválido",
+                                                            "valor": "123-123"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Parâmetros incorretos"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_401": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Usuário não autenticado"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Não Autorizado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_403": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Acesso não autorizado"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Acesso Proibido"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_404": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Recurso inexistente"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Recurso Inexistente"
+                    },
+                    "405": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_405": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Método não permitido"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Método não permitido"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_422": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Erro na execução da solicitação"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Erro semântico"
+                    },
+                    "428": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_428": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Pré-requisito necessário"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Pré requisito necessário"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_500": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Erro inesperado"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Erro Inesperado"
+                    },
+                    "501": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_501": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Não implementado"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Não implementado"
+                    },
+                    "503": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "application_json": {
+                                            "description": "",
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_503": {
+                                        "value": {
+                                            "messages": [
+                                                {
+                                                    "codigo": "",
+                                                    "mensagem": "Serviço Indisponível"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Serviço Indisponível"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            }
+        },
+        "/notificacoes_boletos": {
+            "post": {
+                "tags": [
+                    "boletowebhook"
+                ],
+                "operationId": "post/notificacoes_boletos",
+                "description": "Este endpoint tem como objetivo realizar o cadastro da url, credenciais e preferências para notificações das movimentações de baixa operacional e/ou liquidação dos boletos. Abaixo estão listados os parâmetros obrigatórios exigidos e a descrição deles. O cadastro pode ser realizado para baixa operacional e/ou efetiva (liquidação).\n <br></br>\n <b>Importante:</b> Para obter mais informações sobre x-itau-apikey e o x-itau-correlationID, acesse o tópico: Como começar -> Autenticação em Produção -> Fluxos de autenticação Webhook.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/parameters/2"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/notificacaoBoleto"
+                            },
+                            "examples": {
+                                "post_notificacoes_boletos_request": {
+                                    "summary": "Exemplo de post de notificação boleto",
+                                    "value": {
+                                        "data": {
+                                            "id_beneficiario": 150000154711,
+                                            "webhook_url": "https://teste1.webhook.com",
+                                            "webhook_client_id": "821a721a-8873-4b6a-af68-da4a48cb39f6",
+                                            "webhook_client_secret": "f57850b5-02b0-4c6a-8154-5b94541204ed",
+                                            "webhook_oauth_url": "https://auth.webhook.com",
+                                            "webhook_oauth_scope": "boletos-notificacao",
+                                            "valor_minimo": 1575.15,
+                                            "tipos_notificacoes": [
+                                                "BAIXA_EFETIVA",
+                                                "BAIXA_OPERACIONAL"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Preferencias Webhook cadastrado com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notificacaoBoleto"
+                                },
+                                "examples": {
+                                    "201_notificacoes_boletos": {
+                                        "summary": "Exemplo de coleção de notificações boletos",
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "id_beneficiario": 150000154711,
+                                                    "tipo_notificacao": "BAIXA_EFETIVA",
+                                                    "webhook_url": "https://teste1.webhook.com",
+                                                    "webhook_oauth_url": "https://auth.webhook.com",
+                                                    "webhook_oauth_scope": "scope",
+                                                    "valor_minimo": 1575.15,
+                                                    "data_criacao": "2024-09-09T19:00:00.000Z",
+                                                    "id_notificacao_boleto": 15000015471101
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/422"
+                    },
+                    "500": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/500"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "boletowebhook"
+                ],
+                "operationId": "get/notificacoes_boletos",
+                "description": "Retorna uma lista de notificações que foram cadastradas.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Token de acesso (JWT)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id_beneficiario",
+                        "required": true,
+                        "description": "4 dígitos da agência concatenado com os 7 dígitos da conta corrente e 1 dígito do DAC .",
+                        "example": "150000123459",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de preferencias do Webhook por benificiário.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/notificacaoBoleto"
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "200_notificacoes_boletos": {
+                                        "summary": "Exemplo de coleção de notificações boletos",
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "id_notificacao_boleto": "15000015471101",
+                                                    "id_beneficiario": "150000154711",
+                                                    "tipo_notificacao": "BAIXA_EFETIVA",
+                                                    "webhook_url": "https://teste_efetiva.webhook.com",
+                                                    "webhook_oauth_url": "https://ouath1.webhook.com",
+                                                    "webhook_oauth_scope": "scope1",
+                                                    "valor_minimo": 1575.15,
+                                                    "data_criacao": "2022-10-16T09:31:22.000Z"
+                                                },
+                                                {
+                                                    "id_notificacao_boleto": "15000015471102",
+                                                    "id_beneficiario": "150000154711",
+                                                    "tipo_notificacao": "BAIXA_OPERACIONAL",
+                                                    "webhook_url": "https://teste_operacional.webhook.com",
+                                                    "webhook_oauth_url": "https://ouath2.webhook.com",
+                                                    "webhook_oauth_scope": "scope2",
+                                                    "valor_minimo": 1575.15,
+                                                    "data_criacao": "2022-10-16T09:31:22.000Z"
+                                                },
+                                                {
+                                                    "id_notificacao_boleto": "15000015257103",
+                                                    "id_beneficiario": "150000152571",
+                                                    "tipo_notificacao": "BAIXA_EFETIVA",
+                                                    "webhook_url": "https://teste2.webhook.com",
+                                                    "webhook_oauth_url": "https://ouath3.webhook.com",
+                                                    "webhook_oauth_scope": "scope3",
+                                                    "valor_minimo": 100.59,
+                                                    "data_criacao": "2022-06-27T18:48:29.000Z"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "codigo": {
+                                            "type": "string",
+                                            "description": "Código do erro"
+                                        },
+                                        "mensagem": {
+                                            "type": "string",
+                                            "description": "Mensagem de erro"
+                                        },
+                                        "campos": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "campo": {
+                                                        "type": "string",
+                                                        "description": "Nome do campo que apresentou erro na validação"
+                                                    },
+                                                    "mensagem": {
+                                                        "type": "string",
+                                                        "description": "Mensagem referente ao erro no campo"
+                                                    },
+                                                    "valor": {
+                                                        "type": "string",
+                                                        "description": "Conteúdo do campo"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_400": {
+                                        "value": {
+                                            "codigo": "400",
+                                            "mensagem": "Corpo da requisição inválido",
+                                            "campos": [
+                                                {
+                                                    "campo": "campo 1",
+                                                    "mensagen": "mensagem 1",
+                                                    "valor": "valor 1"
+                                                },
+                                                {
+                                                    "campo": "campo 2",
+                                                    "mensagen": "mensagem 2",
+                                                    "valor": "valor 2"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Parâmetros incorretos"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "codigo": {
+                                            "description": "Código do erro",
+                                            "type": "string"
+                                        },
+                                        "mensagem": {
+                                            "type": "string",
+                                            "description": "Mensagem de erro"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_401": {
+                                        "value": {
+                                            "codigo": "401",
+                                            "mensagem": "Acesso não autorizado"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Não Autorizado"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "codigo": {
+                                            "description": "Código do erro",
+                                            "type": "string"
+                                        },
+                                        "mensagem": {
+                                            "type": "string",
+                                            "description": "Mensagem de erro"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "erro_403": {
+                                        "value": {
+                                            "codigo": "403",
+                                            "mensagem": "Usuário não autorizado a manipular o recurso !"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Não Autorizado"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "examples": {
+                                    "erro_404": {
+                                        "value": null
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Recurso não encontrado"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1notificacoes_boletos/get/responses/400/content/application~1json/schema"
+                                },
+                                "examples": {
+                                    "erro_422": {
+                                        "value": {
+                                            "codigo": "422",
+                                            "mensagem": "Corpo da requisição inválido",
+                                            "campos": [
+                                                {
+                                                    "campo": "campo 1",
+                                                    "mensagen": "mensagem 1",
+                                                    "valor": "valor 1"
+                                                },
+                                                {
+                                                    "campo": "campo 2",
+                                                    "mensagen": "mensagem 2",
+                                                    "valor": "valor 2"
+                                                }
+                                            ]
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Parâmetros incorretos"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1notificacoes_boletos/get/responses/400/content/application~1json/schema"
+                                },
+                                "examples": {
+                                    "erro_500": {
+                                        "value": {
+                                            "codigo": "500",
+                                            "mensagem": "Erro Inesperado. Entre em contato com o suporte Itaú."
+                                        },
+                                        "description": ""
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Parâmetros incorretos"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            }
+        },
+        "/notificacoes_boletos/{id_notificacao_boleto}": {
+            "delete": {
+                "tags": [
+                    "boletowebhook"
+                ],
+                "operationId": "delete/notificacoes_boletos/{id_notificacao_boleto}",
+                "description": "Exclui uma notificação que está cadastrada.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/parameters/2"
+                    },
+                    {
+                        "$ref": "#/components/parameters/id_notificacao_boleto"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "examples": {
+                                    "no_content": {
+                                        "value": null
+                                    }
+                                }
+                            }
+                        },
+                        "description": "A execução foi bem-sucedida, o recurso foi atualizado corretamente de forma síncrona. Não retorna conteudo.\n"
+                    },
+                    "400": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/422"
+                    },
+                    "500": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/500"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "boletowebhook"
+                ],
+                "operationId": "patch/notificacoes_boletos/{id_notificacao_boleto}",
+                "description": "Atualiza uma notificação que está cadastrada.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/parameters/2"
+                    },
+                    {
+                        "$ref": "#/components/parameters/id_notificacao_boleto"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/notificacaoBoleto"
+                            },
+                            "examples": {
+                                "patch_notificacoes_boletos_request": {
+                                    "$ref": "#/components/examples/patch_notificacoes_boletos_request"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "examples": {
+                                    "no_content": {
+                                        "value": null
+                                    }
+                                }
+                            }
+                        },
+                        "description": "A execução foi bem-sucedida, o recurso foi atualizado corretamente de forma síncrona. Não retorna conteudo.\n"
+                    },
+                    "400": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/422"
+                    },
+                    "500": {
+                        "$ref": "#/paths/~1notificacoes_boletos/get/responses/500"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "x-itau-apikey": {
+                "in": "header",
+                "name": "x-itau-apikey",
+                "description": "Client_id gerado pela autenticação Oauth2 utilizado para autorizar o consumo de uma aplicação requisitante.",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "2e48053a-bf4b-431d-bd56-e3443dcbf710"
+            },
+            "x-itau-correlationid": {
+                "in": "header",
+                "name": "x-itau-correlationID",
+                "description": "Identificador de correlação utilizado como um agrupar dentro da estrutura de audit trail e que permite relacionar uma mesma chamada passando em diversas aplicações/sistemas diferentes.",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "e75590c2-057c-4697-b993-317aa2e1591e"
+            },
+            "id_notificacao_boleto": {
+                "in": "path",
+                "name": "id_notificacao_boleto",
+                "required": true,
+                "description": "Identificador do registro de notificação do boleto. Composto por Agência (4) + Conta (7) + DAC (1) + Cód. Tipo Notificação (2) Tipos de notificação: 01 - Baixa Efetiva; 02 - Baixa Operacional",
+                "example": "15000012345902",
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "examples": {
+            "patch_notificacoes_boletos_request": {
+                "summary": "Exemplo de patch de notificação boleto",
+                "value": {
+                    "data": {
+                        "webhook_client_id": "821a721a-8873-4b6a-af68-da4a48cb39f6",
+                        "webhook_client_secret": "f57850b5-02b0-4c6a-8154-5b94541204ed",
+                        "webhook_url": "https://teste1.webhook.com",
+                        "webhook_oauth_url": "https://auth.webhook.com",
+                        "webhook_oauth_scope": "boletos-notificacoes",
+                        "valor_minimo": 1575.15
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204_patch": {
+                "headers": {
+                    "Content-Location": {
+                        "description": "URI correspondente ao elemento atualizado.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "description": "O recurso foi atualizado com êxito, mas não está retornando a representação do recurso.\n"
+            },
+            "400_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_400": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "validation_error",
+                                            "mensagem": "Solicitação Imprópria",
+                                            "campos": [
+                                                {
+                                                    "campo": "usuario.teste",
+                                                    "mensagem": "Campo Obrigatório",
+                                                    "valor": ""
+                                                },
+                                                {
+                                                    "campo": "usuario.id",
+                                                    "mensagem": "Campo Inválido",
+                                                    "valor": "123-123"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Parâmetros incorretos"
+            },
+            "401_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_401": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Usuário não autenticado"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Não Autorizado"
+            },
+            "403_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_403": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Acesso não autorizado"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Acesso Proibido"
+            },
+            "404_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_404": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Recurso inexistente"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Recurso Inexistente"
+            },
+            "405_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_405": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Método não permitido"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Método não permitido"
+            },
+            "422_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_422": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Erro na execução da solicitação"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Erro semântico"
+            },
+            "428_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_428": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Pré-requisito necessário"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Pré requisito necessário"
+            },
+            "500_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_500": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Erro inesperado"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Erro Inesperado"
+            },
+            "501_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_501": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Não implementado"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Não implementado"
+            },
+            "503_patch": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "application_json": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "erro_503": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "",
+                                            "mensagem": "Serviço Indisponível"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Serviço Indisponível"
+            }
+        },
+        "schemas": {
+            "posicaoAnterior": {
+                "$ref": "#/components/schemas/baixas"
+            },
+            "entradas": {
+                "$ref": "#/components/schemas/baixas"
+            },
+            "baixas": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "valor": {
+                        "description": "Valor total",
+                        "type": "string"
+                    },
+                    "quantidade": {
+                        "description": "Quantidade total",
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "valor",
+                    "quantidade"
+                ]
+            },
+            "baixasDesconto": {
+                "$ref": "#/components/schemas/baixas"
+            },
+            "baixasCobranca": {
+                "$ref": "#/components/schemas/baixas"
+            },
+            "liquidacoes": {
+                "$ref": "#/components/schemas/baixas"
+            },
+            "posicaoAtual": {
+                "$ref": "#/components/schemas/baixas"
+            },
+            "francesaResumidaPosicaoConsolidadoVencer": {
+                "$ref": "#/components/schemas/vencidos"
+            },
+            "vencidos": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "data_inicial": {
+                        "description": "Data inicial do periodo de referência da consolidação",
+                        "type": "string"
+                    },
+                    "data_final": {
+                        "description": "Data final do periodo de referência da consolidação",
+                        "type": "string"
+                    },
+                    "valor": {
+                        "description": "Valor total de vencimentos",
+                        "type": "string"
+                    },
+                    "quantidade": {
+                        "description": "Quantidade de titulos a vencer",
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "data_final",
+                    "valor",
+                    "quantidade"
+                ]
+            },
+            "posicao": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "data_posicao": {
+                        "description": "Data da posição da francesa",
+                        "type": "string"
+                    },
+                    "posicao_anterior": {
+                        "$ref": "#/components/schemas/baixas"
+                    },
+                    "entradas": {
+                        "$ref": "#/components/schemas/baixas"
+                    },
+                    "baixas": {
+                        "$ref": "#/components/schemas/baixas"
+                    },
+                    "baixas_desconto": {
+                        "$ref": "#/components/schemas/baixas"
+                    },
+                    "baixas_cobranca": {
+                        "$ref": "#/components/schemas/baixas"
+                    },
+                    "liquidacoes": {
+                        "$ref": "#/components/schemas/baixas"
+                    },
+                    "posicao_atual": {
+                        "$ref": "#/components/schemas/baixas"
+                    },
+                    "consolidado_vencer": {
+                        "description": "Relação de datas com somatória de boletos a vencer",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/vencidos"
+                        }
+                    },
+                    "vencidos": {
+                        "$ref": "#/components/schemas/vencidos"
+                    }
+                },
+                "required": [
+                    "data_posicao"
+                ]
+            },
+            "movimentacaoFinanceira": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "principal_liquidacoes": {
+                        "description": "Valor total de liquidacoes",
+                        "type": "string"
+                    },
+                    "descontos_abatimentos": {
+                        "description": "Valor total de descontos + abatimentos",
+                        "type": "string"
+                    },
+                    "juros_multas": {
+                        "description": "Valor total de juros + multas",
+                        "type": "string"
+                    },
+                    "total": {
+                        "description": "Totalizador da movimentação financeira: liquidações + juros e multa - desconto e abatimento",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "principal_liquidacoes",
+                    "descontos_abatimentos",
+                    "juros_multas",
+                    "total"
+                ]
+            },
+            "francesaResumidaMovimentacaoContaDeducao": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "descricao": {
+                        "description": "Descrição da dedução",
+                        "type": "string"
+                    },
+                    "valor": {
+                        "description": "Valor da dedução",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "descricao",
+                    "valor"
+                ]
+            },
+            "periodoConsolidado": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "data_inicial": {
+                        "description": "Data inicial do periodo de referência da consolidação",
+                        "type": "string"
+                    },
+                    "data_final": {
+                        "description": "Data final do periodo de referência da consolidação",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "data_inicial",
+                    "data_final"
+                ]
+            },
+            "tarifacaoMensalTarifas": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "descricao": {
+                        "description": "Descrição da tarifa",
+                        "type": "string"
+                    },
+                    "quantidade": {
+                        "description": "Quantidade de títulos que incidiram tarifas",
+                        "type": "integer"
+                    },
+                    "valor": {
+                        "description": "Valor total da tarifa descrita",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "descricao",
+                    "quantidade",
+                    "valor"
+                ]
+            },
+            "totalTarifas": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "quantidade": {
+                        "description": "Quantidade de tarifas",
+                        "type": "number"
+                    },
+                    "valor": {
+                        "description": "Valor das tarifas",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "quantidade",
+                    "valor"
+                ]
+            },
+            "tarifacaoMensal": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "data_debito": {
+                        "description": "Data que ocorreu o débito da tarifação mensal",
+                        "type": "string"
+                    },
+                    "periodo_consolidado": {
+                        "$ref": "#/components/schemas/periodoConsolidado"
+                    },
+                    "tarifas": {
+                        "description": "Lista com as tarifas que irão ser cobradas na conta",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/tarifacaoMensalTarifas"
+                        }
+                    },
+                    "total_tarifas": {
+                        "$ref": "#/components/schemas/totalTarifas"
+                    }
+                },
+                "required": [
+                    "data_debito",
+                    "periodo_consolidado",
+                    "tarifas",
+                    "total_tarifas"
+                ]
+            },
+            "movimentacaoConta": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "valores_disponiveis": {
+                        "description": "Valor total disponível",
+                        "type": "string"
+                    },
+                    "valores_a_compensar": {
+                        "description": "Valor a compensar",
+                        "type": "string"
+                    },
+                    "valores_nao_liberados": {
+                        "description": "Valor total não liberado em conta",
+                        "type": "string"
+                    },
+                    "valor_total_deducoes": {
+                        "description": "Valor total das deduçoes",
+                        "type": "string"
+                    },
+                    "deducoes": {
+                        "description": "Valores detalhados de deduções",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/francesaResumidaMovimentacaoContaDeducao"
+                        }
+                    },
+                    "tarifacao_mensal": {
+                        "$ref": "#/components/schemas/tarifacaoMensal"
+                    }
+                },
+                "required": [
+                    "valores_disponiveis",
+                    "valores_a_compensar",
+                    "valores_nao_liberados",
+                    "valor_total_deducoes",
+                    "deducoes"
+                ]
+            },
+            "francesa": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "posicao": {
+                        "$ref": "#/components/schemas/posicao"
+                    },
+                    "movimentacao_financeira": {
+                        "$ref": "#/components/schemas/movimentacaoFinanceira"
+                    },
+                    "movimentacao_conta": {
+                        "$ref": "#/components/schemas/movimentacaoConta"
+                    }
+                }
+            },
+            "movimentacaoDetalheOperacao": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "codigo": {
+                        "description": "Código da operação",
+                        "type": "string"
+                    },
+                    "descricao": {
+                        "description": "Descrição da operação",
+                        "type": "string"
+                    },
+                    "valor": {
+                        "description": "Valor da operação",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "codigo",
+                    "descricao",
+                    "valor"
+                ]
+            },
+            "movimentacao": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "agencia": {
+                        "description": "Número da Agencia",
+                        "type": "number"
+                    },
+                    "conta": {
+                        "description": "Número da conta",
+                        "type": "number"
+                    },
+                    "data_movimentacao": {
+                        "description": "Data da movimentação",
+                        "type": "string"
+                    },
+                    "numero_carteira": {
+                        "description": "Número da carteira",
+                        "type": "number"
+                    },
+                    "codigo_status": {
+                        "description": "Código do status do movimento",
+                        "type": "string"
+                    },
+                    "tipo_movimentacao": {
+                        "description": "Descrição do tipo de movimentação",
+                        "type": "string"
+                    },
+                    "tipo_cobranca": {
+                        "description": "Tipo do título da cobrança",
+                        "type": "string"
+                    },
+                    "nosso_numero": {
+                        "description": "Número de identificação do título",
+                        "type": "string"
+                    },
+                    "seu_numero": {
+                        "description": "Número de identificação do cliente para o título",
+                        "type": "string"
+                    },
+                    "dac_titulo": {
+                        "description": "DAC do Titulo",
+                        "type": "number"
+                    },
+                    "sequencia_titulo": {
+                        "description": "Número sequencial do Título",
+                        "type": "number"
+                    },
+                    "pagador": {
+                        "description": "Descrição do pagador do Título",
+                        "type": "string"
+                    },
+                    "agencia_recebedora": {
+                        "description": "Número da agencia recebedora do titulo",
+                        "type": "number"
+                    },
+                    "data_movimentacao_titulo_carteira": {
+                        "description": "Data da movimentação do titulo em carteira",
+                        "type": "string"
+                    },
+                    "data_inclusao": {
+                        "description": "Data da inclusão do título",
+                        "type": "string"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento do Titulo",
+                        "type": "string"
+                    },
+                    "valor_titulo": {
+                        "description": "Valor do Título",
+                        "type": "string"
+                    },
+                    "valor_liquido_lancado": {
+                        "description": "Valor liquido lançado",
+                        "type": "string"
+                    },
+                    "valor_acrescimo": {
+                        "description": "Valor de acresimo do titulo",
+                        "type": "string"
+                    },
+                    "valor_decrescimo": {
+                        "description": "Valor de decrescimo do titulo",
+                        "type": "string"
+                    },
+                    "indicador_pagamento_reserva_administrativa": {
+                        "description": "Indicador do pagamento em reserva administrativa",
+                        "type": "string"
+                    },
+                    "indicador_rateio_credito": {
+                        "description": "Indicador de rateio de crédito",
+                        "type": "boolean"
+                    },
+                    "dac_agencia_conta_beneficiario": {
+                        "description": "DAC da Agencia e conta do Beneficiário",
+                        "type": "number"
+                    },
+                    "operacoes_cobranca": {
+                        "description": "Valores detalhados de operações de cobrança",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/movimentacaoDetalheOperacao"
+                        }
+                    },
+                    "operacoes_desconto": {
+                        "description": "Valores detalhados de operações de desconto",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/movimentacaoDetalheOperacao"
+                        }
+                    }
+                },
+                "required": [
+                    "agencia",
+                    "conta",
+                    "data_movimentacao",
+                    "numero_carteira",
+                    "codigo_status",
+                    "tipo_movimentacao",
+                    "tipo_cobranca",
+                    "nosso_numero",
+                    "seu_numero",
+                    "dac_titulo",
+                    "sequencia_titulo",
+                    "pagador",
+                    "agencia_recebedora",
+                    "data_movimentacao_titulo_carteira",
+                    "data_inclusao",
+                    "data_vencimento",
+                    "valor_titulo",
+                    "valor_liquido_lancado",
+                    "valor_acrescimo",
+                    "valor_decrescimo",
+                    "indicador_pagamento_reserva_administrativa",
+                    "indicador_rateio_credito",
+                    "dac_agencia_conta_beneficiario",
+                    "operacoes_cobranca"
+                ]
+            },
+            "resumidaCobranca": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "posicao": {
+                        "$ref": "#/components/schemas/posicao"
+                    },
+                    "movimentacao_financeira": {
+                        "$ref": "#/components/schemas/movimentacaoFinanceira"
+                    },
+                    "movimentacao_conta": {
+                        "$ref": "#/components/schemas/movimentacaoConta"
+                    }
+                },
+                "required": [
+                    "posicao",
+                    "movimentacao_financeira",
+                    "movimentacao_conta"
+                ]
+            },
+            "resumoLiquidacaoDesconto": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "liquidacao_desconto": {
+                        "description": "Valor total dos títulos descontados que foram liquidados",
+                        "type": "string"
+                    },
+                    "credito_conta_corrente": {
+                        "description": "Valor total que será creditado na conta corrente do beneficiário",
+                        "type": "string"
+                    },
+                    "debito_conta_corrente": {
+                        "description": "Valor total que será debitado na conta corrente do beneficiário",
+                        "type": "string"
+                    },
+                    "juros_moratorio": {
+                        "description": "Valor total de juros moratório da movimentação Baixa em Desconto",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "liquidacao_desconto",
+                    "credito_conta_corrente",
+                    "debito_conta_corrente",
+                    "juros_moratorio"
+                ]
+            },
+            "resumoEntradaDesconto": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "valor_creditado_conta_corrente_apos_deducoes": {
+                        "description": "Valor total que será creditado na conta corrente do beneficiário após subtrair as deduções.",
+                        "type": "string"
+                    },
+                    "deducoes": {
+                        "description": "Valor total que será creditado na conta corrente do beneficiário.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/francesaResumidaMovimentacaoContaDeducao"
+                        }
+                    }
+                },
+                "required": [
+                    "valor_creditado_conta_corrente_apos_deducoes",
+                    "deducoes"
+                ]
+            },
+            "resumidaDescontado": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "posicao": {
+                        "$ref": "#/components/schemas/posicao"
+                    },
+                    "resumo_liquidacao_desconto": {
+                        "$ref": "#/components/schemas/resumoLiquidacaoDesconto"
+                    },
+                    "resumo_entrada_desconto": {
+                        "$ref": "#/components/schemas/resumoEntradaDesconto"
+                    }
+                }
+            },
+            "movimentacaoResumida": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "resumida_cobranca": {
+                        "$ref": "#/components/schemas/resumidaCobranca"
+                    },
+                    "resumida_descontado": {
+                        "$ref": "#/components/schemas/resumidaDescontado"
+                    }
+                },
+                "required": [
+                    "resumida_cobranca"
+                ]
+            },
+            "francesaResumidaPosicaoQuantidadeValor": {
+                "$ref": "#/components/schemas/baixas"
+            },
+            "tarifacaoMensalPeriodoConsolidado": {
+                "$ref": "#/components/schemas/periodoConsolidado"
+            },
+            "tarifacaoMensalTotalTarifas": {
+                "$ref": "#/components/schemas/totalTarifas"
+            },
+            "francesaResumidaPosicao": {
+                "$ref": "#/components/schemas/posicao"
+            },
+            "francesaResumidaMovimentacaoFinanceira": {
+                "$ref": "#/components/schemas/movimentacaoFinanceira"
+            },
+            "francesaResumidaMovimentacaoConta": {
+                "$ref": "#/components/schemas/movimentacaoConta"
+            },
+            "francesaResumidaLiquidacaoDesconto": {
+                "$ref": "#/components/schemas/resumoLiquidacaoDesconto"
+            },
+            "francesaResumidaEntradaDesconto": {
+                "$ref": "#/components/schemas/resumoEntradaDesconto"
+            },
+            "francesaResumidaCobranca": {
+                "$ref": "#/components/schemas/resumidaCobranca"
+            },
+            "francesaResumidaDescontado": {
+                "$ref": "#/components/schemas/resumidaDescontado"
+            },
+            "boleto": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome_pagador": {
+                        "description": "Nome completo do destinatário da cobrança",
+                        "type": "string"
+                    },
+                    "numero_cpf_cnpj_pagador": {
+                        "description": "Número de documento do destinatário da cobrança",
+                        "type": "string"
+                    },
+                    "tipo_boleto": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "numero_nosso_numero": {
+                        "description": "Número de controle interno para emissões de cobrança, faz parte do código de barras e também está impresso na cobrança",
+                        "type": "string"
+                    },
+                    "dac_titulo": {
+                        "description": "Dígito verificador (DAC) do campo nosso número",
+                        "type": "string"
+                    },
+                    "seu_numero": {
+                        "description": "Seu número de controle do beneficiário na cobrança",
+                        "type": "string"
+                    },
+                    "data_emissao": {
+                        "description": "Data de emissão da cobrança pelo beneficiário. Formato yyyy-mm-dd",
+                        "type": "string"
+                    },
+                    "data_inclusao_boleto": {
+                        "description": "Data da inclusão da cobrança. Formato yyyy-mm-dd",
+                        "type": "string"
+                    },
+                    "data_vencimento": {
+                        "description": "Data de vencimento da cobrança. Formato yyyy-mm-dd",
+                        "type": "string"
+                    },
+                    "data_inclusao_pagamento": {
+                        "description": "Data em que a cobrança foi paga. Formato yyyy-mm-dd",
+                        "type": "string"
+                    },
+                    "valor_titulo": {
+                        "description": "Valor total da cobrança registrada",
+                        "type": "number"
+                    },
+                    "valor_pago_total": {
+                        "description": "Valor total pago da cobrança",
+                        "type": "number"
+                    },
+                    "situacao_geral_boleto": {
+                        "$ref": "#/components/schemas/situacaoGeralBoleto"
+                    },
+                    "status_vencimento": {
+                        "$ref": "#/components/schemas/statusVencimento"
+                    },
+                    "emitir_segunda_via": {
+                        "description": "Flag que indica permissão para emissão da segunda via da cobrança",
+                        "type": "boolean"
+                    },
+                    "codigo_carteira": {
+                        "description": "Indica o valor da carteira",
+                        "type": "string"
+                    },
+                    "status_boleto_canal": {
+                        "$ref": "#/components/schemas/statusBoletoCanal"
+                    }
+                },
+                "required": [
+                    "codigo_carteira",
+                    "status_boleto_canal"
+                ]
+            },
+            "situacaoGeralBoleto": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "codigo": {
+                        "description": "Codigo do status",
+                        "type": "string"
+                    },
+                    "descricao": {
+                        "description": "Descricao do status",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "codigo",
+                    "descricao"
+                ]
+            },
+            "statusBoletoCanal": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "codigo": {
+                        "description": "Codigo do status",
+                        "type": "string"
+                    },
+                    "descricao": {
+                        "description": "Descricao do status",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "codigo",
+                    "descricao"
+                ]
+            },
+            "statusVencimento": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "codigo": {
+                        "description": "Codigo do status",
+                        "type": "string"
+                    },
+                    "descricao": {
+                        "description": "Descricao do status",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "codigo",
+                    "descricao"
+                ]
+            },
+            "notificacaoBoleto": {
+                "type": "object",
+                "properties": {
+                    "webhook_url": {
+                        "description": "<br> URL de callback que será utilizada para recebimento das notificações. <br></br> Obs.: Não pode conter endereço IPV4 nem IPV6 na url. <br>",
+                        "type": "string"
+                    },
+                    "webhook_oauth_url": {
+                        "description": "<br> URL de callback que será responsável por gerar o token de autenticação na notificação a URL informada no item webhook_url desse documento. <br>Obrigatório ser HTTPS. API em padrão oAuth 2.0, recebendo o cliente_id e client_secret no header Authorization Basic em base64 e o body deve conter grant_type, aceitando o valor client_credentials. <br></br> Obs.: Não pode conter endereço IPV4 nem IPV6 na url. <br>",
+                        "type": "string"
+                    },
+                    "webhook_oauth_scope": {
+                        "description": "<br> Scope que será utilizado na chamada do webhook para enviar a notificação. <br>",
+                        "type": "string"
+                    },
+                    "valor_minimo": {
+                        "description": "<br> Valor minimo para recebimento das notificações de liquidação. (Valor livre) <br></br> Exemplo: 1000.00",
+                        "type": "number",
+                        "default": 0.1
+                    }
+                }
+            },
+            "notificacaoBoletoPost": {
+                "type": "object",
+                "properties": {
+                    "id_beneficiario": {
+                        "description": "<br> Identificação do beneficiário é composição das informações Agência (4) + Conta (7) + DAC (1). <br></br> Exemplo: 150000154711",
+                        "type": "string"
+                    },
+                    "webhook_client_id": {
+                        "description": "<br> Client_id utilizado na autenticação Oauth2.0 informado no item webhook_oauth_url desse documento. <br>",
+                        "type": "string"
+                    },
+                    "webhook_client_secret": {
+                        "description": "<br> Client_secret utilizado na autenticação Oauth2.0 informado no item webhook_oauth_url desse documento. <br>",
+                        "type": "string"
+                    },
+                    "tipos_notificacoes": {
+                        "description": "<br> Lista de opções de notificações. Obrigatório ao menos um tipo de notificação.",
+                        "type": "array",
+                        "items": {
+                            "description": "Tipo de notificação",
+                            "type": "string",
+                            "enum": [
+                                "BAIXA_EFETIVA",
+                                "BAIXA_OPERACIONAL"
+                            ]
+                        }
+                    }
+                }
+            },
+            "notificacaoBoletoPatch": {
+                "type": "object",
+                "properties": {
+                    "webhook_client_id": {
+                        "description": "<br> Client_id utilizado na autenticação Oauth2.0 informado no item webhook_oauth_url desse documento. <br>",
+                        "type": "string"
+                    },
+                    "webhook_client_secret": {
+                        "description": "<br> Client_secret utilizado na autenticação Oauth2.0 informado no item webhook_oauth_url desse documento. <br>",
+                        "type": "string"
+                    },
+                    "webhook_url": {
+                        "description": "<br> URL de callback que será utilizada para recebimento das notificações. <br></br> Obs.: Não pode conter endereço IPV4 nem IPV6 na url. <br>",
+                        "type": "string"
+                    },
+                    "webhook_oauth_url": {
+                        "description": "<br> URL de callback que será responsável por gerar o token de autenticação na notificação a URL informada no item webhook_url desse documento. <br>Obrigatório ser HTTPS. API em padrão oAuth 2.0, recebendo o cliente_id e client_secret no header Authorization Basic em base64 e o body deve conter grant_type, aceitando o valor client_credentials. <br></br> Obs.: Não pode conter endereço IPV4 nem IPV6 na url. <br>",
+                        "type": "string"
+                    },
+                    "webhook_oauth_scope": {
+                        "description": "<br> Scope que será utilizado na chamada do webhook para enviar a notificação. <br>",
+                        "type": "string"
+                    },
+                    "valor_minimo": {
+                        "description": "<br> Valor minimo para recebimento das notificações de liquidação. (Valor livre) <br></br> Exemplo: 1000.00",
+                        "type": "number",
+                        "default": 0.1
+                    }
+                }
+            },
+            "notificacaoBoletoGet": {
+                "type": "object",
+                "properties": {
+                    "id_beneficiario": {
+                        "description": "<br> Identificação do beneficiário é composição das informações Agência (4) + Conta (7) + DAC (1). <br></br> Exemplo: 150000154711",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "sigv4": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            },
+            "APIGatewaySTSAuthorizer": {
+                "in": "header",
+                "name": "auth",
+                "type": "apiKey"
+            }
+        }
+    }
+}

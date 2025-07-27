@@ -1,0 +1,2487 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API - Emissão de QR Code Pix Automático",
+        "description": "Documentação do fluxo de Geração de QR Code com Recorrência de Pagamentos - PIX Automático",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://recebimentos-pix.${iupipes_env_dns}/qrcode-pix-automatico/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Emissão de QR Code Pix Automático",
+            "description": "API disponível à partir de 16/jun/2025 <br><br> Endpoint para emitir um QR Code imediato ou QR Code de vencimento de Pix Automático."
+        },
+        {
+            "name": "Cancelamento de QR Code Pix Automático",
+            "description": "API disponível à partir de 16/jun/2025 <br><br> Endpoint para Cancelar um QR Code imediato ou QR Code de vencimento de Pix Automático."
+        }
+    ],
+    "paths": {
+        "/cobrancas": {
+            "post": {
+                "summary": "Criar cobrança com Recorrência",
+                "tags": [
+                    "Emissão de QR Code Pix Automático"
+                ],
+                "description": "Endpoint para emitir um QR Code imediato ou QR Code de vencimento de Pix Automático.",
+                "operationId": "post/cobrancas",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationID"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/cobranca"
+                            },
+                            "examples": {
+                                "Emissão de cobrança imediata com campos mínimos obrigatórios": {
+                                    "$ref": "#/components/examples/requestPostCobrancaImediataCamposObrigatorios"
+                                },
+                                "Emissão de cobrança imediata com todos os campos": {
+                                    "$ref": "#/components/examples/requestPostCobrancaImediataCompleto"
+                                },
+                                "Emissão de cobrança vencimento com campos mínimos obrigatórios": {
+                                    "$ref": "#/components/examples/requestPostCobrancaVencimentoCamposObrigatorios"
+                                },
+                                "Emissão de cobrança vencimento com todos os campos": {
+                                    "$ref": "#/components/examples/requestPostCobrancaVencimentoCompleto"
+                                },
+                                "Emissão de cobrança (request completo)": {
+                                    "$ref": "#/components/examples/requestPostCobrancaCompleto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cobrança gerada com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/cobrancaResponseOneOf"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Emissão Cobrança Imediata": {
+                                        "$ref": "#/components/examples/201cobrancaImediata"
+                                    },
+                                    "Emissão Cobrança Vencimento": {
+                                        "$ref": "#/components/examples/201cobrancaVencimento"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição com formato inválido.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/erro"
+                                },
+                                "examples": {
+                                    "Emissão Cobrança Imediata": {
+                                        "$ref": "#/components/examples/400requisicaoInvalidaCobExample1"
+                                    },
+                                    "Emissão Cobrança Vencimento": {
+                                        "$ref": "#/components/examples/400requisicaoInvalidaCobvExample1"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "405": {
+                        "$ref": "#/components/responses/405"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    },
+                    "503": {
+                        "$ref": "#/components/responses/503"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": [
+                            "cob.write",
+                            "cobv.write"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/cobrancas/{cobrancaId}": {
+            "patch": {
+                "summary": "Cancelar cobrança com Recorrência",
+                "tags": [
+                    "Cancelamento de QR Code Pix Automático"
+                ],
+                "description": "Endpoint para Cancelar um QR Code imediato ou QR Code de vencimento de Pix Automático. ",
+                "operationId": "patch/cobrancas/{cobrancaId}",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationID"
+                    },
+                    {
+                        "$ref": "#/components/parameters/cobrancaId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/cobrancaPatchCancelamento"
+                            },
+                            "examples": {
+                                "Cancelamento de cobrança imediata/vencimento": {
+                                    "$ref": "#/components/examples/requestPatchCancelamentoCobrancaCamposObrigatorios"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cobrança cancelada com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/cobrancaPatchCancelamentoResponseOneOf"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                },
+                                "examples": {
+                                    "Cancelamento Cobrança Imediata": {
+                                        "$ref": "#/components/examples/200cancelamentoCobrancaImediata"
+                                    },
+                                    "Cancelamento Cobrança Vencimento": {
+                                        "$ref": "#/components/examples/200cancelamentoCobrancaVencimento"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição com formato inválido.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/erro"
+                                },
+                                "examples": {
+                                    "Cancelamento Cobrança Imediata": {
+                                        "$ref": "#/components/examples/400requisicaoInvalidaCobExample1"
+                                    },
+                                    "Cancelamento Cobrança Vencimento": {
+                                        "$ref": "#/components/examples/400requisicaoInvalidaCobvExample1"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "405": {
+                        "$ref": "#/components/responses/405"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    },
+                    "503": {
+                        "$ref": "#/components/responses/503"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": [
+                            "cob.write",
+                            "cobv.write"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "cobranca": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/requestImediata"
+                    },
+                    {
+                        "$ref": "#/components/schemas/requestVencimento"
+                    }
+                ],
+                "type": "object",
+                "title": "cobrança",
+                "description": "Este bloco de informação exemplifica a representação dos dois tipos de cobrança, utilizando a estrutura oneOf para demonstrar as possibilidades. Importante ressaltar que este bloco não constitui um objeto na requisição, servindo apenas como um recurso de visualização e compreensão das estruturas possíveis."
+            },
+            "cobrancaEmissao": {
+                "$ref": "#/components/schemas/cobranca"
+            },
+            "cobrancaPatchCancelamento": {
+                "type": "object",
+                "title": "Cancelamento de Cobrança Imediata Solicitada",
+                "description": "**Descrição:** Cancelamento da cobrança imediata via API Pix Automático.\n",
+                "properties": {
+                    "status": {
+                        "title": "Status da Cobrança",
+                        "description": "**Descrição:** Campo que indica o status da cobrança.\n",
+                        "type": "string"
+                    },
+                    "recorrencia": {
+                        "title": "Recorrência",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito da recorrência da cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "idRec": {
+                                "title": "ID da Recorrência",
+                                "description": "**Descrição:** Campo que contém o identificador da recorrência da cobrança\n",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "idRec"
+                        ]
+                    }
+                },
+                "required": [
+                    "status",
+                    "recorrencia"
+                ]
+            },
+            "requestImediata": {
+                "type": "object",
+                "title": "Cobrança Imediata Solicitada",
+                "description": "**Descrição:** Dados criados da cobrança imediata via API Pix Automático.\n",
+                "properties": {
+                    "qrcodePix": {
+                        "title": "QR Code Pix",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito do QR Code.\n",
+                        "type": "object",
+                        "properties": {
+                            "subtipo": {
+                                "title": "Subtipo do QR Code",
+                                "description": "**Descrição:** Campo que especifica o tipo do QR Code.\n",
+                                "maxLength": 31,
+                                "enum": [
+                                    "IMEDIATO",
+                                    "VENCIMENTO"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "subtipo"
+                        ]
+                    },
+                    "calendario": {
+                        "title": "Calendário",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito de controle de tempo da cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "expiracao": {
+                                "title": "Expiração",
+                                "description": "**Descrição:** Tempo de vida da cobrança, especificado em segundos a partir da data de criação da cobrança (`calendario.criacao`).\n\n**Observação:** Caso o campo expiracao não seja preenchido, ele terá um tempo de vida padrão de 86400 segundos.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "txid": {
+                        "title": "Identificador do QR Code",
+                        "description": "**Descrição:** O campo `txid` determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\n**Observação:** Na pacs.008, é referenciado como `TransactionIdentification <txId>` ou `idConciliacaoRecebedor`.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado.\n\nO txid é criado exclusivamente pelo usuário recebedor e está sob sua responsabilidade. O txid, no contexto de representação de um QR Code, é único por CPF/CNPJ do usuário recebedor. Cabe ao PSP recebedor validar essa regra na API Pix.\n\nEste código deve possuir entre 26 e 35 posições, podendo conter letras minúsculas (a-z), letras maiúsculas (A-Z) e números (0-9).\n",
+                        "type": "string",
+                        "pattern": "[a-zA-Z0-9]{26,35}"
+                    },
+                    "devedor": {
+                        "$ref": "#/components/schemas/pessoa"
+                    },
+                    "loc": {
+                        "title": "Location do Payload.",
+                        "description": "**Descrição:** Estrutura com informações do identificador da localização do payload.\n",
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "description": "**Descrição:** Identificador da location a ser informada na criação da cobrança.\n",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "id"
+                        ]
+                    },
+                    "valor": {
+                        "title": "Valor da Cobrança Imediata",
+                        "description": "**Descrição:** Campo que organiza os valores monetários referentes à cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "original": {
+                                "title": "Valor",
+                                "description": "**Descrição:** Valor nominal/original da cobrança.\n\n**Observação:** O valor deve ser maior do que zero. Todos os campos que indicam valores monetários obedecem ao formato do ID 54 da especificação EMV/BR Code para QR Codes. O separador decimal é o caractere ponto. Não é aplicável utilizar separador de milhar. Exemplos de valores aderentes ao padrão: “0.00”, “1.00”, “123.99”, “123456789.23”.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{1,2}"
+                            },
+                            "modalidadeAlteracao": {
+                                "title": "Modalidade de Alteração",
+                                "description": "**Descrição:** Trata-se de um campo que determina se o valor final do documento pode ser alterado pelo pagador. \n\n**Observação:** Na ausência desse campo, assume-se que não se pode alterar o valor do documento de cobrança, ou seja, assume-se o valor 0.\n\nSe o campo estiver presente e com valor 1, então está determinado que o valor final da cobrança pode ter seu valor alterado pelo pagador.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer",
+                                "default": 0,
+                                "minimum": 0,
+                                "maximum": 1
+                            }
+                        },
+                        "required": [
+                            "original"
+                        ]
+                    },
+                    "chave": {
+                        "title": "Chave DICT do Recebedor",
+                        "description": "**Descrição:** Campo que contém a chave Pix registrada na DICT que será utilizada para recebimento da cobrança.\n",
+                        "type": "string",
+                        "maxLength": 77
+                    },
+                    "solicitacaoPagador": {
+                        "title": "Solicitação ao Pagador",
+                        "description": "**Descrição:** O campo `solicitacaoPagador`, determina um texto a ser apresentado ao pagador para que ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor.\n\n**Observação:** Esse texto será preenchido, na **pacs.008**, pelo PSP do pagador, no campo `RemittanceInformation`. O tamanho do campo na pacs.008 está limitado a **140 caracteres**.\n\nCampo retornado somente se o parâmetro de entrada foi colocado na requisição.\n",
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "infoAdicionais": {
+                        "title": "Informações Adicionais",
+                        "description": "**Descrição:** A informação contida na lista (nome e valor) deve ser apresentada ao pagador.\n\n**Observação:** O valor será referente ao campo idRec gerado após a criação de uma recorrência.\n\nCampo sempre retornado preenchido com o valor 'idRec'.\n",
+                        "type": "array",
+                        "maximum": 50,
+                        "items": {
+                            "$ref": "#/components/schemas/informacaoAdicional"
+                        }
+                    },
+                    "recorrencia": {
+                        "$ref": "#/components/schemas/recorrencia"
+                    }
+                },
+                "required": [
+                    "recorrencia",
+                    "valor",
+                    "original",
+                    "chave",
+                    "qrcodePix",
+                    "expiracao",
+                    "devedor",
+                    "calendario"
+                ]
+            },
+            "requestVencimento": {
+                "type": "object",
+                "title": "Cobrança Vencimento Solicitada",
+                "description": "**Descrição:** Dados criados da cobrança vencimento via API Pix Automático.\n",
+                "properties": {
+                    "qrcodePix": {
+                        "title": "QR Code Pix",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito do QR Code.\n",
+                        "type": "object",
+                        "properties": {
+                            "subtipo": {
+                                "title": "Subtipo do QR Code",
+                                "description": "**Descrição:** Campo que especifica o tipo do QR Code.\n",
+                                "maxLength": 31,
+                                "enum": [
+                                    "IMEDIATO",
+                                    "VENCIMENTO"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "subtipo"
+                        ]
+                    },
+                    "calendario": {
+                        "title": "Calendário",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito de controle de tempo da cobrança.\n",
+                        "$ref": "#/components/schemas/calendarioCobv"
+                    },
+                    "txid": {
+                        "title": "Identificador do QR Code",
+                        "description": "**Descrição:** O campo `txid` determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\n**Observação:** Na pacs.008, é referenciado como `TransactionIdentification <txId>` ou `idConciliacaoRecebedor`.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado.\n\nO txid é criado exclusivamente pelo usuário recebedor e está sob sua responsabilidade. O txid, no contexto de representação de um QR Code, é único por CPF/CNPJ do usuário recebedor. Cabe ao PSP recebedor validar essa regra na API Pix.\n\nEste código deve possuir entre 26 e 35 posições, podendo conter letras minúsculas (a-z), letras maiúsculas (A-Z) e números (0-9).\n",
+                        "type": "string",
+                        "pattern": "[a-zA-Z0-9]{26,35}"
+                    },
+                    "revisao": {
+                        "title": "Revisão",
+                        "description": "**Descrição:** Quantidade de revisões que a cobrança teve.\n\n**Observação:** Sempre começa em zero. Quando a cobrança é alterada esse valor é incrementado (sempre com acréscimos de 1).\nO incremento em uma cobrança deve ocorrer sempre que um objeto da cobrança em questão for alterado. O campo `loc` é uma exceção a esta regra.\n\nSe em uma determinada alteração em uma cobrança, o único campo alterado for o campo `loc`, então esta operação não incrementa a revisão da cobrança.\n\nO campo `loc` não ocasiona uma alteração na cobrança em si. Não é necessário armazenar histórico das alterações do campo `loc` para uma determinada cobrança. Para os outros campos da cobrança, registra-se histórico.\n\n**Tipo do campo:** integer($int32).\n",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "devedor": {
+                        "title": "Devedor",
+                        "description": "**Descrição:** Campos relacionados à uma recorrência.\n",
+                        "properties": {
+                            "email": {
+                                "title": "Email",
+                                "description": "**Descrição:** E-mail do devedor.\n",
+                                "type": "string"
+                            },
+                            "logradouro": {
+                                "title": "Logradouro",
+                                "description": "**Descrição:** Endereço do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            "cidade": {
+                                "title": "Cidade",
+                                "description": "**Descrição:** Cidade do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            "uf": {
+                                "title": "UF",
+                                "description": "**Descrição:** Estado do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 2
+                            },
+                            "cep": {
+                                "title": "CEP",
+                                "description": "**Descrição:** CEP do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 8
+                            },
+                            "cpf": {
+                                "description": "**Descrição:** Número do Documento Cadastro de Pessoa Física.\n\n**Observação:** Se preenchido, não enviar CNPJ.\n",
+                                "type": "string",
+                                "title": "CPF",
+                                "pattern": "/^\\d{11}$/"
+                            },
+                            "cnpj": {
+                                "description": "**Descrição:** Número do Cadastro Nacional da Pessoa Jurídica.\n\n**Observação:** Se preenchido, não enviar CPF.\n",
+                                "type": "string",
+                                "title": "CNPJ",
+                                "pattern": "/^\\d{14}$/"
+                            },
+                            "nome": {
+                                "description": "**Descrição:** Nome do pagador da cobrança. \n\n**Observação:** Necessário preencher o campo CNPJ ou o campo CPF.\n",
+                                "type": "string",
+                                "title": "Nome",
+                                "maxLength": 200
+                            }
+                        },
+                        "required": [
+                            "cpf",
+                            "cnpj",
+                            "nome"
+                        ]
+                    },
+                    "loc": {
+                        "title": "Location do Payload.",
+                        "description": "**Descrição:** Estrutura com informações do identificador da localização do payload.\n",
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "description": "**Descrição:** Identificador da location a ser informada na criação da cobrança.\n",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "id"
+                        ]
+                    },
+                    "valor": {
+                        "title": "Valor da Cobrança Vencimento",
+                        "description": "**Descrição:** Campo que organiza os valores monetários referentes à cobrança.\n",
+                        "$ref": "#/components/schemas/valor"
+                    },
+                    "pixCopiaeCola": {
+                        "title": "Pix Copia e Cola",
+                        "description": "**Descrição:** Este campo retorna o valor do Pix Copia e Cola correspondente à cobrança. Trata-se da sequência de caracteres que representa o BR Code.\n",
+                        "type": "string",
+                        "maxLength": 512
+                    },
+                    "chave": {
+                        "title": "Chave DICT do Recebedor",
+                        "description": "**Descrição:** Campo que contém a chave Pix registrada na DICT que será utilizada para recebimento da cobrança.\n",
+                        "type": "string",
+                        "maxLength": 77
+                    },
+                    "solicitacaoPagador": {
+                        "title": "Solicitação ao Pagador",
+                        "description": "**Descrição:** O campo `solicitacaoPagador`, determina um texto a ser apresentado ao pagador para que ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor.\n\n**Observação:** Esse texto será preenchido, na **pacs.008**, pelo PSP do pagador, no campo `RemittanceInformation`. O tamanho do campo na pacs.008 está limitado a **140 caracteres**.\n\nCampo retornado somente se o parâmetro de entrada foi colocado na requisição.\n",
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "infoAdicionais": {
+                        "title": "Informações Adicionais",
+                        "description": "**Descrição:** A informação contida na lista (nome e valor) deve ser apresentada ao pagador.\n\n**Observação:** O valor será referente ao campo idRec gerado após a criação de uma recorrência.\n\nCampo sempre retornado preenchido com o valor 'idRec'.\n",
+                        "type": "array",
+                        "maximum": 50,
+                        "items": {
+                            "$ref": "#/components/schemas/informacaoAdicional"
+                        }
+                    },
+                    "recorrencia": {
+                        "$ref": "#/components/schemas/recorrencia"
+                    }
+                },
+                "required": [
+                    "recorrencia",
+                    "calendario",
+                    "devedor",
+                    "valor",
+                    "chave",
+                    "qrcodePix"
+                ]
+            },
+            "cobrancaResponseOneOf": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/cobrancasResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/cobrancasVencimentoResponse"
+                    }
+                ],
+                "type": "object",
+                "title": "cobrança",
+                "description": "Este bloco de informação exemplifica a representação dos dois tipos de cobrança, utilizando a estrutura oneOf para demonstrar as possibilidades. Importante ressaltar que este bloco não constitui um objeto na requisição, servindo apenas como um recurso de visualização e compreensão das estruturas possíveis."
+            },
+            "cobrancaPatchCancelamentoResponseOneOf": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/cobrancasImediataCancelamentoResponse"
+                    },
+                    {
+                        "$ref": "#/components/schemas/cobrancasVencimentoCancelamentoResponse"
+                    }
+                ],
+                "type": "object",
+                "title": "cobrança",
+                "description": "Este bloco de informação exemplifica a representação dos dois tipos de cobrança, utilizando a estrutura oneOf para demonstrar as possibilidades. Importante ressaltar que este bloco não constitui um objeto na requisição, servindo apenas como um recurso de visualização e compreensão das estruturas possíveis."
+            },
+            "cobrancasResponse": {
+                "type": "object",
+                "title": "Cobrança Imediata Gerada",
+                "description": "**Descrição:** Dados criados ou alterados da cobrança imediata via API Pix.\n",
+                "properties": {
+                    "qrcodePix": {
+                        "title": "QR Code Pix",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito do QR Code.\n",
+                        "type": "object",
+                        "properties": {
+                            "subtipo": {
+                                "title": "Subtipo do QR Code",
+                                "description": "**Descrição:** Campo que especifica o tipo do QR Code.\n",
+                                "maxLength": 31,
+                                "enum": [
+                                    "IMEDIATO",
+                                    "VENCIMENTO"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "subtipo"
+                        ]
+                    },
+                    "calendario": {
+                        "title": "Calendário",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito de controle de tempo da cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "criacao": {
+                                "title": "Data de Criação",
+                                "description": "**Descrição:** Timestamp que indica o momento em que foi criada a cobrança.\n\n**Observação:** Respeita o RFC 3339.\n\n**Tipo do campo:** string($date-time).\n",
+                                "type": "string"
+                            },
+                            "expiracao": {
+                                "title": "Expiração",
+                                "description": "**Descrição:** Tempo de vida da cobrança, especificado em segundos a partir da data de criação da cobrança (`calendario.criacao`).\n\n**Observação:** Caso o campo expiracao não seja preenchido, ele terá um tempo de vida padrão de 86400 segundos.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "criacao",
+                            "expiracao"
+                        ]
+                    },
+                    "txid": {
+                        "title": "Identificador do QR Code",
+                        "description": "**Descrição:** O campo `txid` determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\n**Observação:** Na pacs.008, é referenciado como `TransactionIdentification <txId>` ou `idConciliacaoRecebedor`.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado.\n\nO txid é criado exclusivamente pelo usuário recebedor e está sob sua responsabilidade. O txid, no contexto de representação de um QR Code, é único por CPF/CNPJ do usuário recebedor. Cabe ao PSP recebedor validar essa regra na API Pix.\n\nEste código deve possuir entre 26 e 35 posições, podendo conter letras minúsculas (a-z), letras maiúsculas (A-Z) e números (0-9).\n",
+                        "type": "string",
+                        "pattern": "[a-zA-Z0-9]{26,35}"
+                    },
+                    "revisao": {
+                        "title": "Revisão",
+                        "description": "**Descrição:** Quantidade de revisões que a cobrança teve.\n\n**Observação:** Sempre começa em zero. Quando a cobrança é alterada esse valor é incrementado (sempre com acréscimos de 1).\n\nO incremento em uma cobrança deve ocorrer sempre que um objeto da cobrança em questão for alterado. O campo `loc` é uma exceção a esta regra.\n\nSe em uma determinada alteração em uma cobrança, o único campo alterado for o campo `loc`, então esta operação não incrementa a revisão da cobrança.\n\nO campo `loc` não ocasiona uma alteração na cobrança em si. Não é necessário armazenar histórico das alterações do campo `loc` para uma determinada cobrança. Para os outros campos da cobrança, registra-se histórico.\n\n**Tipo do campo:** integer($int32).\n",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "devedor": {
+                        "$ref": "#/components/schemas/pessoa"
+                    },
+                    "loc": {
+                        "$ref": "#/components/schemas/loc"
+                    },
+                    "location": {
+                        "title": "Localização do Payload",
+                        "description": "**Descrição:** URL com a localização do payload informado na criação da cobrança.\n\n**Tipo do campo:** string($uri).\n",
+                        "type": "string",
+                        "maxLength": 77,
+                        "readOnly": true
+                    },
+                    "status": {
+                        "title": "Status",
+                        "description": "**Descrição:** Status da cobrança. Na criação da cobrança será enviada sempre com o status \"ATIVA\". Caso tenha alterações no status desse QrCode, as opções de valor do campo são: `ATIVA`, `CONCLUIDA`, `REMOVIDA_PELO_PSP`, `REMOVIDA_PELO_USUARIO_RECEBEDOR`.\n\n**Observação:** Estado do registro da cobrança. Não se confunde com o estado da cobrança em si, ou seja, não guarda relação com o fato de a cobrança encontrar-se vencida ou expirada, por exemplo.\n",
+                        "maxLength": 31,
+                        "enum": [
+                            "ATIVA",
+                            "CONCLUIDA",
+                            "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                            "REMOVIDA_PELO_PSP"
+                        ],
+                        "type": "string"
+                    },
+                    "valor": {
+                        "title": "Valor da Cobrança Imediata",
+                        "description": "**Descrição:** Campo que organiza os valores monetários referentes à cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "original": {
+                                "title": "Valor",
+                                "description": "**Descrição:** Valor nominal/original da cobrança.\n\n**Observação:** O valor deve ser maior do que zero. Todos os campos que indicam valores monetários obedecem ao formato do ID 54 da especificação EMV/BR Code para QR Codes. O separador decimal é o caractere ponto. Não é aplicável utilizar separador de milhar. Exemplos de valores aderentes ao padrão: “0.00”, “1.00”, “123.99”, “123456789.23”.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            },
+                            "modalidadeAlteracao": {
+                                "title": "Modalidade de Alteração",
+                                "description": "**Descrição:** Trata-se de um campo que determina se o valor final do documento pode ser alterado pelo pagador. \n\n**Observação:** Na ausência desse campo, assume-se que não se pode alterar o valor do documento de cobrança, ou seja, assume-se o valor 0.\n\nSe o campo estiver presente e com valor 1, então está determinado que o valor final da cobrança pode ter seu valor alterado pelo pagador.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1
+                            }
+                        },
+                        "required": [
+                            "original"
+                        ]
+                    },
+                    "pixCopiaeCola": {
+                        "title": "Pix Copia e Cola",
+                        "description": "**Descrição:** Este campo retorna o valor do Pix Copia e Cola correspondente à cobrança. Trata-se da sequência de caracteres que representa o BR Code.\n",
+                        "type": "string",
+                        "maxLength": 512
+                    },
+                    "chave": {
+                        "title": "Chave DICT do Recebedor",
+                        "description": "**Descrição:** Campo que contém a chave Pix registrada na DICT que será utilizada para recebimento da cobrança.\n",
+                        "type": "string",
+                        "maxLength": 77
+                    },
+                    "solicitacaoPagador": {
+                        "title": "Solicitação ao Pagador",
+                        "description": "**Descrição:** O campo `solicitacaoPagador`, determina um texto a ser apresentado ao pagador para que ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor.\n\n**Observação:** Esse texto será preenchido, na **pacs.008**, pelo PSP do pagador, no campo `RemittanceInformation`. O tamanho do campo na pacs.008 está limitado a **140 caracteres**.\n\nCampo retornado somente se o parâmetro de entrada foi colocado na requisição.\n",
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "infoAdicionais": {
+                        "title": "Informações Adicionais",
+                        "description": "**Descrição:** A informação contida na lista (nome e valor) deve ser apresentada ao pagador.\n\n**Observação:** O valor será referente ao campo recorrenciaId gerado após a criação de uma recorrência.\n\nCampo sempre retornado preenchido com o valor 'recorrenciaId'.\n",
+                        "type": "array",
+                        "maximum": 50,
+                        "items": {
+                            "$ref": "#/components/schemas/informacaoAdicional"
+                        }
+                    }
+                },
+                "required": [
+                    "status",
+                    "txid",
+                    "revisao",
+                    "valor",
+                    "chave",
+                    "calendario",
+                    "qrcodePix",
+                    "infoAdicionais"
+                ]
+            },
+            "cobrancasVencimentoResponse": {
+                "type": "object",
+                "title": "Cobrança com Vencimento Gerada",
+                "description": "**Descrição:** Dados criados ou alterados da cobrança com vencimento via API Pix.\n",
+                "properties": {
+                    "qrcodePix": {
+                        "title": "QR Code Pix",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito do QR Code.\n",
+                        "type": "object",
+                        "properties": {
+                            "subtipo": {
+                                "title": "Subtipo do QR Code",
+                                "description": "**Descrição:** Campo que especifica o tipo do QR Code.\n",
+                                "maxLength": 31,
+                                "enum": [
+                                    "IMEDIATO",
+                                    "VENCIMENTO"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "subtipo"
+                        ]
+                    },
+                    "calendario": {
+                        "title": "Calendário",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito de controle de tempo da cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "criacao": {
+                                "title": "Data de Criação",
+                                "description": "**Descrição:** Timestamp que indica o momento em que foi criada a cobrança.\n\n**Observação:** Respeita o RFC 3339.\n\n**Tipo do campo:** string($date-time).\n",
+                                "type": "string"
+                            },
+                            "dataDeVencimento": {
+                                "title": "Data de Vencimento",
+                                "description": "**Descrição:** Data de vencimento da cobrança.\n\n**Observação:** Trata-se de uma data, no formato `YYYY-MM-DD`, segundo ISO 8601. É a data de vencimento da cobrança. A cobrança pode ser honrada até esse dia, inclusive, em qualquer horário do dia.\n\n**Tipo do campo:** string($date).\n",
+                                "type": "string"
+                            },
+                            "validadeAposVencimento": {
+                                "title": "Validade Após Vencimento",
+                                "description": "**Descrição:** Trata-se da quantidade de dias corridos após calendario.dataDeVencimento, em que a cobrança poderá ser paga.\n\n**Observação:** Sempre que a data de vencimento cair em um fim de semana ou em um feriado para o usuário pagador, ela deve ser automaticamente prorrogada para o primeiro dia útil subsequente. Todos os campos que façam referência a esta data (`validadeAposVencimento`; `desconto`; `juros` e `multa`) devem assumir essa prorrogação, quando for o caso. O valor padrão é 30.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "criacao",
+                            "dataDeVencimento",
+                            "validadeAposVencimento"
+                        ]
+                    },
+                    "txid": {
+                        "title": "Identificador da Cobrança",
+                        "description": "**Descrição:** O campo `txid` determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\n**Observação:** Na pacs.008, é referenciado como `TransactionIdentification <txId>` ou `idConciliacaoRecebedor`.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado.\n\nO txid é criado exclusivamente pelo usuário recebedor e está sob sua responsabilidade. O txid, no contexto de representação de uma cobrança, é único por CPF/CNPJ do usuário recebedor. Cabe ao PSP recebedor validar essa regra na API Pix.\n\nEste código deve possuir entre 26 e 35 posições, podendo conter letras minúsculas (a-z), letras maiúsculas (A-Z) e números (0-9).\n",
+                        "type": "string",
+                        "pattern": "[a-zA-Z0-9]{26,35}"
+                    },
+                    "revisao": {
+                        "title": "Revisão",
+                        "description": "**Descrição:** Quantidade de revisões que a cobrança teve.\n\n**Observação:** Sempre começa em zero. Quando a cobrança é alterada esse valor é incrementado (sempre com acréscimos de 1).\nO incremento em uma cobrança deve ocorrer sempre que um objeto da cobrança em questão for alterado. O campo `loc` é uma exceção a esta regra.\n\nSe em uma determinada alteração em uma cobrança, o único campo alterado for o campo `loc`, então esta operação não incrementa a revisão da cobrança.\n\nO campo `loc` não ocasiona uma alteração na cobrança em si. Não é necessário armazenar histórico das alterações do campo `loc` para uma determinada cobrança. Para os outros campos da cobrança, registra-se histórico.\n\n**Tipo do campo:** integer($int32).\n",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "devedor": {
+                        "title": "Devedor",
+                        "description": "**Descrição:** Campos relacionados à uma recorrência.\n",
+                        "properties": {
+                            "email": {
+                                "title": "Email",
+                                "description": "**Descrição:** E-mail do devedor.\ntype: string    \n"
+                            },
+                            "logradouro": {
+                                "title": "Logradouro",
+                                "description": "**Descrição:** Endereço do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            "cidade": {
+                                "title": "Cidade",
+                                "description": "**Descrição:** Cidade do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            "uf": {
+                                "title": "UF",
+                                "description": "**Descrição:** Estado do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 2
+                            },
+                            "cep": {
+                                "title": "CEP",
+                                "description": "**Descrição:** CEP do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 8
+                            },
+                            "cpf": {
+                                "description": "**Descrição:** Número do Documento Cadastro de Pessoa Física.\n\n**Observação:** Se preenchido, não enviar CNPJ.\n",
+                                "type": "string",
+                                "title": "CPF",
+                                "pattern": "/^\\d{11}$/"
+                            },
+                            "cnpj": {
+                                "description": "**Descrição:** Número do Cadastro Nacional da Pessoa Jurídica.\n\n**Observação:** Se preenchido, não enviar CPF.\n",
+                                "type": "string",
+                                "title": "CNPJ",
+                                "pattern": "/^\\d{14}$/"
+                            },
+                            "nome": {
+                                "description": "**Descrição:** Nome do pagador da cobrança. \n\n**Observação:** Necessário preencher o campo CNPJ ou o campo CPF.\n",
+                                "type": "string",
+                                "title": "Nome",
+                                "maxLength": 200
+                            }
+                        },
+                        "required": [
+                            "cpf",
+                            "cnpj",
+                            "nome"
+                        ]
+                    },
+                    "recebedor": {
+                        "$ref": "#/components/schemas/recebedor"
+                    },
+                    "loc": {
+                        "$ref": "#/components/schemas/loc"
+                    },
+                    "status": {
+                        "title": "Status",
+                        "description": "**Descrição:** Status da cobrança. Na criação da cobrança será enviada sempre com o status \"ATIVA\". Caso tenha alterações no status desse QrCode, as opções de valor do campo são: `ATIVA`, `CONCLUIDA`, `REMOVIDA_PELO_PSP`, `REMOVIDA_PELO_USUARIO_RECEBEDOR`.\n\n**Observação:** Estado do registro da cobrança. Não se confunde com o estado da cobrança em si, ou seja, não guarda relação com o fato de a cobrança encontrar-se vencida ou expirada, por exemplo.\nOs status são assim definidos:\n`ATIVA`: indica que o registro se refere a uma cobrança que foi gerada mas ainda não foi paga nem removida.\n\n`CONCLUIDA`: indica que o registro se refere a uma cobrança que já foi paga e, por conseguinte, não pode acolher outro pagamento.\n\n`REMOVIDO_PELO_USUARIO_RECEBEDOR`: indica que o usuário recebedor solicitou a remoção do registro da cobrança.\n\n`REMOVIDO_PELO_PSP`: indica que o PSP Recebedor solicitou a remoção do registro da cobrança.\n",
+                        "maxLength": 31,
+                        "enum": [
+                            "ATIVA",
+                            "CONCLUIDA",
+                            "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                            "REMOVIDA_PELO_PSP"
+                        ],
+                        "type": "string"
+                    },
+                    "valor": {
+                        "$ref": "#/components/schemas/valor"
+                    },
+                    "pixCopiaeCola": {
+                        "title": "Pix Copia e Cola",
+                        "description": "**Descrição:** Este campo retorna o valor do Pix Copia e Cola correspondente à cobrança. Trata-se da sequência de caracteres que representa o BR Code.\n",
+                        "type": "string",
+                        "maxLength": 512
+                    },
+                    "chave": {
+                        "title": "Chave DICT do Recebedor",
+                        "description": "**Descrição:** Campo que contém a chave Pix registrada na DICT que será utilizada para recebimento da cobrança.\n",
+                        "type": "string",
+                        "maxLength": 77
+                    },
+                    "solicitacaoPagador": {
+                        "title": "Solicitação ao Pagador",
+                        "description": "**Descrição:** O campo `solicitacaoPagador`, determina um texto a ser apresentado ao pagador para que ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor.\n\n**Observação:** Esse texto será preenchido, na **pacs.008**, pelo PSP do pagador, no campo `RemittanceInformation`. O tamanho do campo na pacs.008 está limitado a **140 caracteres**.\n\nCampo retornado somente se o parâmetro de entrada foi colocado na requisição.\n",
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "infoAdicionais": {
+                        "title": "Informações Adicionais",
+                        "description": "**Descrição:** A informação contida na lista (nome e valor) deve ser apresentada ao pagador.\n\n**Observação:** O valor será referente ao campo recorrenciaId gerado após a criação de uma recorrência.\n\nCampo sempre retornado preenchido com o valor 'recorrenciaId'.\n",
+                        "type": "array",
+                        "maximum": 50,
+                        "items": {
+                            "$ref": "#/components/schemas/informacaoAdicional"
+                        }
+                    }
+                },
+                "required": [
+                    "status",
+                    "txid",
+                    "revisao",
+                    "devedor",
+                    "recebedor",
+                    "valor",
+                    "chave",
+                    "calendario",
+                    "qrcodePix",
+                    "infoAdicionais"
+                ]
+            },
+            "cobrancasImediataCancelamentoResponse": {
+                "type": "object",
+                "title": "Cobrança Imediata Gerada",
+                "description": "**Descrição:** Dados criados ou alterados da cobrança imediata via API Pix.\n",
+                "properties": {
+                    "qrcodePix": {
+                        "title": "QR Code Pix",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito do QR Code.\n",
+                        "type": "object",
+                        "properties": {
+                            "subtipo": {
+                                "title": "Subtipo do QR Code",
+                                "description": "**Descrição:** Campo que especifica o tipo do QR Code.\n",
+                                "maxLength": 31,
+                                "enum": [
+                                    "IMEDIATO",
+                                    "VENCIMENTO"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "subtipo"
+                        ]
+                    },
+                    "calendario": {
+                        "title": "Calendário",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito de controle de tempo da cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "criacao": {
+                                "title": "Data de Criação",
+                                "description": "**Descrição:** Timestamp que indica o momento em que foi criada a cobrança.\n\n**Observação:** Respeita o RFC 3339.\n\n**Tipo do campo:** string($date-time).\n",
+                                "type": "string"
+                            },
+                            "expiracao": {
+                                "title": "Expiração",
+                                "description": "**Descrição:** Tempo de vida da cobrança, especificado em segundos a partir da data de criação da cobrança (`calendario.criacao`).\n\n**Observação:** Caso o campo expiracao não seja preenchido, ele terá um tempo de vida padrão de 86400 segundos.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "criacao",
+                            "expiracao"
+                        ]
+                    },
+                    "txid": {
+                        "title": "Identificador do QR Code",
+                        "description": "**Descrição:** O campo `txid` determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\n**Observação:** Na pacs.008, é referenciado como `TransactionIdentification <txId>` ou `idConciliacaoRecebedor`.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado.\n\nO txid é criado exclusivamente pelo usuário recebedor e está sob sua responsabilidade. O txid, no contexto de representação de um QR Code, é único por CPF/CNPJ do usuário recebedor. Cabe ao PSP recebedor validar essa regra na API Pix.\n\nEste código deve possuir entre 26 e 35 posições, podendo conter letras minúsculas (a-z), letras maiúsculas (A-Z) e números (0-9).\n",
+                        "type": "string",
+                        "pattern": "[a-zA-Z0-9]{26,35}"
+                    },
+                    "revisao": {
+                        "title": "Revisão",
+                        "description": "**Descrição:** Quantidade de revisões que a cobrança teve.\n\n**Observação:** Sempre começa em zero. Quando a cobrança é alterada esse valor é incrementado (sempre com acréscimos de 1).\n\nO incremento em uma cobrança deve ocorrer sempre que um objeto da cobrança em questão for alterado. O campo `loc` é uma exceção a esta regra.\n\nSe em uma determinada alteração em uma cobrança, o único campo alterado for o campo `loc`, então esta operação não incrementa a revisão da cobrança.\n\nO campo `loc` não ocasiona uma alteração na cobrança em si. Não é necessário armazenar histórico das alterações do campo `loc` para uma determinada cobrança. Para os outros campos da cobrança, registra-se histórico.\n\n**Tipo do campo:** integer($int32).\n",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "devedor": {
+                        "$ref": "#/components/schemas/pessoa"
+                    },
+                    "loc": {
+                        "$ref": "#/components/schemas/loc"
+                    },
+                    "location": {
+                        "title": "Localização do Payload",
+                        "description": "**Descrição:** URL com a localização do payload informado na criação da cobrança.\n\n**Tipo do campo:** string($uri).\n",
+                        "type": "string",
+                        "maxLength": 77,
+                        "readOnly": true
+                    },
+                    "status": {
+                        "title": "Status",
+                        "description": "**Descrição:** Status da cobrança. Na criação da cobrança será enviada sempre com o status \"ATIVA\". Caso tenha alterações no status desse QrCode, as opções de valor do campo são: `ATIVA`, `CONCLUIDA`, `REMOVIDA_PELO_PSP`, `REMOVIDA_PELO_USUARIO_RECEBEDOR`.\n\n**Observação:** Estado do registro da cobrança. Não se confunde com o estado da cobrança em si, ou seja, não guarda relação com o fato de a cobrança encontrar-se vencida ou expirada, por exemplo.\n",
+                        "maxLength": 31,
+                        "enum": [
+                            "ATIVA",
+                            "CONCLUIDA",
+                            "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                            "REMOVIDA_PELO_PSP"
+                        ],
+                        "type": "string"
+                    },
+                    "valor": {
+                        "title": "Valor da Cobrança Imediata",
+                        "description": "**Descrição:** Campo que organiza os valores monetários referentes à cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "original": {
+                                "title": "Valor",
+                                "description": "**Descrição:** Valor nominal/original da cobrança.\n\n**Observação:** O valor deve ser maior do que zero. Todos os campos que indicam valores monetários obedecem ao formato do ID 54 da especificação EMV/BR Code para QR Codes. O separador decimal é o caractere ponto. Não é aplicável utilizar separador de milhar. Exemplos de valores aderentes ao padrão: “0.00”, “1.00”, “123.99”, “123456789.23”.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            },
+                            "modalidadeAlteracao": {
+                                "title": "Modalidade de Alteração",
+                                "description": "**Descrição:** Trata-se de um campo que determina se o valor final do documento pode ser alterado pelo pagador. \n\n**Observação:** Na ausência desse campo, assume-se que não se pode alterar o valor do documento de cobrança, ou seja, assume-se o valor 0.\n\nSe o campo estiver presente e com valor 1, então está determinado que o valor final da cobrança pode ter seu valor alterado pelo pagador.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1
+                            }
+                        },
+                        "required": [
+                            "original"
+                        ]
+                    },
+                    "pixCopiaeCola": {
+                        "title": "Pix Copia e Cola",
+                        "description": "**Descrição:** Este campo retorna o valor do Pix Copia e Cola correspondente à cobrança. Trata-se da sequência de caracteres que representa o BR Code.\n",
+                        "type": "string",
+                        "maxLength": 512
+                    },
+                    "chave": {
+                        "title": "Chave DICT do Recebedor",
+                        "description": "**Descrição:** Campo que contém a chave Pix registrada na DICT que será utilizada para recebimento da cobrança.\n",
+                        "type": "string",
+                        "maxLength": 77
+                    },
+                    "solicitacaoPagador": {
+                        "title": "Solicitação ao Pagador",
+                        "description": "**Descrição:** O campo `solicitacaoPagador`, determina um texto a ser apresentado ao pagador para que ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor.\n\n**Observação:** Esse texto será preenchido, na **pacs.008**, pelo PSP do pagador, no campo `RemittanceInformation`. O tamanho do campo na pacs.008 está limitado a **140 caracteres**.\n\nCampo retornado somente se o parâmetro de entrada foi colocado na requisição.\n",
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "infoAdicionais": {
+                        "title": "Informações Adicionais",
+                        "description": "**Descrição:** A informação contida na lista (nome e valor) deve ser apresentada ao pagador.\n\n**Observação:** O valor será referente ao campo recorrenciaId gerado após a criação de uma recorrência.\n\nCampo sempre retornado preenchido com o valor 'recorrenciaId'.\n",
+                        "type": "array",
+                        "maximum": 50,
+                        "items": {
+                            "$ref": "#/components/schemas/informacaoAdicional"
+                        }
+                    }
+                },
+                "required": [
+                    "status",
+                    "txid",
+                    "revisao",
+                    "valor",
+                    "chave",
+                    "calendario",
+                    "qrcodePix",
+                    "infoAdicionais"
+                ]
+            },
+            "cobrancasVencimentoCancelamentoResponse": {
+                "type": "object",
+                "title": "Cobrança com Vencimento Gerada",
+                "description": "**Descrição:** Dados criados ou alterados da cobrança com vencimento via API Pix.\n",
+                "properties": {
+                    "qrcodePix": {
+                        "title": "QR Code Pix",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito do QR Code.\n",
+                        "type": "object",
+                        "properties": {
+                            "subtipo": {
+                                "title": "Subtipo do QR Code",
+                                "description": "**Descrição:** Campo que especifica o tipo do QR Code.\n",
+                                "maxLength": 31,
+                                "enum": [
+                                    "IMEDIATO",
+                                    "VENCIMENTO"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "subtipo"
+                        ]
+                    },
+                    "calendario": {
+                        "title": "Calendário",
+                        "description": "**Descrição:** Objeto que organiza informações a respeito de controle de tempo da cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "criacao": {
+                                "title": "Data de Criação",
+                                "description": "**Descrição:** Timestamp que indica o momento em que foi criada a cobrança.\n\n**Observação:** Respeita o RFC 3339.\n\n**Tipo do campo:** string($date-time).\n",
+                                "type": "string"
+                            },
+                            "dataDeVencimento": {
+                                "title": "Data de Vencimento",
+                                "description": "**Descrição:** Data de vencimento da cobrança.\n\n**Observação:** Trata-se de uma data, no formato `YYYY-MM-DD`, segundo ISO 8601. É a data de vencimento da cobrança. A cobrança pode ser honrada até esse dia, inclusive, em qualquer horário do dia.\n\n**Tipo do campo:** string($date).\n",
+                                "type": "string"
+                            },
+                            "validadeAposVencimento": {
+                                "title": "Validade Após Vencimento",
+                                "description": "**Descrição:** Trata-se da quantidade de dias corridos após calendario.dataDeVencimento, em que a cobrança poderá ser paga.\n\n**Observação:** Sempre que a data de vencimento cair em um fim de semana ou em um feriado para o usuário pagador, ela deve ser automaticamente prorrogada para o primeiro dia útil subsequente. Todos os campos que façam referência a esta data (`validadeAposVencimento`; `desconto`; `juros` e `multa`) devem assumir essa prorrogação, quando for o caso. O valor padrão é 30.\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "criacao",
+                            "dataDeVencimento",
+                            "validadeAposVencimento"
+                        ]
+                    },
+                    "txid": {
+                        "title": "Identificador da Cobrança",
+                        "description": "**Descrição:** O campo `txid` determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\n**Observação:** Na pacs.008, é referenciado como `TransactionIdentification <txId>` ou `idConciliacaoRecebedor`.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado.\n\nO txid é criado exclusivamente pelo usuário recebedor e está sob sua responsabilidade. O txid, no contexto de representação de uma cobrança, é único por CPF/CNPJ do usuário recebedor. Cabe ao PSP recebedor validar essa regra na API Pix.\n\nEste código deve possuir entre 26 e 35 posições, podendo conter letras minúsculas (a-z), letras maiúsculas (A-Z) e números (0-9).\n",
+                        "type": "string",
+                        "pattern": "[a-zA-Z0-9]{26,35}"
+                    },
+                    "revisao": {
+                        "title": "Revisão",
+                        "description": "**Descrição:** Quantidade de revisões que a cobrança teve.\n\n**Observação:** Sempre começa em zero. Quando a cobrança é alterada esse valor é incrementado (sempre com acréscimos de 1).\nO incremento em uma cobrança deve ocorrer sempre que um objeto da cobrança em questão for alterado. O campo `loc` é uma exceção a esta regra.\n\nSe em uma determinada alteração em uma cobrança, o único campo alterado for o campo `loc`, então esta operação não incrementa a revisão da cobrança.\n\nO campo `loc` não ocasiona uma alteração na cobrança em si. Não é necessário armazenar histórico das alterações do campo `loc` para uma determinada cobrança. Para os outros campos da cobrança, registra-se histórico.\n\n**Tipo do campo:** integer($int32).\n",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "devedor": {
+                        "title": "Devedor",
+                        "description": "**Descrição:** Campos relacionados à uma recorrência.\n",
+                        "properties": {
+                            "email": {
+                                "title": "Email",
+                                "description": "**Descrição:** E-mail do devedor.\ntype: string    \n"
+                            },
+                            "logradouro": {
+                                "title": "Logradouro",
+                                "description": "**Descrição:** Endereço do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            "cidade": {
+                                "title": "Cidade",
+                                "description": "**Descrição:** Cidade do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            "uf": {
+                                "title": "UF",
+                                "description": "**Descrição:** Estado do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 2
+                            },
+                            "cep": {
+                                "title": "CEP",
+                                "description": "**Descrição:** CEP do devedor da cobrança.\n",
+                                "type": "string",
+                                "maxLength": 8
+                            },
+                            "cpf": {
+                                "description": "**Descrição:** Número do Documento Cadastro de Pessoa Física.\n\n**Observação:** Se preenchido, não enviar CNPJ.\n",
+                                "type": "string",
+                                "title": "CPF",
+                                "pattern": "/^\\d{11}$/"
+                            },
+                            "cnpj": {
+                                "description": "**Descrição:** Número do Cadastro Nacional da Pessoa Jurídica.\n\n**Observação:** Se preenchido, não enviar CPF.\n",
+                                "type": "string",
+                                "title": "CNPJ",
+                                "pattern": "/^\\d{14}$/"
+                            },
+                            "nome": {
+                                "description": "**Descrição:** Nome do pagador da cobrança. \n\n**Observação:** Necessário preencher o campo CNPJ ou o campo CPF.\n",
+                                "type": "string",
+                                "title": "Nome",
+                                "maxLength": 200
+                            }
+                        },
+                        "required": [
+                            "cpf",
+                            "cnpj",
+                            "nome"
+                        ]
+                    },
+                    "recebedor": {
+                        "$ref": "#/components/schemas/recebedor"
+                    },
+                    "loc": {
+                        "$ref": "#/components/schemas/loc"
+                    },
+                    "status": {
+                        "title": "Status",
+                        "description": "**Descrição:** Status da cobrança. Na criação da cobrança será enviada sempre com o status \"ATIVA\". Caso tenha alterações no status desse QrCode, as opções de valor do campo são: `ATIVA`, `CONCLUIDA`, `REMOVIDA_PELO_PSP`, `REMOVIDA_PELO_USUARIO_RECEBEDOR`.\n\n**Observação:** Estado do registro da cobrança. Não se confunde com o estado da cobrança em si, ou seja, não guarda relação com o fato de a cobrança encontrar-se vencida ou expirada, por exemplo.\nOs status são assim definidos:\n`ATIVA`: indica que o registro se refere a uma cobrança que foi gerada mas ainda não foi paga nem removida.\n\n`CONCLUIDA`: indica que o registro se refere a uma cobrança que já foi paga e, por conseguinte, não pode acolher outro pagamento.\n\n`REMOVIDO_PELO_USUARIO_RECEBEDOR`: indica que o usuário recebedor solicitou a remoção do registro da cobrança.\n\n`REMOVIDO_PELO_PSP`: indica que o PSP Recebedor solicitou a remoção do registro da cobrança.\n",
+                        "maxLength": 31,
+                        "enum": [
+                            "ATIVA",
+                            "CONCLUIDA",
+                            "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                            "REMOVIDA_PELO_PSP"
+                        ],
+                        "type": "string"
+                    },
+                    "valor": {
+                        "$ref": "#/components/schemas/valor"
+                    },
+                    "pixCopiaeCola": {
+                        "title": "Pix Copia e Cola",
+                        "description": "**Descrição:** Este campo retorna o valor do Pix Copia e Cola correspondente à cobrança. Trata-se da sequência de caracteres que representa o BR Code.\n",
+                        "type": "string",
+                        "maxLength": 512
+                    },
+                    "chave": {
+                        "title": "Chave DICT do Recebedor",
+                        "description": "**Descrição:** Campo que contém a chave Pix registrada na DICT que será utilizada para recebimento da cobrança.\n",
+                        "type": "string",
+                        "maxLength": 77
+                    },
+                    "solicitacaoPagador": {
+                        "title": "Solicitação ao Pagador",
+                        "description": "**Descrição:** O campo `solicitacaoPagador`, determina um texto a ser apresentado ao pagador para que ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor.\n\n**Observação:** Esse texto será preenchido, na **pacs.008**, pelo PSP do pagador, no campo `RemittanceInformation`. O tamanho do campo na pacs.008 está limitado a **140 caracteres**.\n\nCampo retornado somente se o parâmetro de entrada foi colocado na requisição.\n",
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "infoAdicionais": {
+                        "title": "Informações Adicionais",
+                        "description": "**Descrição:** A informação contida na lista (nome e valor) deve ser apresentada ao pagador.\n\n**Observação:** O valor será referente ao campo recorrenciaId gerado após a criação de uma recorrência.\n\nCampo sempre retornado preenchido com o valor 'recorrenciaId'.\n",
+                        "type": "array",
+                        "maximum": 50,
+                        "items": {
+                            "$ref": "#/components/schemas/informacaoAdicional"
+                        }
+                    }
+                },
+                "required": [
+                    "status",
+                    "txid",
+                    "revisao",
+                    "devedor",
+                    "recebedor",
+                    "valor",
+                    "chave",
+                    "calendario",
+                    "qrcodePix",
+                    "infoAdicionais"
+                ]
+            },
+            "erro": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "title",
+                    "status"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URI de referência que identifica o tipo de problema. De acordo com a RFC 7807.",
+                        "example": "https://pix.bcb.gov.br/api/v2/error/NaoEncontrado"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Descrição resumida do problema.",
+                        "example": "Not found"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "Código HTTP do status retornado.",
+                        "example": 404
+                    },
+                    "detail": {
+                        "type": "string",
+                        "description": "Descrição completa do problema."
+                    },
+                    "violacoes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/violacaoCobranca"
+                        }
+                    }
+                }
+            },
+            "violacaoCobranca": {
+                "type": "object",
+                "title": "Violações",
+                "properties": {
+                    "razao": {
+                        "type": "string",
+                        "title": "Descrição do erro",
+                        "description": "Descrição do erro",
+                        "example": "Valor da cobrança não pode ser 0.00"
+                    },
+                    "propriedade": {
+                        "type": "string",
+                        "title": "Nome da propriedade",
+                        "description": "Nome da propriedade",
+                        "example": "cob.chave"
+                    },
+                    "valor": {
+                        "type": "string",
+                        "title": "Valor da propriedade",
+                        "description": "Valor da propriedade",
+                        "example": "061996671234"
+                    }
+                }
+            },
+            "recorrencia": {
+                "type": "object",
+                "title": "Recorrência",
+                "description": "**Descrição:** Campos relacionados à uma recorrência.\n",
+                "properties": {
+                    "vinculo": {
+                        "title": "Vínculo",
+                        "description": "**Descrição:** Objeto que organiza os campos relacionados ao vínculo da recorrência.\n",
+                        "type": "object",
+                        "properties": {
+                            "contrato": {
+                                "title": "Número do contrato da recorrência",
+                                "description": "**Descrição:** Número do contrato da recorrência.\n",
+                                "maxLength": 35,
+                                "type": "string"
+                            },
+                            "objeto": {
+                                "title": "Descrição do contrato",
+                                "description": "**Descrição:** Descrição do contrato.\n",
+                                "maxLength": 35,
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "contrato",
+                            "objeto"
+                        ]
+                    },
+                    "calendario": {
+                        "title": "Calendário",
+                        "description": "**Descrição:** Objeto que organiza os campos relacionados as datas e frequência da recorrência.\n",
+                        "type": "object",
+                        "properties": {
+                            "periodicidade": {
+                                "title": "Periodicidade",
+                                "description": "**Descrição:** Determina se a periodicidade é mensal, anual etc. \nA combinação desse campo com as datas finais e iniciais da recorrência indica a quantidade de parcelas e as datas de débito periódico.\n",
+                                "maxLength": 31,
+                                "enum": [
+                                    "SEMANAL",
+                                    "MENSAL",
+                                    "TRIMESTRAL",
+                                    "SEMESTRAL",
+                                    "ANUAL"
+                                ],
+                                "type": "string"
+                            },
+                            "dataInicial": {
+                                "title": "Data Inicial Recorrência",
+                                "description": "**Descrição:** Data de início para agendamento das recorrências.\n",
+                                "type": "string",
+                                "example": "2020-10-09"
+                            },
+                            "dataFinal": {
+                                "title": "Data Final Recorrência",
+                                "description": "**Descrição:** Data final para agendamento das recorrências.\n",
+                                "type": "string",
+                                "example": "2024-10-09"
+                            }
+                        },
+                        "required": [
+                            "dataInicial",
+                            "periodicidade"
+                        ]
+                    },
+                    "valor": {
+                        "title": "Valor",
+                        "description": "**Descrição:** Objeto que organiza as informações sobre os valores da recorrência.\n",
+                        "type": "object",
+                        "properties": {
+                            "valorRec": {
+                                "title": "Valor Recorrência",
+                                "description": "**Descrição:** Valor do contrato de recorrência, campo obrigatório caso o contrato seja do tipo valor 'FIXO'. \n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            },
+                            "valorMinimoRecebedor": {
+                                "title": "Valor Minimo Recebedor",
+                                "description": "**Descrição:** Valor mínimo definido pelo recebedor para a recorrência, somente para contratos do tipo 'Variável'.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            }
+                        }
+                    },
+                    "politicaRetentativa": {
+                        "title": "Politica Retentativa",
+                        "description": "**Descrição:** Política de retentativa após vencimento da recorrência. \n  Determinará se após a data de liquidação determinada na cobrança recorrente será autorizada o reagendamento com data superior a data do vencimento.\n\n  NAO_PERMITE: Não será autorizado retentativas após o vencimento.\n  \n  PERMITE_3R_7D: Será permitida até 3 tentativas após o vencimento dentro do período de 7 dias corridos.\n",
+                        "type": "string",
+                        "enum": [
+                            "NAO_PERMITE",
+                            "PERMITE_3R_7D"
+                        ],
+                        "maxLength": 31
+                    }
+                },
+                "required": [
+                    "vinculo",
+                    "calendario",
+                    "politicaRetentativa"
+                ]
+            },
+            "campo": {
+                "type": "object",
+                "properties": {
+                    "campo": {
+                        "description": "Nome do campo em questão",
+                        "type": "string"
+                    },
+                    "mensagem": {
+                        "description": "Descrição referente ao campo em questão",
+                        "type": "string"
+                    },
+                    "valor": {
+                        "description": "Valor do campo em questão",
+                        "type": "string"
+                    }
+                }
+            },
+            "informacaoAdicional": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "nome": {
+                        "description": "**Descrição:** Nome do campo de informação adicional.\n",
+                        "type": "string",
+                        "title": "Nome",
+                        "maxLength": 50
+                    },
+                    "valor": {
+                        "description": "**Descrição:** Dados a serem apresentados na informação adicional.\n",
+                        "type": "string",
+                        "title": "Valor",
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "nome",
+                    "valor"
+                ]
+            },
+            "loc": {
+                "type": "object",
+                "title": "Location do Payload",
+                "description": "**Descrição:** Dados da localização do payload.\n",
+                "properties": {
+                    "id": {
+                        "title": "Identificador da Localização do Payload",
+                        "description": "**Descrição:** Identificador da URL do PIX para consulta do payload criptografado - pix link BACEN.\n\n**Tipo do campo:** integer($int64).\n",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "location": {
+                        "title": "Localização do Payload",
+                        "description": "**Descrição:** URL do PIX para consulta do payload criptografado - pix link BACEN.\n\n**Tipo do campo:** integer($uri).\n",
+                        "type": "string",
+                        "maxLength": 77,
+                        "readOnly": true
+                    },
+                    "tipoCob": {
+                        "title": "Tipo da Cobrança",
+                        "description": "**Descrição:** Define se o tipo do documento é imediata ou vencimento.\n",
+                        "enum": [
+                            "cob",
+                            "cobv"
+                        ],
+                        "type": "string"
+                    },
+                    "criacao": {
+                        "title": "Data de Criação",
+                        "description": "**Descrição:** Data e hora de criação da localização da cobrança.\n\n**Observação:** Respeita RFC 3339.\n\n**Tipo do campo:** string($date-time).\n",
+                        "type": "string",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "location",
+                    "tipoCob",
+                    "criacao"
+                ]
+            },
+            "pessoa": {
+                "type": "object",
+                "title": "Devedor",
+                "description": "**Descrição:** Campos relacionados à uma recorrência.\n",
+                "properties": {
+                    "cpf": {
+                        "description": "**Descrição:** Número do Documento Cadastro de Pessoa Física.\n\n**Observação:** Se preenchido, não enviar CNPJ.\n",
+                        "type": "string",
+                        "title": "CPF",
+                        "pattern": "/^\\d{11}$/"
+                    },
+                    "cnpj": {
+                        "description": "**Descrição:** Número do Cadastro Nacional da Pessoa Jurídica.\n\n**Observação:** Se preenchido, não enviar CPF.\n",
+                        "type": "string",
+                        "title": "CNPJ",
+                        "pattern": "/^\\d{14}$/"
+                    },
+                    "nome": {
+                        "description": "**Descrição:** Nome do pagador da cobrança. \n\n**Observação:** Necessário preencher o campo CNPJ ou o campo CPF.\n",
+                        "type": "string",
+                        "title": "Nome",
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "cpf",
+                    "cnpj",
+                    "nome"
+                ]
+            },
+            "calendarioCobv": {
+                "type": "object",
+                "description": "",
+                "properties": {
+                    "dataDeVencimento": {
+                        "description": "É a data de vencimento da cobrança. A cobrança pode ser honrada até esse dia, inclusive, em qualquer horário do dia",
+                        "type": "string",
+                        "example": "2020-10-09"
+                    },
+                    "validadeAposVencimento": {
+                        "description": "Trata-se da quantidade de dias corridos após o vencimento em que a cobrança poderá ser paga. Caso vencido este período e a cobrança não tenha sido paga, esta continuará ATIVA",
+                        "type": "integer",
+                        "example": 30
+                    }
+                },
+                "required": [
+                    "dataDeVencimento"
+                ]
+            },
+            "recebedor": {
+                "type": "object",
+                "title": "Recebedor",
+                "description": "**Descrição:** Campo que organiza a identificação do recebedor, ou seja, a pessoa ou instituição na qual a cobrança está sendo recebida.\n**Observação:** Não é permitido que o campo `recebedor.cpf` e campo `recebedor.cnpj` estejam preenchidos ao mesmo tempo. Se o campo `recebedor.cnpj` está preenchido, então o campo `recebedor.cpf` não pode estar preenchido, e vice-versa. Se o campo devedor.nome está preenchido, então deve existir ou um `recebedor.cpf` ou um campo `recebedor.cnpj` preenchido.\n",
+                "properties": {
+                    "logradouro": {
+                        "title": "Logradouro",
+                        "description": "**Descrição:** Logradouro do usuário.\n",
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "cidade": {
+                        "title": "Cidade",
+                        "description": "**Descrição:** Cidade do usuário.\n",
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "uf": {
+                        "title": "UF",
+                        "description": "**Descrição:** UF do usuário.\n",
+                        "type": "string",
+                        "maxLength": 2
+                    },
+                    "cep": {
+                        "title": "CEP",
+                        "description": "**Descrição:** CEP do usuário.\n",
+                        "type": "string",
+                        "maxLength": 8
+                    },
+                    "cpf": {
+                        "title": "CPF",
+                        "description": "**Descrição:** Número do Documento Cadastro de Pessoa Física. (Apenas CPF, não enviar CNPJ).\n",
+                        "type": "string",
+                        "pattern": "/^\\d{11}$/"
+                    },
+                    "cnpj": {
+                        "title": "CNPJ",
+                        "description": "**Descrição:** Número do Cadastro Nacional da Pessoa Jurídica. (Apenas CNPJ, não enviar CPF).\n",
+                        "type": "string",
+                        "pattern": "/^\\d{14}$/"
+                    },
+                    "nome": {
+                        "title": "Nome",
+                        "description": "**Descrição:** Nome do usuário.\n",
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "nomeFantasia": {
+                        "title": "Nome Fantasia",
+                        "description": "**Descrição:** Nome fantasia.\n",
+                        "type": "string",
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "logradouro",
+                    "cidade",
+                    "uf",
+                    "cep",
+                    "cpf",
+                    "cnpj",
+                    "nome"
+                ]
+            },
+            "valor": {
+                "type": "object",
+                "title": "Valor da Cobrança com Vencimento",
+                "description": "**Descrição:** Campo que organiza os valores monetários referentes à cobrança.\n",
+                "properties": {
+                    "original": {
+                        "title": "Valor",
+                        "description": "**Descrição:** Valor nominal/original da cobrança.\n\n**Observação:** O valor deve ser maior do que zero. Todos os campos que indicam valores monetários obedecem ao formato do ID 54 da especificação EMV/BR Code para QR Codes. O separador decimal é o caractere ponto. Não é aplicável utilizar separador de milhar. Exemplos de valores aderentes ao padrão: “0.00”, “1.00”, “123.99”, “123456789.23”.\n",
+                        "type": "string",
+                        "pattern": "\\d{1,10}\\.\\d{2}"
+                    },
+                    "multa": {
+                        "title": "Multa Aplicada",
+                        "description": "**Descrição:** Multa aplicada à cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "modalidade": {
+                                "title": "Modalidade da Multa",
+                                "description": "**Descrição:** Modalidade da multa, conforme tabela de domínios.\n| Descrição  | Domínio |\n| ---------- | ------- |\n| Valor Fixo | 1       |\n| Percentual | 2       |\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 2
+                            },
+                            "valorPerc": {
+                                "title": "Valor da Multa Absoluta",
+                                "description": "**Descrição:** Multa do documento em valor absoluto ou percentual, conforme `valor.multa.modalidade`.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            }
+                        },
+                        "required": [
+                            "modalidade",
+                            "valorPerc"
+                        ]
+                    },
+                    "juros": {
+                        "title": "Juro Aplicado",
+                        "description": "**Descrição:** Juros aplicado à cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "modalidade": {
+                                "title": "Modalidade de Juros",
+                                "description": "**Descrição:** Modalidade de juros, conforme tabela de domínios.\n\n| Descrição                         | Domínio |\n| --------------------------------- | ------- |\n| Valor (dias corridos)             | 1       |\n| Percentual ao dia (dias corridos) | 2       |\n| Percentual ao mês (dias corridos) | 3       |\n| Percentual ao ano (dias corridos) | 4       |\n| Valor (dias úteis)                | 5       |\n| Percentual ao dia (dias úteis)    | 6       |\n| Percentual ao mês (dias úteis)    | 7       |\n| Percentual ao ano (dias úteis)    | 8       |\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 8
+                            },
+                            "valorPerc": {
+                                "title": "Valor",
+                                "description": "**Descrição:** Juros do documento em valor absoluto ou percentual.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            }
+                        },
+                        "required": [
+                            "modalidade",
+                            "valorPerc"
+                        ]
+                    },
+                    "abatimento": {
+                        "title": "Abatimento Aplicado",
+                        "description": "**Descrição:** Abatimento aplicado à cobrança.\n",
+                        "type": "object",
+                        "properties": {
+                            "modalidade": {
+                                "title": "Modalidade de Abatimentos",
+                                "description": "**Descrição:** Modalidade de abatimentos, conforme tabela de domínios.\n| Descrição  | Domínio |\n| ---------- | ------- |\n| Valor Fixo | 1       |\n| Percentual | 2       |\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 2
+                            },
+                            "valorPerc": {
+                                "title": "Abatimentos",
+                                "description": "**Descrição:** Abatimentos ou outras deduções aplicadas ao documento, em valor absoluto ou percentual do valor original do documento.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            }
+                        },
+                        "required": [
+                            "modalidade",
+                            "valorPerc"
+                        ]
+                    },
+                    "desconto": {
+                        "title": "Descontos Aplicados",
+                        "description": "**Descrição:** Descontos aplicados à cobranca.\n",
+                        "type": "object",
+                        "properties": {
+                            "modalidade": {
+                                "title": "Modalidade de Descontos",
+                                "description": "**Descrição:** Modalidade de desconto, conforme tabela de domínios.\n| Descrição                                | Domínio |\n| ---------------------------------------- | ------- |\n| Valor Fixo até a[s] data[s] informada[s] | 1       |\n| Percentual até a data informada          | 2       |\n| Valor por antecipação dia corrido        | 3       |\n| Valor por antecipação dia útil           | 4       |\n| Percentual por antecipação dia corrido   | 5       |\n| Percentual por antecipação dia útil      | 6       |\n\n**Tipo do campo:** integer($int32).\n",
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 6
+                            },
+                            "valorPerc": {
+                                "title": "Abatimentos",
+                                "description": "**Descrição:** Abatimentos ou outras deduções aplicadas ao documento, em valor absoluto ou percentual do valor original do documento.\n\n**Observação:** Não deve ser enviado `valorPerc` e `descontoDataFixa` juntos.\n",
+                                "type": "string",
+                                "pattern": "\\d{1,10}\\.\\d{2}"
+                            },
+                            "descontoDataFixa": {
+                                "title": "Lista de Descontos",
+                                "description": "**Descrição:** Data limite para o desconto absoluto da cobrança.\n\n**Observação:** A data de desconto obrigatoriamente deverá ser menor que a data de vencimento da cobrança.\n",
+                                "type": "array",
+                                "minItems": 1,
+                                "maxItems": 3,
+                                "uniqueItems": true,
+                                "items": {
+                                    "type": "object",
+                                    "description": "",
+                                    "properties": {
+                                        "data": {
+                                            "title": "Data Limite",
+                                            "description": "**Descrição:** Data limite para o desconto absoluto da cobrança.\n\n**Observação:** Descontos por pagamento antecipado, com data fixa. Matriz com até três elementos, sendo que cada elemento é composto por um par `data` e `valorPerc`, para estabelecer descontos percentuais ou absolutos, até aquela data de pagamento. Trata-se de uma data, no formato `YYYY-MM-DD`, segundo ISO 8601. A data de desconto obrigatoriamente deverá ser menor ou igual à data de vencimento da cobrança.\n\n**Tipo do campo:** string($date).\n",
+                                            "type": "string"
+                                        },
+                                        "valorPerc": {
+                                            "title": "Valor do Desconto Absoluto",
+                                            "description": "**Descrição:** Desconto em valor absoluto ou percentual por dia, útil ou corrido, conforme `valor.desconto.modalidade`.\n",
+                                            "type": "string",
+                                            "pattern": "\\d{1,10}\\.\\d{2}"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "valorPerc"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "modalidade",
+                            "valorPerc"
+                        ]
+                    }
+                },
+                "required": [
+                    "original"
+                ]
+            },
+            "message": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "description": "Código a ser exibido",
+                        "type": "string"
+                    },
+                    "mensagem": {
+                        "description": "Mensagem a ser exibida",
+                        "type": "string"
+                    },
+                    "campos": {
+                        "description": "Parâmetros a serem validados",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/campo"
+                        }
+                    }
+                }
+            },
+            "messages": {
+                "type": "object",
+                "properties": {
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/message"
+                        }
+                    }
+                },
+                "required": [
+                    "messages"
+                ]
+            }
+        },
+        "responses": {
+            "401": {
+                "description": "Não Autorizado",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/messages"
+                        },
+                        "examples": {
+                            "401": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "401",
+                                            "mensagem": "Não Autorizado"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "Requisição de participante autenticado que viola alguma regra de autorização.",
+                "content": {
+                    "application/problem+json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/erro"
+                        },
+                        "examples": {
+                            "exemplo1": {
+                                "summary": "403",
+                                "value": {
+                                    "type": "https://pix.bcb.gov.br/api/v2/error/AcessoNegado",
+                                    "title": "Acesso Negado",
+                                    "status": 403,
+                                    "detail": "Requisição de participante autenticado que viola alguma regra de autorização."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "Recurso solicitado não foi encontrado.",
+                "content": {
+                    "application/problem+json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/erro"
+                        },
+                        "examples": {
+                            "exemplo2": {
+                                "summary": "404",
+                                "value": {
+                                    "type": "https://pix.bcb.gov.br/api/v2/error/NaoEncontrado",
+                                    "title": "Não Encontrado",
+                                    "status": 404,
+                                    "detail": "Entidade não encontrada."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "405": {
+                "description": "Método não permitido",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/messages"
+                        },
+                        "examples": {
+                            "405": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "405",
+                                            "mensagem": "Método não permitido"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Erro semântico",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/messages"
+                        },
+                        "examples": {
+                            "422": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "422",
+                                            "mensagem": "Erro semântico"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Erro Inesperado",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/messages"
+                        },
+                        "examples": {
+                            "500": {
+                                "value": {
+                                    "messages": [
+                                        {
+                                            "codigo": "500",
+                                            "mensagem": "Erro Inesperado"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "503": {
+                "description": "Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento.",
+                "content": {
+                    "application/problem+json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/erro"
+                        },
+                        "examples": {
+                            "exemplo2": {
+                                "summary": "503",
+                                "value": {
+                                    "type": "https://pix.bcb.gov.br/api/v2/error/ServicoIndisponivel",
+                                    "title": "Serviço Indisponível",
+                                    "status": 503,
+                                    "detail": "Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "examples": {
+            "requestPostCobrancaImediataCamposObrigatorios": {
+                "description": "",
+                "value": {
+                    "qrcodePix": {
+                        "subtipo": "IMEDIATO"
+                    },
+                    "valor": {
+                        "original": "123.45"
+                    },
+                    "chave": "60701190000104",
+                    "devedor": {
+                        "nome": "Empresa de Serviços SA",
+                        "cnpj": "12345678000195"
+                    },
+                    "recorrencia": {
+                        "vinculo": {
+                            "contrato": "63100862",
+                            "objeto": "Serviço de Streamming de Música."
+                        },
+                        "calendario": {
+                            "dataInicial": "2024-04-01",
+                            "periodicidade": "MENSAL"
+                        },
+                        "politicaRetentativa": "NAO_PERMITE"
+                    }
+                }
+            },
+            "requestPostCobrancaImediataCompleto": {
+                "description": "",
+                "value": {
+                    "qrcodePix": {
+                        "subtipo": "IMEDIATO"
+                    },
+                    "valor": {
+                        "original": "123.45",
+                        "modalidadeAlteracao": 0
+                    },
+                    "chave": "60701190000104",
+                    "txid": "7978c0c97ea847e78e8849634473c1f1",
+                    "calendario": {
+                        "expiracao": 3600
+                    },
+                    "devedor": {
+                        "cnpj": "12345678000195",
+                        "nome": "Empresa de Serviços SA"
+                    },
+                    "solicitacaoPagador": "Informar o número do pedido",
+                    "infoAdicionais": [
+                        {
+                            "nome": "Campo 1",
+                            "valor": "Informação Adicional 1"
+                        }
+                    ],
+                    "recorrencia": {
+                        "vinculo": {
+                            "contrato": "63100862",
+                            "objeto": "Serviço de Streamming de Música."
+                        },
+                        "calendario": {
+                            "dataInicial": "2024-04-01",
+                            "dataFinal": "2024-04-01",
+                            "periodicidade": "MENSAL"
+                        },
+                        "valor": {
+                            "valorRec": "35.00",
+                            "valorMinimoRecebedor": "35.00"
+                        },
+                        "politicaRetentativa": "NAO_PERMITE"
+                    }
+                }
+            },
+            "201cobrancaImediata": {
+                "description": "",
+                "value": {
+                    "data": {
+                        "qrcodePix": {
+                            "subtipo": "IMEDIATO"
+                        },
+                        "calendario": {
+                            "criacao": "2023-01-01T00:00:00Z",
+                            "expiracao": 3600
+                        },
+                        "txid": "7978c0c97ea847e78e8849634473c1f1",
+                        "revisao": 0,
+                        "loc": {
+                            "id": 789,
+                            "location": "pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc",
+                            "tipoCob": "cob",
+                            "criacao": "2023-01-01T00:00:00Z"
+                        },
+                        "location": "pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc",
+                        "status": "ATIVA",
+                        "devedor": {
+                            "cnpj": "12345678000195",
+                            "nome": "PMD HOBISSOM EDERLAN EINS"
+                        },
+                        "valor": {
+                            "original": "567.89",
+                            "modalidadeAlteracao": 0
+                        },
+                        "chave": "a1f4102e-a446-4a57-bcce-6fa48899c1d1",
+                        "pixCopiaeCola": "00020101021226840014BR.GOV.BCB.PIX2562pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc5204000053039865802BR5925PMD HOBISSOM EDERLAN EINS6009SAO PAULO62070503***6304D56E",
+                        "infoAdicionais": [
+                            {
+                                "nome": "idRec",
+                                "valor": "RN123456782024011577825445612"
+                            }
+                        ]
+                    }
+                }
+            },
+            "400requisicaoInvalidaCobExample1": {
+                "summary": "400 - Cobrança Imediata",
+                "value": {
+                    "type": "https://pix.bcb.gov.br/api/v2/error/CobOperacaoInvalida",
+                    "title": "Cobrança inválida.",
+                    "status": 400,
+                    "detail": "A requisição que busca alterar ou criar uma cobrança para pagamento imediato não respeita o _schema_ ou está semanticamente errada.",
+                    "violacoes": [
+                        {
+                            "razao": "O campo cob.valor.original não respeita o _schema_.",
+                            "propriedade": "cob.valor.original"
+                        }
+                    ]
+                }
+            },
+            "requestPostCobrancaVencimentoCamposObrigatorios": {
+                "description": "",
+                "value": {
+                    "qrcodePix": {
+                        "subtipo": "VENCIMENTO"
+                    },
+                    "valor": {
+                        "original": "123.45"
+                    },
+                    "chave": "60701190000104",
+                    "devedor": {
+                        "nome": "Empresa de Serviços SA",
+                        "cnpj": "12345678000195"
+                    },
+                    "calendario": {
+                        "dataDeVencimento": "2024-12-31"
+                    },
+                    "recorrencia": {
+                        "vinculo": {
+                            "contrato": "63100862",
+                            "objeto": "Serviço de Streamming de Música."
+                        },
+                        "calendario": {
+                            "dataInicial": "2024-04-01",
+                            "periodicidade": "MENSAL"
+                        },
+                        "politicaRetentativa": "NAO_PERMITE"
+                    }
+                }
+            },
+            "requestPostCobrancaVencimentoCompleto": {
+                "description": "",
+                "value": {
+                    "qrcodePix": {
+                        "subtipo": "VENCIMENTO"
+                    },
+                    "devedor": {
+                        "email": "example@email.com",
+                        "logradouro": "Alameda Souza, Numero 80, Bairro Braz",
+                        "cidade": "Recife",
+                        "uf": "PE",
+                        "cep": "70011750",
+                        "cnpj": "12345678000195",
+                        "nome": "Empresa de Serviços SA"
+                    },
+                    "recebedor": {
+                        "email": "example@email.com",
+                        "logradouro": "Rua 15, Numero 1200, Bairro São Luiz",
+                        "cidade": "São Paulo",
+                        "uf": "SP",
+                        "cep": "70800100",
+                        "cnpj": "60701190000104",
+                        "nome": "PMD HOBISSOM EDERLAN EINS"
+                    },
+                    "valor": {
+                        "original": "123.45",
+                        "multa": {
+                            "modalidade": 2,
+                            "valorPerc": "15.00",
+                            "valor": 10
+                        },
+                        "juros": {
+                            "modalidade": 2,
+                            "valorPerc": "2.00",
+                            "valor": 5
+                        },
+                        "abatimento": {
+                            "modalidade": 1,
+                            "valorPerc": "1.00",
+                            "valor": 10
+                        },
+                        "desconto": {
+                            "modalidade": 1,
+                            "descontoDataFixa": [
+                                {
+                                    "quantidadeDias": 10,
+                                    "valorPerc": "30.00"
+                                }
+                            ]
+                        }
+                    },
+                    "chave": "60701190000104",
+                    "txid": "7978c0c97ea847e78e8849634473c1f2",
+                    "calendario": {
+                        "dataDeVencimento": "2024-12-31",
+                        "validadeAposVencimento": "30"
+                    },
+                    "solicitacaoPagador": "Informar o número do pedido",
+                    "infoAdicionais": [
+                        {
+                            "nome": "Campo 1",
+                            "valor": "Informação Adicional 1"
+                        }
+                    ],
+                    "recorrencia": {
+                        "vinculo": {
+                            "contrato": "63100862",
+                            "objeto": "Serviço de Streamming de Música."
+                        },
+                        "calendario": {
+                            "dataInicial": "2024-04-01",
+                            "dataFinal": "2024-04-01",
+                            "periodicidade": "MENSAL"
+                        },
+                        "valor": {
+                            "valorRec": "35.00",
+                            "valorMinimoRecebedor": "35.00"
+                        },
+                        "politicaRetentativa": "NAO_PERMITE"
+                    }
+                }
+            },
+            "requestPostCobrancaCompleto": {
+                "description": "",
+                "value": {
+                    "qrcodePix": {
+                        "subtipo": "VENCIMENTO"
+                    },
+                    "devedor": {
+                        "email": "example@email.com",
+                        "logradouro": "Alameda Souza, Numero 80, Bairro Braz",
+                        "cidade": "Recife",
+                        "uf": "PE",
+                        "cep": "70011750",
+                        "cnpj": "12345678000195",
+                        "nome": "Empresa de Serviços SA"
+                    },
+                    "valor": {
+                        "original": "123.45",
+                        "multa": {
+                            "modalidade": 2,
+                            "valorPerc": "15.00"
+                        },
+                        "juros": {
+                            "modalidade": 2,
+                            "valorPerc": "2.00"
+                        },
+                        "abatimento": {
+                            "modalidade": 1,
+                            "valorPerc": "1.00"
+                        },
+                        "desconto": {
+                            "modalidade": 1,
+                            "descontoDataFixa": [
+                                {
+                                    "data": "2024-11-30",
+                                    "valorPerc": "30.00"
+                                }
+                            ]
+                        }
+                    },
+                    "chave": "60701190000104",
+                    "calendario": {
+                        "original": "123.45",
+                        "modalidadeAlteracao": 0,
+                        "dataDeVencimento": "2024-12-31",
+                        "validadeAposVencimento": "30"
+                    },
+                    "solicitacaoPagador": "Informar o número do pedido",
+                    "infoAdicionais": [
+                        {
+                            "nome": "Campo 1",
+                            "valor": "Informação Adicional 1"
+                        }
+                    ],
+                    "recorrencia": {
+                        "vinculo": {
+                            "contrato": "63100862",
+                            "objeto": "Serviço de Streamming de Música."
+                        },
+                        "calendario": {
+                            "dataInicial": "2024-04-01",
+                            "dataFinal": "2024-04-01",
+                            "periodicidade": "MENSAL"
+                        },
+                        "valor": {
+                            "valorRec": "35.00",
+                            "valorMinimoRecebedor": "35.00"
+                        },
+                        "politicaRetentativa": "NAO_PERMITE"
+                    }
+                }
+            },
+            "201cobrancaVencimento": {
+                "description": "",
+                "value": {
+                    "data": {
+                        "qrcodePix": {
+                            "subtipo": "VENCIMENTO"
+                        },
+                        "calendario": {
+                            "criacao": "2023-01-01T00:00:00Z",
+                            "validadeAposVencimento": "30",
+                            "dataDeVencimento": "2024-12-31"
+                        },
+                        "txid": "7978c0c97ea847e78e8849634473c1f1",
+                        "revisao": 0,
+                        "loc": {
+                            "id": 789,
+                            "location": "pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc",
+                            "tipoCob": "cobv",
+                            "criacao": "2023-01-01T00:00:00Z"
+                        },
+                        "status": "ATIVA",
+                        "devedor": {
+                            "email": "example@email.com",
+                            "cnpj": "12345678000195",
+                            "nome": "PMD HOBISSOM EDERLAN EINS",
+                            "logradouro": "Alameda Souza, Numero 80, Bairro Braz",
+                            "cidade": "Recife",
+                            "uf": "PE",
+                            "cep": "70011750"
+                        },
+                        "recebedor": {
+                            "logradouro": "Rua 15, Numero 1200, Bairro São Luiz",
+                            "cidade": "São Paulo",
+                            "uf": "SP",
+                            "cep": "70800100",
+                            "cnpj": "60701190000104",
+                            "nome": "PMD HOBISSOM EDERLAN EINS"
+                        },
+                        "valor": {
+                            "original": "567.89"
+                        },
+                        "chave": "a1f4102e-a446-4a57-bcce-6fa48899c1d1",
+                        "pixCopiaeCola": "00020101021226840014BR.GOV.BCB.PIX2562pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc5204000053039865802BR5925PMD HOBISSOM EDERLAN EINS6009SAO PAULO62070503***6304D56E",
+                        "infoAdicionais": [
+                            {
+                                "nome": "idRec",
+                                "valor": "RN123456782024011577825445612"
+                            }
+                        ]
+                    }
+                }
+            },
+            "400requisicaoInvalidaCobvExample1": {
+                "summary": "400 - Cobrança Vencimento",
+                "value": {
+                    "type": "https://pix.bcb.gov.br/api/v2/error/CobvOperacaoInvalida",
+                    "title": "Cobrança inválida.",
+                    "status": 400,
+                    "detail": "A requisição que busca alterar ou criar uma cobrança para pagamento imediato não respeita o _schema_ ou está semanticamente errada.",
+                    "violacoes": [
+                        {
+                            "razao": "O campo cob.valor.original não respeita o _schema_.",
+                            "propriedade": "cob.valor.original"
+                        }
+                    ]
+                }
+            },
+            "requestPatchCancelamentoCobrancaCamposObrigatorios": {
+                "description": "",
+                "value": {
+                    "status": "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                    "recorrencia": {
+                        "idRec": "RN123456782024011577825445612"
+                    }
+                }
+            },
+            "200cancelamentoCobrancaImediata": {
+                "description": "",
+                "value": {
+                    "data": {
+                        "qrcodePix": {
+                            "subtipo": "IMEDIATO"
+                        },
+                        "calendario": {
+                            "criacao": "2023-01-01T00:00:00Z",
+                            "expiracao": 3600
+                        },
+                        "txid": "7978c0c97ea847e78e8849634473c1f1",
+                        "revisao": 0,
+                        "loc": {
+                            "id": 789,
+                            "location": "pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc",
+                            "tipoCob": "cob",
+                            "criacao": "2023-01-01T00:00:00Z"
+                        },
+                        "location": "pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc",
+                        "status": "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                        "devedor": {
+                            "cnpj": "12345678000195",
+                            "nome": "PMD HOBISSOM EDERLAN EINS"
+                        },
+                        "valor": {
+                            "original": "567.89",
+                            "modalidadeAlteracao": 0
+                        },
+                        "chave": "a1f4102e-a446-4a57-bcce-6fa48899c1d1",
+                        "pixCopiaeCola": "00020101021226840014BR.GOV.BCB.PIX2562pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc5204000053039865802BR5925PMD HOBISSOM EDERLAN EINS6009SAO PAULO62070503***6304D56E",
+                        "infoAdicionais": [
+                            {
+                                "nome": "idRec",
+                                "valor": "RN123456782024011577825445612"
+                            }
+                        ]
+                    }
+                }
+            },
+            "200cancelamentoCobrancaVencimento": {
+                "description": "",
+                "value": {
+                    "data": {
+                        "qrcodePix": {
+                            "subtipo": "VENCIMENTO"
+                        },
+                        "calendario": {
+                            "criacao": "2023-01-01T00:00:00Z",
+                            "validadeAposVencimento": "30",
+                            "dataDeVencimento": "2024-12-31"
+                        },
+                        "txid": "7978c0c97ea847e78e8849634473c1f1",
+                        "revisao": 0,
+                        "loc": {
+                            "id": 789,
+                            "location": "pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc",
+                            "tipoCob": "cobv",
+                            "criacao": "2023-01-01T00:00:00Z"
+                        },
+                        "status": "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                        "devedor": {
+                            "email": "example@email.com",
+                            "cnpj": "12345678000195",
+                            "nome": "PMD HOBISSOM EDERLAN EINS",
+                            "logradouro": "Alameda Souza, Numero 80, Bairro Braz",
+                            "cidade": "Recife",
+                            "uf": "PE",
+                            "cep": "70011750"
+                        },
+                        "recebedor": {
+                            "logradouro": "Rua 15, Numero 1200, Bairro São Luiz",
+                            "cidade": "São Paulo",
+                            "uf": "SP",
+                            "cep": "70800100",
+                            "cnpj": "60701190000104",
+                            "nome": "PMD HOBISSOM EDERLAN EINS"
+                        },
+                        "valor": {
+                            "original": "567.89"
+                        },
+                        "chave": "a1f4102e-a446-4a57-bcce-6fa48899c1d1",
+                        "pixCopiaeCola": "00020101021226840014BR.GOV.BCB.PIX2562pix.example.com/pix/qr/v2/c8cff0b5-5b2f-4154-835f-14ede94a2afc5204000053039865802BR5925PMD HOBISSOM EDERLAN EINS6009SAO PAULO62070503***6304D56E",
+                        "infoAdicionais": [
+                            {
+                                "nome": "idRec",
+                                "valor": "RN123456782024011577825445612"
+                            }
+                        ]
+                    }
+                }
+            },
+            "400requisicaoInvalidaCancelamentoCobranca": {
+                "summary": "400 - Cobrança Imediata",
+                "value": {
+                    "type": "https://pix.bcb.gov.br/api/v2/error/CobOperacaoInvalida",
+                    "title": "Cobrança inválida.",
+                    "status": 400,
+                    "detail": "A requisição que busca alterar ou criar uma cobrança para pagamento imediato não respeita o _schema_ ou está semanticamente errada.",
+                    "violacoes": [
+                        {
+                            "razao": "O campo cob.valor.original não respeita o _schema_.",
+                            "propriedade": "cob.valor.original"
+                        }
+                    ]
+                }
+            }
+        },
+        "securitySchemes": {
+            "APIGatewaySTSAuthorizer": {
+                "in": "header",
+                "name": "auth",
+                "type": "apiKey"
+            },
+            "sigv4": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        },
+        "parameters": {
+            "x-itau-apikey": {
+                "name": "x-itau-apikey",
+                "in": "header",
+                "description": "**Descrição:** Chave de API fornecida pelo Itaú para autenticação e autorização das requisições.\n\n**RegEx:** `^[a-zA-Z0-9]{32}$`\n",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "1234567890abcdef1234567890abcdef"
+            },
+            "x-itau-correlationID": {
+                "name": "x-itau-correlationID",
+                "in": "header",
+                "description": "**Descrição:** Identificador de correlação que serve como um agrupador dentro da estrutura de audit trail.\n\n**RegEx:** `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`\n",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "bc4d8712-904a-47af-a3a0-63751ddb7e56"
+            },
+            "cobrancaId": {
+                "name": "cobrancaId",
+                "in": "path",
+                "description": "**Descrição:** Identificador do QR Code que possibilita a conciliação de pagamentos.\n\n**Observação:** Este código deve possuir entre 26 e 35 posições, podendo conter letras minúsculas (a-z), letras maiúsculas (A-Z) e números (0-9).\n",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "88ba8ec675e044178d434908d9b2a30a"
+            }
+        }
+    }
+}

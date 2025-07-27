@@ -1,0 +1,1331 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Boletos",
+        "description": "API responsável pelo ciclo de vida de boletos. Podendo emitir novos boletos, fazer instruções em boletos existentes, consultar o detalhe do boleto, e também consultar a lista de boletos da cartira de cobrança de um beneficiário.",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "https://boleto.${iupipes_env_dns}/boleto/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "boletos"
+        }
+    ],
+    "paths": {
+        "/boletos": {
+            "get": {
+                "tags": [
+                    "boletos"
+                ],
+                "summary": "Retorna boletos que respeitam os filtros informados.",
+                "description": "Endpoint responsável por listar boletos baseado em alguns parâmetros, como data de pagamento ou emissão (entre outros) e id do beneficiário.",
+                "operationId": "get/boletos",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/x-itau-correlationid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-apikey"
+                    },
+                    {
+                        "$ref": "#/components/parameters/x-itau-flowid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/content-type"
+                    },
+                    {
+                        "$ref": "#/components/parameters/idBeneficiario"
+                    },
+                    {
+                        "$ref": "#/components/parameters/nomePagador"
+                    },
+                    {
+                        "$ref": "#/components/parameters/cpfPagador"
+                    },
+                    {
+                        "$ref": "#/components/parameters/cnpjPagador"
+                    },
+                    {
+                        "$ref": "#/components/parameters/seuNumero"
+                    },
+                    {
+                        "$ref": "#/components/parameters/nossoNumero"
+                    },
+                    {
+                        "$ref": "#/components/parameters/codigoCarteira"
+                    },
+                    {
+                        "$ref": "#/components/parameters/codigoBarra"
+                    },
+                    {
+                        "$ref": "#/components/parameters/situacao"
+                    },
+                    {
+                        "$ref": "#/components/parameters/instrumentoCobranca"
+                    },
+                    {
+                        "$ref": "#/components/parameters/situacaoProtesto"
+                    },
+                    {
+                        "$ref": "#/components/parameters/situacaoVencimento"
+                    },
+                    {
+                        "$ref": "#/components/parameters/situacaoNegativacao"
+                    },
+                    {
+                        "$ref": "#/components/parameters/motivoCancelamento"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dataEntrada"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dataEmissao"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dataCancelamento"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dataVencimento"
+                    },
+                    {
+                        "$ref": "#/components/parameters/dataPagamento"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderBy"
+                    },
+                    {
+                        "$ref": "#/components/parameters/order"
+                    },
+                    {
+                        "$ref": "#/components/parameters/view"
+                    },
+                    {
+                        "$ref": "#/components/parameters/indicadorDescontado"
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/pageSize"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna lista com os dados pertinentes aos boletos filtrados.",
+                        "headers": {
+                            "Content-Location": {
+                                "description": "URI correspondente a pesquisa corrente",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "data",
+                                        "page"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/boleto"
+                                            }
+                                        },
+                                        "page": {
+                                            "$ref": "#/components/schemas/page"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "200GetBoletos": {
+                                        "$ref": "#/components/examples/200GetBoletos"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    }
+                },
+                "security": [
+                    {
+                        "APIGatewaySTSAuthorizer": [
+                            "boletoscash-boleto.read"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "idBeneficiario": {
+                "name": "idBeneficiario",
+                "in": "query",
+                "description": "Id do beneficiário, composto de \"${agencia}${conta}${dac}\", sem traços ou pontos.",
+                "required": true,
+                "example": 0,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "nomePagador": {
+                "name": "nomePagador",
+                "in": "query",
+                "description": "Nome do pagador do boleto.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "cpfPagador": {
+                "name": "cpfPagador",
+                "in": "query",
+                "description": "Cpf do pagador do boleto.",
+                "schema": {
+                    "type": "string",
+                    "pattern": "^(\\d{11})$"
+                }
+            },
+            "cnpjPagador": {
+                "name": "cnpjPagador",
+                "in": "query",
+                "description": "Cnpj do pagador do boleto.",
+                "schema": {
+                    "type": "string",
+                    "pattern": "^(\\d{14})$"
+                }
+            },
+            "seuNumero": {
+                "name": "seuNumero",
+                "in": "query",
+                "description": "Seu número, identificador do boleto",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "nossoNumero": {
+                "name": "nossoNumero",
+                "in": "query",
+                "description": "Nosso número, identificador do boleto",
+                "schema": {
+                    "type": "string",
+                    "maxLength": 8
+                }
+            },
+            "codigoCarteira": {
+                "name": "codigoCarteira",
+                "in": "query",
+                "description": "Codigo da carteira",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "maxLength": 3,
+                    "minLength": 3
+                }
+            },
+            "codigoBarra": {
+                "name": "codigoBarra",
+                "in": "query",
+                "description": "Codigo de barras do boleto",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "maxLength": 44,
+                    "minLength": 44
+                }
+            },
+            "situacao": {
+                "name": "situacao",
+                "in": "query",
+                "description": "Status do boleto: aberto, emPagamento, pago ou cancelado",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "instrumentoCobranca": {
+                "name": "instrumentoCobranca",
+                "in": "query",
+                "description": "Instrumento de cobrança: boleto ou bolecode",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "situacaoProtesto": {
+                "name": "situacaoProtesto",
+                "in": "query",
+                "description": "Situação de protesto: emProtesto, protestado, protestoCancelado ou protestoAgendado",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "situacaoVencimento": {
+                "name": "situacaoVencimento",
+                "in": "query",
+                "description": "Status vencimento: aVencer ou vencido",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "situacaoNegativacao": {
+                "name": "situacaoNegativacao",
+                "in": "query",
+                "description": "Filtro por situação da negativação: emNegativacao, negativado, negativacaoCancelada ou negativacaoAgendada",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "motivoCancelamento": {
+                "name": "motivoCancelamento",
+                "in": "query",
+                "description": "baixaSimples, baixaPorTerSidoLiquidado ou baixaPorTerSidoProtestado",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "dataEntrada": {
+                "name": "dataEntrada",
+                "in": "query",
+                "description": "Período desejado para filtro de boletos pela data de entrada",
+                "schema": {
+                    "type": "string",
+                    "example": "2024-02-15,2024-02-16"
+                }
+            },
+            "dataEmissao": {
+                "name": "dataEmissao",
+                "in": "query",
+                "description": "Período desejado para filtro de boletos pela data de emissão",
+                "schema": {
+                    "type": "string",
+                    "example": "2024-02-15,2024-02-16"
+                }
+            },
+            "dataCancelamento": {
+                "name": "dataCancelamento",
+                "in": "query",
+                "description": "Período desejado para filtro de boletos pela data de cancelamento",
+                "schema": {
+                    "type": "string",
+                    "example": "2024-02-15,2024-02-16"
+                }
+            },
+            "dataVencimento": {
+                "name": "dataVencimento",
+                "in": "query",
+                "description": "Período desejado para filtro de boletos pela data de vencimento",
+                "schema": {
+                    "type": "string",
+                    "example": "2024-02-15,2024-02-16"
+                }
+            },
+            "dataPagamento": {
+                "name": "dataPagamento",
+                "in": "query",
+                "description": "Período desejado para filtro de boletos pela data de pagamento",
+                "schema": {
+                    "type": "string",
+                    "example": "2024-02-15,2024-02-16"
+                }
+            },
+            "orderBy": {
+                "name": "orderBy",
+                "in": "query",
+                "description": "Os campos permitidos para ordenação são: nomePagador, nossoNumero, seuNumero, dataEmissao, dataVencimento, dataCancelamento, dataPagamento e valorBoleto.",
+                "required": false,
+                "example": "nossonumero",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "nomePagador",
+                        "nossoNumero",
+                        "seuNumero",
+                        "dataEmissao",
+                        "dataVencimento",
+                        "dataCancelamento",
+                        "dataPagamento",
+                        "valorBoleto"
+                    ]
+                }
+            },
+            "order": {
+                "name": "order",
+                "in": "query",
+                "description": "A ordem de classificação dos resultados. Os valores permitidos são: asc ou desc.",
+                "required": false,
+                "example": "asc",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "asc",
+                        "desc"
+                    ]
+                }
+            },
+            "view": {
+                "name": "view",
+                "in": "query",
+                "description": "Tipo de visão que deseja-se ter ao ler os dados",
+                "required": false,
+                "example": "BASIC",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "BASIC"
+                    ],
+                    "default": "BASIC"
+                }
+            },
+            "indicadorDescontado": {
+                "name": "indicadorDescontado",
+                "in": "query",
+                "description": "Indicador de desconto (true - descontado, false - não descontado)",
+                "required": false,
+                "example": "true",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "page": {
+                "name": "page",
+                "in": "query",
+                "description": "Número da página que está sendo requisitada (o valor da primeira página é 0)",
+                "required": false,
+                "example": 3,
+                "schema": {
+                    "type": "integer",
+                    "default": 0
+                }
+            },
+            "pageSize": {
+                "name": "pageSize",
+                "in": "query",
+                "description": "Quantidade total de registros por páginas.",
+                "required": false,
+                "example": 15,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "x-itau-correlationid": {
+                "name": "x-itau-correlationID",
+                "in": "header",
+                "description": "UUID que identifica a transação.",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "x-itau-apikey": {
+                "name": "x-itau-apikey",
+                "in": "header",
+                "description": "Chave que identifica o chamador.",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "x-itau-flowid": {
+                "name": "x-itau-flowid",
+                "in": "header",
+                "description": "Chave que identifica o fluxo de negócio. Deve ser diferente do __x-itau-correlationid__.",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "authorization": {
+                "in": "header",
+                "name": "Authorization",
+                "description": "Bearer token para autorização do cliente na api",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "content-type": {
+                "name": "Content-type",
+                "in": "header",
+                "description": "Content type da aplicação (application/json)",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "schemas": {
+            "beneficiario": {
+                "type": "object",
+                "description": "Beneficiario",
+                "properties": {
+                    "idBeneficiario": {
+                        "type": "string"
+                    },
+                    "nome": {
+                        "type": "string"
+                    },
+                    "tipoPessoa": {
+                        "type": "string"
+                    },
+                    "numeroDocumento": {
+                        "type": "string"
+                    },
+                    "endereco": {
+                        "$ref": "#/components/schemas/endereco"
+                    }
+                }
+            },
+            "boleto": {
+                "type": "object",
+                "description": "Boleto",
+                "required": [
+                    "idBoleto"
+                ],
+                "properties": {
+                    "idBoleto": {
+                        "type": "string"
+                    },
+                    "beneficiario": {
+                        "$ref": "#/components/schemas/beneficiario"
+                    },
+                    "etapaProcessoBoleto": {
+                        "type": "string"
+                    },
+                    "codigoOperador": {
+                        "type": "string"
+                    },
+                    "codigoCanalOperacao": {
+                        "type": "string"
+                    },
+                    "instrumentoCobranca": {
+                        "type": "string"
+                    },
+                    "formaEnvio": {
+                        "type": "string"
+                    },
+                    "quantidadeParcelas": {
+                        "type": "number"
+                    },
+                    "indicadorDescontado": {
+                        "type": "boolean"
+                    },
+                    "protesto": {
+                        "$ref": "#/components/schemas/protesto"
+                    },
+                    "negativacao": {
+                        "$ref": "#/components/schemas/negativacao"
+                    },
+                    "pagador": {
+                        "$ref": "#/components/schemas/pagador"
+                    },
+                    "email": {
+                        "$ref": "#/components/schemas/email"
+                    },
+                    "instrucoesCobranca": {
+                        "$ref": "#/components/schemas/instrucoesCobranca"
+                    },
+                    "tipoVencimento": {
+                        "$ref": "#/components/schemas/tipoVencimento"
+                    },
+                    "situacaoVencimento": {
+                        "type": "string"
+                    },
+                    "codigoBarras": {
+                        "type": "string"
+                    },
+                    "linhaDigitavel": {
+                        "type": "string"
+                    },
+                    "mensagensBoleto": {
+                        "$ref": "#/components/schemas/mensagensBoleto"
+                    },
+                    "especie": {
+                        "$ref": "#/components/schemas/especie"
+                    },
+                    "pagamentoParcial": {
+                        "type": "string"
+                    },
+                    "quantidadeMaximaPagamentoParcial": {
+                        "type": "string"
+                    },
+                    "valorAbatimento": {
+                        "type": "string"
+                    },
+                    "juros": {
+                        "$ref": "#/components/schemas/juros"
+                    },
+                    "multa": {
+                        "$ref": "#/components/schemas/multa"
+                    },
+                    "desconto": {
+                        "$ref": "#/components/schemas/desconto"
+                    },
+                    "recebimentoDivergente": {
+                        "$ref": "#/components/schemas/recebimentoDivergente"
+                    },
+                    "codigoMoeda": {
+                        "type": "string"
+                    },
+                    "usoEmpresa": {
+                        "type": "string"
+                    },
+                    "indicadorRateioCredito": {
+                        "type": "string"
+                    },
+                    "rateioCredito": {
+                        "$ref": "#/components/schemas/rateioCredito"
+                    },
+                    "indicadorDiaUtilInstrucao": {
+                        "type": "string"
+                    },
+                    "indicadorBloqueio": {
+                        "type": "string"
+                    },
+                    "seuNumero": {
+                        "type": "string"
+                    },
+                    "dataEntrada": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "dataEmissao": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "dataVencimento": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "dataPagamento": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "valor": {
+                        "type": "number"
+                    },
+                    "codigoCarteira": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "situacao": {
+                        "type": "string"
+                    },
+                    "nossoNumero": {
+                        "type": "string"
+                    },
+                    "dataLimitePagamento": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "valorPagoTotal": {
+                        "type": "number"
+                    },
+                    "cancelamento": {
+                        "$ref": "#/components/schemas/cancelamento"
+                    }
+                }
+            },
+            "cancelamento": {
+                "type": "object",
+                "description": "Motivo do cancelamento",
+                "properties": {
+                    "motivoCancelamento": {
+                        "type": "string"
+                    }
+                }
+            },
+            "desconto": {
+                "type": "object",
+                "properties": {
+                    "descricaoDesconto": {
+                        "type": "string"
+                    },
+                    "detalhes": {
+                        "$ref": "#/components/schemas/descontoDetalhes"
+                    }
+                }
+            },
+            "descontoDetalhes": {
+                "type": "array",
+                "properties": {
+                    "quantidadeDias": {
+                        "type": "number"
+                    },
+                    "valorDesconto": {
+                        "type": "string"
+                    },
+                    "percentualDesconto": {
+                        "type": "string"
+                    }
+                }
+            },
+            "email": {
+                "type": "object",
+                "description": "Informações de email do pagador do boleto",
+                "properties": {
+                    "endereco": {
+                        "type": "string"
+                    },
+                    "assunto": {
+                        "type": "string"
+                    },
+                    "mensagem": {
+                        "type": "string"
+                    }
+                }
+            },
+            "endereco": {
+                "type": "object",
+                "description": "Informações do endereço",
+                "properties": {
+                    "logradouro": {
+                        "type": "string"
+                    },
+                    "numero": {
+                        "type": "string"
+                    },
+                    "complemento": {
+                        "type": "string"
+                    },
+                    "bairro": {
+                        "type": "string"
+                    },
+                    "cidade": {
+                        "type": "string"
+                    },
+                    "uf": {
+                        "type": "string"
+                    },
+                    "cep": {
+                        "type": "string"
+                    }
+                }
+            },
+            "especie": {
+                "type": "object",
+                "properties": {
+                    "codigoEspecie": {
+                        "type": "string"
+                    },
+                    "descricaoEspecie": {
+                        "type": "string"
+                    }
+                }
+            },
+            "instrucoesCobranca": {
+                "type": "array",
+                "description": "Instruções de cobrança",
+                "properties": {
+                    "codigoInstrucaoCobranca": {
+                        "type": "number"
+                    },
+                    "descicaoInstrucaoCobranca": {
+                        "type": "number"
+                    },
+                    "quantidadeDiasInstrucaoCobranca": {
+                        "type": "number"
+                    }
+                }
+            },
+            "juros": {
+                "type": "object",
+                "properties": {
+                    "codigoTipoJuros": {
+                        "type": "string"
+                    },
+                    "quantidadeDiasJuros": {
+                        "type": "number"
+                    },
+                    "valorJuros": {
+                        "type": "string"
+                    },
+                    "percentualJuros": {
+                        "type": "string"
+                    }
+                }
+            },
+            "links": {
+                "type": "object",
+                "properties": {
+                    "first": {
+                        "type": "string",
+                        "description": "Link para a primeira página de boletos. Não informado se página atual é a primeira.",
+                        "example": "/boletos/v1?page=1&pageSize=25"
+                    },
+                    "last": {
+                        "type": "string",
+                        "description": "Link para a última página de boletos. Não informado se página atual é a última.",
+                        "example": "/boletos/v1?page=10&pageSize=25"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "description": "Link para a página anterior de boletos. Não informado se não há página anterior.",
+                        "example": "/boletos/v1?page=2&pageSize=25"
+                    },
+                    "next": {
+                        "type": "string",
+                        "description": "Link para a próxima página de boletos. Não informado se não há próxima página.",
+                        "example": "/boletos/v1?page=4&pageSize=25"
+                    }
+                }
+            },
+            "mensagensBoleto": {
+                "type": "array",
+                "properties": {
+                    "mensagem": {
+                        "type": "string"
+                    }
+                }
+            },
+            "multa": {
+                "type": "object",
+                "properties": {
+                    "codigoTipoMulta": {
+                        "type": "string"
+                    },
+                    "quantidadeDiasMulta": {
+                        "type": "number"
+                    },
+                    "valorMulta": {
+                        "type": "string"
+                    },
+                    "percentualMulta": {
+                        "type": "string"
+                    }
+                }
+            },
+            "negativacao": {
+                "type": "object",
+                "description": "Netativvação",
+                "properties": {
+                    "codigoSituacaoNegativacao": {
+                        "type": "number"
+                    },
+                    "quantidadeDiasNegativacao": {
+                        "type": "number"
+                    },
+                    "codigoTipoNegativacao": {
+                        "type": "number"
+                    },
+                    "descricao": {
+                        "type": "string"
+                    }
+                }
+            },
+            "pagador": {
+                "type": "object",
+                "properties": {
+                    "nomePagador": {
+                        "type": "string"
+                    },
+                    "tipoPessoa": {
+                        "type": "string"
+                    },
+                    "numeroDocumento": {
+                        "type": "string"
+                    },
+                    "pagadorEletronicoDda": {
+                        "type": "string"
+                    },
+                    "endereco": {
+                        "$ref": "#/components/schemas/endereco"
+                    }
+                }
+            },
+            "page": {
+                "type": "object",
+                "properties": {
+                    "links": {
+                        "$ref": "#/components/schemas/links"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "Página atual",
+                        "example": 2
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "description": "O número total de páginas da requisição.",
+                        "example": 10
+                    },
+                    "totalElements": {
+                        "type": "integer",
+                        "description": "O número total de registros da requisição.",
+                        "example": 250
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "description": "Quantidade de registros por página"
+                    }
+                }
+            },
+            "protesto": {
+                "type": "object",
+                "description": "Protesto",
+                "properties": {
+                    "nomePraca": {
+                        "type": "string"
+                    },
+                    "numeroCartorio": {
+                        "type": "string"
+                    },
+                    "anuencia": {
+                        "type": "string"
+                    },
+                    "protestoFalimentar": {
+                        "type": "string"
+                    }
+                }
+            },
+            "rateioCredito": {
+                "type": "object",
+                "properties": {
+                    "agencia": {
+                        "type": "string"
+                    },
+                    "contaCorrente": {
+                        "type": "string"
+                    },
+                    "digitoContaCorrente": {
+                        "type": "string"
+                    },
+                    "valorRateio": {
+                        "type": "string"
+                    },
+                    "percentualRateio": {
+                        "type": "string"
+                    },
+                    "rateioCreditoPercentual": {
+                        "type": "string"
+                    },
+                    "rateioCreditoValorLiquido": {
+                        "type": "string"
+                    }
+                }
+            },
+            "recebimentoDivergente": {
+                "type": "object",
+                "properties": {
+                    "codigoTipoAutorizacao": {
+                        "type": "string"
+                    },
+                    "codigoTipoRecebimento": {
+                        "type": "string"
+                    },
+                    "valorMinimo": {
+                        "type": "string"
+                    },
+                    "percentualMinimo": {
+                        "type": "string"
+                    },
+                    "valorMaximo": {
+                        "type": "string"
+                    },
+                    "percentualMaximo": {
+                        "type": "string"
+                    }
+                }
+            },
+            "tipoVencimento": {
+                "type": "object",
+                "properties": {
+                    "codigoTipoVencimento": {
+                        "type": "string"
+                    },
+                    "descricaoTipoVencimento": {
+                        "type": "string"
+                    }
+                }
+            },
+            "unauthorizedResponse": {
+                "type": "object",
+                "properties": {
+                    "mensagem": {
+                        "type": "string",
+                        "description": "Informação sobre o erro encontrado",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "unprocessableEntityResponse": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código de Erro HTTP",
+                        "example": 422
+                    },
+                    "mensagem": {
+                        "type": "string",
+                        "description": "Detalhamento do erro ocorrido",
+                        "example": "Erros de validação ou os campos informados. Verifique na resposta da API os campos informados."
+                    },
+                    "campos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/campo"
+                        }
+                    }
+                }
+            },
+            "validationErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "type": "string",
+                        "description": "Código de Erro HTTP",
+                        "example": 400
+                    },
+                    "mensagem": {
+                        "type": "string",
+                        "description": "Detalhamento do erro ocorrido",
+                        "example": "Erros de validação ou os campos informados. Verifique na resposta da API os campos informados."
+                    },
+                    "campos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/campo"
+                        }
+                    }
+                }
+            },
+            "forbiddenResponse": {
+                "type": "object",
+                "properties": {
+                    "mensagem": {
+                        "type": "string",
+                        "description": "Informação sobre o erro encontrado",
+                        "example": "Não foi possível processar essa requisição. Por favor, procure a documentação da API."
+                    }
+                }
+            },
+            "campo": {
+                "type": "object",
+                "properties": {
+                    "mensagem": {
+                        "type": "string",
+                        "description": "Informação sobre o erro encontrado"
+                    },
+                    "campo": {
+                        "type": "string",
+                        "description": "O campo que foi encontrado um erro"
+                    },
+                    "valor": {
+                        "type": "string",
+                        "description": "Valor colocado no campo para referência"
+                    }
+                }
+            },
+            "message": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "description": "Código a ser exibido",
+                        "type": "string"
+                    },
+                    "mensagem": {
+                        "description": "Mensagem a ser exibida",
+                        "type": "string"
+                    },
+                    "campos": {
+                        "description": "Parâmetros a serem validados",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/campo"
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "400": {
+                "description": "A requisição foi malformada.",
+                "content": {
+                    "application/json; charset=utf-8": {
+                        "schema": {
+                            "$ref": "#/components/schemas/validationErrorResponse"
+                        },
+                        "examples": {
+                            "400": {
+                                "value": {
+                                    "codigo": "400",
+                                    "mensagem": "Erros de validação ou os campos informados. Verifique na resposta da API os campos informados.",
+                                    "campos": [
+                                        {
+                                            "campo": "idBeneficiario",
+                                            "mensagem": "Id do beneficiário inválido.",
+                                            "valor": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Cabeçalho de autenticação ausente/inválido ou token inválido",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/unauthorizedResponse"
+                        },
+                        "examples": {
+                            "401": {
+                                "value": {
+                                    "codigo": "401",
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "O token tem escopo incorreto ou uma política de segurança foi violada",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/forbiddenResponse"
+                        },
+                        "examples": {
+                            "403": {
+                                "value": {
+                                    "codigo": "403",
+                                    "message": "Forbidden"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "Recurso Inexistente",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/message"
+                        },
+                        "examples": {
+                            "404": {
+                                "value": {
+                                    "codigo": "404",
+                                    "mensagem": "Recurso não encontrado. Verifique na resposta da API os campos informados.",
+                                    "campos": [
+                                        {
+                                            "campo": "codigoBarra",
+                                            "valor": "01234567890123456789012345678901234567890123",
+                                            "mensagem": "Boleto não encontrado para esse 'codigoBarra'"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "405": {
+                "description": "Método não permitido",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/message"
+                        },
+                        "examples": {
+                            "405": {
+                                "value": {
+                                    "codigo": "405",
+                                    "mensagem": "Método não permitido"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "A requisição foi malformada.",
+                "content": {
+                    "application/json; charset=utf-8": {
+                        "schema": {
+                            "$ref": "#/components/schemas/unprocessableEntityResponse"
+                        },
+                        "examples": {
+                            "400": {
+                                "value": {
+                                    "codigo": "422",
+                                    "mensagem": "Consulta não realizada por alguma regra de negócio não atendida.",
+                                    "campos": [
+                                        {
+                                            "campo": "",
+                                            "mensagem": "Nenhum registro foi encontrado. Tente mudar os filtros para nova pesquisa.",
+                                            "valor": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "428": {
+                "description": "Pré requisito necessário",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/message"
+                        },
+                        "examples": {
+                            "428": {
+                                "value": {
+                                    "codigo": "428",
+                                    "mensagem": "Pré requisito necessário"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Erro Inesperado.",
+                "content": {
+                    "application/json; charset=utf-8": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "mensagem": {
+                                    "type": "string",
+                                    "description": "Informação sobre o erro encontrado",
+                                    "example": {
+                                        "mensagem": "Erro Inesperado. Entre em contato com o suporte Itaú."
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "500": {
+                                "value": {
+                                    "codigo": "500",
+                                    "mensagem": "Erro Inesperado. Entre em contato com o suporte Itaú."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "examples": {
+            "200GetBoletos": {
+                "summary": "Exemplo de retorno de uma lista de boletos",
+                "value": {
+                    "data": [
+                        {
+                            "idBoleto": "37393662-6632-3261-2d30-6662632d3464",
+                            "instrumentoCobranca": "boleto",
+                            "pagador": {
+                                "nomePagador": "Maria Oliveira",
+                                "tipoPessoa": "Física",
+                                "numeroDocumento": "33378996846"
+                            },
+                            "situacaoVencimento": "aVencer",
+                            "indicadorDescontado": true,
+                            "seuNumero": "1231109",
+                            "dataEntrada": "2021-06-28",
+                            "dataEmissao": "2021-06-28",
+                            "dataVencimento": "2021-07-28",
+                            "valor": "200.00",
+                            "codigoCarteira": "109",
+                            "situacao": "aberto",
+                            "nossoNumero": "00017244"
+                        },
+                        {
+                            "idBoleto": "e8c10ba1-5d8b-465d-a4d7-b88e771266fd",
+                            "pagador": {
+                                "nomePagador": "Kleber costa",
+                                "tipoPessoa": "Física",
+                                "numeroDocumento": "33378996846"
+                            },
+                            "situacaoVencimento": "vencido",
+                            "indicadorDescontado": false,
+                            "dataEntrada": "2021-06-22",
+                            "dataEmissao": "2021-06-28",
+                            "dataVencimento": "2021-06-29",
+                            "valor": "115.65",
+                            "codigoCarteira": "157",
+                            "situacao": "aberto",
+                            "nossoNumero": "00005078",
+                            "dataLimitePagamento": "2021-06-29"
+                        },
+                        {
+                            "idBoleto": "e8c10ba1-5d8b-465d-a4d7-b88e771266fd",
+                            "pagador": {
+                                "nomePagador": "João Silva",
+                                "tipoPessoa": "Física",
+                                "numeroDocumento": "33378996846"
+                            },
+                            "situacaoVencimento": "aVencer",
+                            "indicadorDescontado": false,
+                            "dataEntrada": "2021-06-22",
+                            "dataEmissao": "2021-06-22",
+                            "dataVencimento": "2021-07-22",
+                            "valor": "115.65",
+                            "codigoCarteira": "157",
+                            "situacao": "em aberto",
+                            "nossoNumero": "00005078",
+                            "dataLimitePagamento": "2031-04-23",
+                            "cancelamento": {
+                                "motivoCancelamento": "baixaPorTerSidoLiquidado"
+                            }
+                        }
+                    ],
+                    "page": {
+                        "links": {
+                            "first": "/boleto/v1/boletos?dataEntrada=2021-06-02,2021-06-28&dataEmissao=2024-11-09,2024-11-15&idBeneficiario=150000011091&view=BASIC&pageSize=20&page=0",
+                            "last": "/boleto/v1/boletos?dataEntrada=2021-06-02,2021-06-28&dataEmissao=2024-11-09,2024-11-15&idBeneficiario=150000011091&view=BASIC&pageSize=20&page=1",
+                            "previous": "/boleto/v1/boletos?dataEntrada=2021-06-02,2021-06-28&dataEmissao=2024-11-09,2024-11-15&idBeneficiario=150000011091&view=BASIC&pageSize=20&page=0",
+                            "next": "/boleto/v1/boletos?dataEntrada=2021-06-02,2021-06-28&dataEmissao=2024-11-09,2024-11-15&idBeneficiario=150000011091&view=BASIC&pageSize=20&page=1"
+                        },
+                        "page": 0,
+                        "totalPages": 1,
+                        "totalElements": 5,
+                        "pageSize": 20
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "APIGatewaySTSAuthorizer": {
+                "in": "header",
+                "name": "auth",
+                "type": "apiKey"
+            }
+        }
+    }
+}
