@@ -46,25 +46,32 @@ class AccountStatementClient:
         """
         if authorization is None:
             authorization = self.authorization
-        query = {
-            "type": type,
-            "start_date": start_date,
-            "end_date": end_date,
-            "page": page,
-            "page_size": page_size,
-            "statement_type": statement_type,
-            "filter_by": filter_by,
-        }
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationid": x_itau_correlationid,
-        }
-        path_params = {
-            "statement_id": statement_id,
-        }
+        query = {}
+        if type is not None:
+            query["type"] = type
+        if start_date is not None:
+            query["start_date"] = start_date
+        if end_date is not None:
+            query["end_date"] = end_date
+        if page is not None:
+            query["page"] = page
+        if page_size is not None:
+            query["page_size"] = page_size
+        if statement_type is not None:
+            query["statement_type"] = statement_type
+        if filter_by is not None:
+            query["filter_by"] = filter_by
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlationid is not None:
+            headers["x-itau-correlationid"] = x_itau_correlationid
+        path_params = {}
+        if statement_id is not None:
+            path_params["statementId"] = statement_id
         path_rendered = "/statements/{statementId}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -92,22 +99,24 @@ class AccountStatementClient:
         """
         if authorization is None:
             authorization = self.authorization
-        query = {
-            "start_date": start_date,
-            "end_date": end_date,
-        }
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationid": x_itau_correlationid,
-        }
-        path_params = {
-            "statement_id": statement_id,
-        }
+        query = {}
+        if start_date is not None:
+            query["start_date"] = start_date
+        if end_date is not None:
+            query["end_date"] = end_date
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlationid is not None:
+            headers["x-itau-correlationid"] = x_itau_correlationid
+        path_params = {}
+        if statement_id is not None:
+            path_params["statementId"] = statement_id
         path_rendered = "/statements/{statementId}/interest-bearing-accounts".format(
             **path_params
         )
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )

@@ -1,0 +1,169 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "Autorização de Débito Automático",
+    "description" : "API de serviço de autorização de débito automático (recorrente) em conta por parte de um terceiro.",
+    "contact" : {
+      "name" : "Banco do Brasil S.A. - Portal Developers",
+      "url" : "https://developers.bb.com.br"
+    },
+    "version" : "3.0.3"
+  },
+  "externalDocs" : {
+    "description" : "APIs no BB - Documentação de Apoio",
+    "url" : "https://apoio.developers.bb.com.br/referency/post/5f4f8342b71fb5001268c9ac"
+  },
+  "servers" : [ {
+    "url" : "https://recebimentos-bb.mtls.api.hm.bb.com.br/v3",
+    "description" : "Teste"
+  }, {
+    "url" : "https://recebimentos-bb.mtls.api.bb.com.br/v3",
+    "description" : "Produção"
+  } ],
+  "paths" : {
+    "/direct-debit-authorizations" : {
+      "post" : {
+        "tags": ["Autorizar"],
+        "summary" : "Autorizar Débito Automático",
+        "description" : "Autoriza débito automático (recorrente) em conta por parte de um terceiro.",
+        "operationId" : "9060982",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "codigoConvenio" : {
+                    "type" : "integer",
+                    "format" : "int32",
+                    "description" : "Código de convênio do convenente do sistema DBT",
+                    "examples" : [ "78860" ]
+                  },
+                  "codigoIdentificador" : {
+                    "type" : "string",
+                    "description" : "Código de identificação da autorização de débito automático do convenente junto ao seu cliente.",
+                    "maxLength" : 25
+                  }
+                },
+                "required" : [ "codigoConvenio", "codigoIdentificador" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "422" : {
+            "description" : "Erro Negocial",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/erro"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Erro Sistema",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/erro"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "apikey" : [ ]
+        }, {
+          "OAuth2_Teste" : [ "payments.direct-debit-authorization-request" ]
+        }, {
+          "OAuth2_Producao" : [ "payments.direct-debit-authorization-request" ]
+        }, {
+          "mutualTLS" : [ "payments.direct-debit-authorization-request" ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "erro" : {
+        "type" : "object",
+        "title" : "Modelo Resposta",
+        "properties" : {
+          "variaveisMonitoradas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "additionalProp1" : {
+                  "type" : "string"
+                },
+                "additionalProp2" : {
+                  "type" : "string"
+                },
+                "additionalProp3" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "apikey" : {
+        "type" : "apiKey",
+        "name" : "gw-dev-app-key",
+        "in" : "query",
+        "description" : "Chave da aplicação. É a developer_application_key que pode ser encontrada acessando o item Credenciais dentro da sua aplicação no Portal Developers BB"
+      },
+      "OAuth2_Teste" : {
+        "type" : "oauth2",
+        "name" : "OAuth2 homologacao",
+        "flows" : {
+          "authorizationCode" : {
+            "authorizationUrl" : "https://oauth.hm.bb.com.br/ui/authorize",
+            "tokenUrl" : "https://oauth.hm.bb.com.br/oauth/token",
+            "refreshUrl" : "https://oauth.hm.bb.com.br/oauth/token",
+            "scopes" : {
+              "payments.direct-debit-authorization-request" : ""
+            }
+          }
+        }
+      },
+      "OAuth2_Producao" : {
+        "type" : "oauth2",
+        "name" : "OAuth2 producao",
+        "flows" : {
+          "authorizationCode" : {
+            "authorizationUrl" : "https://oauth.bb.com.br/ui/authorize",
+            "tokenUrl" : "https://oauth.bb.com.br/oauth/token",
+            "refreshUrl" : "https://oauth.bb.com.br/oauth/token",
+            "scopes" : {
+              "payments.direct-debit-authorization-request" : ""
+            }
+          }
+        }
+      },
+      "mutualTLS" : {
+        "type" : "mutualTLS",
+        "description" : "A utilização da certificação mútua de certificados (mTLS) garante mais segurança nas transações da API"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Autorizar",
+      "description": " "
+    }
+  ]
+}

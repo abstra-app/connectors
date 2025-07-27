@@ -1,0 +1,190 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "A API Login BB, provê uma interface para facilitar o processo de login do seu sistema.",
+    "title": "API Login BB (Entrar com o BB)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ambiente-api}.bb.com.br",
+      "variables": {
+        "ambiente-api": {
+          "default": "api.sandbox",
+          "enum": [
+            "api",
+            "api.desenv",
+            "api.sandbox"
+          ]
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/oauth/jwks": {
+      "servers": [
+        {
+          "url": "https://{ambiente-oauth}.bb.com.br",
+          "variables": {
+            "ambiente-oauth": {
+              "default": "oauth.hm",
+              "enum": [
+                "oauth",
+                "oauth.desenv",
+                "oauth.hm"
+              ]
+            }
+          }
+        }
+      ],
+      "get": {
+        "description": "Este endpoint retorna as chaves publicas usadas para verificar a assinatura dos IDs Tokens emitidos pelo OAUth 2.0.",
+        "tags": [
+          "Login BB - JWKS"
+        ],
+        "summary": "JSON Web Keys Discovery",
+        "operationId": "wellKnown",
+        "responses": {
+          "200": {
+            "description": "JSONWebKeySet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JSONWebKeySet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth/v2/userinfo": {
+      "get": {
+        "security": [
+          {
+            "OAuth2-DESENV": []
+          },
+          {
+            "OAuth2-SANDBOX": []
+          }
+        ],
+        "description": "Este endpoint é utilizado para recuperar o objeto JWT assinado pelo servidor de autorização OAuth BB, contendo a informação do usuário logado. Para mais informações sobre este endpoint, gentileza verificar a documentação do OpenID Connect (OIDC) disponível em https://openid.net/specs/openid-connect-core-1_0.html#UserInfo",
+        "tags": [
+          "Login BB - UserInfo"
+        ],
+        "operationId": "userinfoAuthorizationCode",
+        "parameters": [
+          {
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "name": "gw-app-key",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor (developer_application_key) criada no portal do desenvolvedor. Você pode consultar este valor acessando no Portal do Desenvolvedor -> Aplicações -> Credenciais -> developer_application_key.",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/jwt": {
+                "example": "eyJhbGciOiJQUzI1NiIsImtpZCI6InVzZXJJbmZvS2V5Iiwia3R5IjoiUlNBIiwidHlwIjoiSldUIn0.eyJzdWIiOiI5MjY5ODkwNjUiLCJpc3MiOiJodHRwczovL29hdXRoLmRlc2Vudi5iYi5jb20uYnIiLCJhdWQiOiJodHRwczovL29hdXRoLmJiLmNvbS5ici9vYXV0aCIsImlhdCI6MTY1MjQ0NzQxOCwiZXhwIjoxNjUyNDQ4MDEwLCJhdXRoX3RpbWUiOjE2NTI0NDczOTMzMzksImFjciI6eyJhdXRoX3RpcG9faWRlbnRpZmljYWRvciI6ImFnZW5jaWFfY29udGFfdGl0dWxhcmlkYWRlIiwiYXV0aF90aXBvX2NyZWRlbmNpYWwiOiJzZW5oYV9hdXRvYXRlbmRpbWVudG8iLCJjaWQiOiIyMDIyMDUxMzEwMDkwNS02NDRkNTAwMWQyMDIxZjQwNDcwZDA0Y2Q5NjhiNTUwMDgxNTBmYTdjIn0sImFtciI6WyJwd2QiXSwiY3BmIjoiNTgxMjgxNzQxMzQifQ.P0bcvOQXAsjkg-tk6t7hKDkMSjef5ju4L8SZ7qj-e-PLAC_Wgaupvy9GbTCBsOD7DsGFrla34KEISuXoqFSXfc9RrdY2lGSQC7BSgdNtrJ-DoV_1--LsTqXI8vECh6kqnPjYUNRuDx5PTK2UBAnfHz1pnZ8g_7qIrWCjxzsC6WhG6Inl5zaH7MbFTMMYPxG3tUblipiG_ymms5UypM89lGnDMUFqucdKtpwuITVe-esEV5hS51mLMb-2F0mk_N137xFNONb9kOP9t8XDyTPB0ze55-HcyUzsb7h4kiD9l9BVgkwO1paVD9hsU0fE8oyecCDyU0XA0ZARJI0nhKMiiw"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2-DESENV": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://oauth.desenv.bb.com.br/ui/authorize",
+            "tokenUrl": "https://oauth.desenv.bb.com.br/token",
+            "refreshUrl": "https://oauth.desenv.bb.com.br/token",
+            "scopes": {
+              "openid-otp": "Obter informação do cliente logado. Habilita o fluxo OTP (One Time Password) durante o fluxo de autorização/login.",
+              "cpf": "Obter, se disponível, o CPF do usuário logado.",
+              "cnpj": "Obter, se disponível, o CNPJ do usuário logado."
+            }
+          }
+        }
+      },
+      "OAuth2-SANDBOX": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://oauth.hm.bb.com.br/ui/authorize",
+            "tokenUrl": "https://oauth.hm.bb.com.br/token",
+            "refreshUrl": "https://oauth.hm.bb.com.br/token",
+            "scopes": {
+              "openid-otp": "Obter informação do cliente logado. Habilita o fluxo OTP (One Time Password) durante o fluxo de autorização/login.",
+              "cpf": "Obter, se disponível, o CPF do usuário logado.",
+              "cnpj": "Obter, se disponível, o CNPJ do usuário logado."
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "JSONWebKey": {
+        "type": "object",
+        "required": [
+          "kty",
+          "kid",
+          "use",
+          "alg"
+        ],
+        "properties": {
+          "kty": {
+            "description": "O parâmetro \"kty\" (tipo de chave) identifica o algoritmo criptográfico usado com a chave, como \"RSA\" ou \"EC\".",
+            "type": "string",
+            "example": "RSA"
+          },
+          "kid": {
+            "description": "O parametro \"kid\" (key ID) é usado para identificar uma chave específica. Seu uso se dá quando mais de uma chave é especificada na JWKS e você precisa utilizar uma chave em específico. Este valor é case-sensitive.",
+            "type": "string",
+            "x-go-name": "Kid",
+            "example": "userInfoKey"
+          },
+          "use": {
+            "description": "O parametro \"use\" (\"public key use\") identifica o propósito de uso da chave. O parametro é utilizado para inficar se a chave é utilizada para encriptar ou para verificar a assinatura. Os valores válidos geralmente são: \"sig\" (signature/assinatura) ou \"enc\" (encryption/encriptação).",
+            "type": "string",
+            "example": "sig"
+          },
+          "alg": {
+            "description": "O parametro 'alg' (algoritmo) identifica o algoritmo para uso para a chave.",
+            "type": "string",
+            "example": "PS256"
+          },
+          "n": {
+            "description": "O módulo utilizado para a chave publica RSA.",
+            "type": "string",
+            "example": "ilVT0LjA5MnTCS46WyUjBrnkUso7jVJaY1lr2m_IyXpumqE6-vNu5WXLcu9v6xt-uYW9flb-IQEnEDQGKPMzEeoeDslScvlQQu42FSva3f0p_U-RF8JoVZlRV1x9Xs4uC4_zh1wzBoZQmXYQulss5OFFKokUSaJPvik9fcfA-vilH6HXZLBkTiV2ERKjNRiJbUQ9LlztZymRdFSbtu2VUkQgw4MD21tOEjAwluYC_lbM_ezRVFQoyTwW_nz47-svPR_LRMP1n9T91TxgkuCK8foOD6aRLy32P2xlR3PWcIVRlkjWtDYHn9VD9rMSpIJLkkIwlVEufnV5MBsdCCzMlw"
+          },
+          "e": {
+            "description": "O expoente utilizado para a chave publica RSA.",
+            "type": "string",
+            "example": "AQAB"
+          }
+        }
+      },
+      "JSONWebKeySet": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "description": "Lista das chaves publicas usadas para verificar a assinatura dos IDs Tokens emitidos pelo OAUth 2.0.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JSONWebKey"
+            }
+          }
+        }
+      }
+    }
+  }
+}

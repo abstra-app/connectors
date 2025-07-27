@@ -1,0 +1,2063 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PIX-BB",
+    "description": "API para gerenciar os serviços referentes ao PIX (Sistema de Pagamentos Instantâneos) no BB.",
+    "contact": {
+      "name": "Banco do Brasil S.A. - BB for Developers",
+      "url": "https://developers.bb.com.br"
+    },
+    "version": "1.9"
+  },
+  "externalDocs": {
+    "url": "https://developers.bb.com.br/docs"
+  },
+  "servers": [
+    {
+      "url": "https://api.hm.bb.com.br/pix-bb/v1",
+      "description": "Servidor de Testes"
+    },
+    {
+      "url": "https://api.bb.com.br/pix-bb/v1",
+      "description": "Servidor de Produção"
+    }
+  ],
+  "paths": {
+    "/arrecadacao-qrcodes": {
+      "post": {
+        "summary": "Gerar QRCode de Pagamento Instantâneo de uma Guia de Arrecadação",
+        "description": "Gera um QR Code de pagamento instantâneo (PIX) para uma guia de arrecadação (com ou sem código de barras).",
+        "parameters": [
+          {
+            "name": "gw-app-key",
+            "in": "query",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.\nEx: Bearer [ACCESS_TOKEN]",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroConvenio": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Refere-se ao número de convênio de arrecadação de um Ente Público com o Banco do Brasil e possui até 6 posições numéricas. Não confundir com código Febraban. No ambiente de testes utilize o número de convênio de arrecadação: 78806",
+                    "example": 62191
+                  },
+                  "indicadorCodigoBarras": {
+                    "type": "string",
+                    "example": "S",
+                    "description": "Informe S (sim) caso envie um código de barras padrão Febraban no campo seguinte (codigoGuiaRecebimento) ou N (não) caso não seja informado um código de barras mas apenas um código para conciliação."
+                  },
+                  "codigoGuiaRecebimento": {
+                    "type": "string",
+                    "description": "Código de Barras padrão Febraban de 44 posições (se S no indicadorCodigoBarras) ou outro identificador do cliente  (se N no indicadorCodigoBarras).  O código de barras deverá ser gerado para o Número de Convênio informado no campo “NumeroConvenio”.",
+                    "example": "83660000000199800053846101173758000000000000"
+                  },
+                  "emailDevedor": {
+                    "type": "string",
+                    "description": "E-mail do devedor para contato",
+                    "example": "contribuinte.silva@provedor.com.br"
+                  },
+                  "codigoPaisTelefoneDevedor": {
+                    "type": "integer",
+                    "description": "Código do País do Telefone do Devedor",
+                    "example": 55,
+                    "format": "int32"
+                  },
+                  "dddTelefoneDevedor": {
+                    "type": "integer",
+                    "description": "DDD do telefone do devedor",
+                    "example": 61,
+                    "format": "int32"
+                  },
+                  "numeroTelefoneDevedor": {
+                    "type": "string",
+                    "description": "Numero do telefone do devedor",
+                    "example": "999731240",
+                    "format": "int32"
+                  },
+                  "codigoSolicitacaoBancoCentralBrasil": {
+                    "type": "string",
+                    "description": "Refere-se à Chave Pix do Recebedor cadastrada no Banco do Brasil. O campo é obrigatório. Em ambiente de produção, a Chave Pix deverá estar vinculada a uma conta cujo CNPJ seja o mesmo utilizado na credencial de acesso à API. Em ambiente de homologação, use as chaves Pix criadas para usuários testes. A chave será lida pelo aplicativo do PSP do pagador para consulta ao DICT que retornará a informação e identificará o recebedor da arrecadação.",
+                    "example": "88a33759-78b0-43b7-8c60-e5e3e7cb55fe"
+                  },
+                  "descricaoSolicitacaoPagamento": {
+                    "type": "string",
+                    "description": "Determina um texto a ser apresentado ao pagador em formato livre limitado a 140 caracteres.",
+                    "example": "Arrecadação Pix"
+                  },
+                  "valorOriginalSolicitacao": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Valor original do documento. O valor do QRCode deverá, obrigatoriamente, corresponder ao valor registrado no código de barras.",
+                    "example": 19.98
+                  },
+                  "cpfDevedor": {
+                    "type": "string",
+                    "description": "Determina o CPF do devedor, caso haja. O campo não é obrigatório, porém, se informado, o campo NomeDevedor também deverá ser preenchido. Este campo não poderá ser informado, caso o campo cnpjDevedor contenha dados. Para fins de testes, usar os CPF da seção de dados para testes do portal BB Developers.",
+                    "example": "19917885250"
+                  },
+                  "cnpjDevedor": {
+                    "type": "string",
+                    "description": "Determina o CNPJ do devedor, caso haja. O campo não é obrigatório, porém se informado, o campo NomeDevedor também deverá ser preenchido. Este campo não poderá ser informado, caso o campo cpfDevedor contenha dados. Para fins de testes, usar os CNPJ da seção de dados para testes do portal BB Developers."
+                  },
+                  "nomeDevedor": {
+                    "type": "string",
+                    "description": "Determina o nome da instituição ou pessoa a quem a cobrança está endereçada. O preenchimento do campo \"Nome Devedor\" é obrigatório se o campo \"Numero CPF Devedor\" ou o campo \"Numero Cadastro Nac Pessoas Juridicas Devedor\" estiver preenchido",
+                    "example": "Contribuinte da Silva"
+                  },
+                  "quantidadeSegundoExpiracao": {
+                    "type": "integer",
+                    "description": "Duração que indica limite, com granularidade de segundos, para que o pagamento do QR Code possa ser realizado, a partir da data-hora de criação. Deve ser utilizado como espécie de data de vencimentos em segundos que deverá ser calculada da data-hora de criação até a data-hora de vencimento. Caso não informado, assume-se a duração de 86400 segundos, que corresponde a 24 horas.",
+                    "example": 3600,
+                    "format": "int32"
+                  },
+                  "listaInformacaoAdicional": {
+                    "type": "array",
+                    "description": "O campo \"listaInformacaoAdicional\", se estiver presente, se refere a uma lista em que cada elemento deve\nutilizar o esquema abaixo:",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "codigoInformacaoAdicional": {
+                          "type": "string",
+                          "description": "Título das informações adicionais",
+                          "example": "IPTU"
+                        },
+                        "textoInformacaoAdicional": {
+                          "type": "string",
+                          "description": "Valor/texto das informações adicionais",
+                          "example": "Cota Única 2021"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "numeroConvenio",
+                  "indicadorCodigoBarras",
+                  "codigoGuiaRecebimento",
+                  "codigoSolicitacaoBancoCentralBrasil",
+                  "valorOriginalSolicitacao"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "numeroConvenio": 62191,
+                    "indicadorCodigoBarras": "S",
+                    "codigoGuiaRecebimento": "83660000000199800053846101173758000000000000",
+                    "emailDevedor": "contribuinte.silva@provedor.com.br",
+                    "codigoPaisTelefoneDevedor": 55,
+                    "dddTelefoneDevedor": 61,
+                    "numeroTelefoneDevedor": "999731240",
+                    "codigoSolicitacaoBancoCentralBrasil": "88a33759-78b0-43b7-8c60-e5e3e7cb55fe",
+                    "descricaoSolicitacaoPagamento": "Arrecadação Pix",
+                    "valorOriginalSolicitacao": 19.98,
+                    "cpfDevedor": "19917885250",
+                    "nomeDevedor": "Contribuinte da Silva",
+                    "quantidadeSegundoExpiracao": 3600,
+                    "listaInformacaoAdicional": [
+                      {
+                        "codigoInformacaoAdicional": "IPTU",
+                        "textoInformacaoAdicional": "COTA ÚNICA 2021"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": ""
+        },
+        "responses": {
+          "201": {
+            "description": "CRIADO. A solicitação foi atendida e resultou em um novo recurso sendo criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestampCriacaoSolicitacao": {
+                      "type": "string",
+                      "description": "Timestamp que indica o momento em que foi criada a cobrança. Respeita o formato definido na RFC 3339",
+                      "example": "2020-10-12T21:11:44.9673040000"
+                    },
+                    "estadoSolicitacao": {
+                      "type": "string",
+                      "description": "Texto descritivo do Estado Solicitacao",
+                      "example": "ATIVA"
+                    },
+                    "codigoConciliacaoSolicitante": {
+                      "type": "string",
+                      "description": "O campo \"\"Codigo Conciliacao Solicitacao\"\" determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\nNa pacs.008, é referenciado como TransactionIdentification <txId> ou idConciliacaoRecebedor. O\npreenchimento do campo txid é limitado a 35 caracteres na pacs.008.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de\nconfirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP\ndo recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber\num recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário\nrecebedor, informando que um pagamento específico foi liquidado",
+                      "example": "D3EG71WTYKLVQJT9ZNASBKN1A"
+                    },
+                    "numeroVersaoSolicitacaoPagamento": {
+                      "type": "integer",
+                      "description": "O tipo do campo \"\"Numero Versao Solicitacao Pagamento\"\" é um número. Sempre começa em zero. Sempre varia em acréscimos de 1.\n\nO campo \"\"Numero Versao Solicitacao Pagamento\"\" adiciona rastreabilidade ao payload. Uma vez que se recomenda que o payload\nassinado seja armazenado pelo PSP do pagador em seus registros, fica facilitada a comunicação entre PSPs acerca de qual payload especificamente está se tratando, no contexto de resolução de possíveis problemas",
+                      "example": 0
+                    },
+                    "linkQrCode": {
+                      "type": "string",
+                      "description": "O campo Link URL representa uma URL que será utilizada para recuperação dos dados que fazem parte do pagamento. \n\nO formato dessa URL, bem como os demais detalhes sobre segurança relacionados ao QR Code,está detalhadono Manual de Segurança do SFN",
+                      "example": "qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b84014"
+                    },
+                    "qrCode": {
+                      "type": "string",
+                      "description": "Texto para geração da imagem do QrCode Dinâmico",
+                      "example": "00020101021226900014br.gov.bcb.pix2568qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b8401452040000530398654041.235802BR5914Maria da Silva6008BRASILIA62070503***630471DA"
+                    }
+                  },
+                  "required": [
+                    "timestampCriacaoSolicitacao",
+                    "estadoSolicitacao",
+                    "codigoConciliacaoSolicitante",
+                    "numeroVersaoSolicitacaoPagamento",
+                    "linkQrCode",
+                    "qrCode"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-requisicao"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body",
+        "operationId": "criaBoletoBancarioId",
+        "tags": [
+          "qrCodes"
+        ]
+      },
+      "parameters": [],
+      "get": {
+        "summary": "Consultar QRCode de Pagamento Instantâneo por Guia de Recebimento",
+        "operationId": "consultaQrCodeGuiaRecolhimento",
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "codigoConciliacaoSolicitante": {
+                      "type": "string",
+                      "description": "O campo determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\nNa pacs.008, é referenciado como TransactionIdentification <txId> ou idConciliacaoRecebedor. O preenchimento do campo txid é limitado a 35 caracteres na pacs.008.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de\nconfirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP\ndo recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber\num recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário\nrecebedor, informando que um pagamento específico foi liquidado."
+                    },
+                    "emailDevedor": {
+                      "type": "string",
+                      "description": "E-mail do devedor para contato."
+                    },
+                    "codigoPaisTelefoneDevedor": {
+                      "type": "integer",
+                      "description": "Código do País do Telefone do devedor."
+                    },
+                    "dddTelefoneDevedor": {
+                      "type": "integer",
+                      "description": "DDD do telefone do devedor."
+                    },
+                    "numeroTelefoneDevedor": {
+                      "type": "integer",
+                      "description": "Número do telefone do devedor."
+                    },
+                    "timestampCriacaoSolicitacao": {
+                      "type": "string",
+                      "description": "Timestamp que indica o momento em que foi criada a cobrança. Respeita o formato definido na RFC 3339."
+                    },
+                    "quantidadeSegundoExpiracao": {
+                      "type": "integer",
+                      "description": "Duração que indica limite, com granularidade de segundos, para que o pagamento do QR Code possa ser realizado, a partir da data-hora de criação. Deve ser utilizado como espécie de data de vencimentos em segundos que deverá ser calculada da data-hora de criação até a data-hora de vencimento. Caso não informado, assume-se a duração de 86400 segundos, que corresponde a 24 horas."
+                    },
+                    "estadoSolicitacao": {
+                      "type": "string",
+                      "description": "Texto descritivo do Estado Solicitacao."
+                    },
+                    "numeroVersaoSolicitacaoPagamento": {
+                      "type": "integer",
+                      "description": "O tipo do campo \"Numero Versao Solicitacao Pagamento\" é um número. Sempre começa em zero. Sempre varia em acréscimos de 1.\n\nO campo \"Numero Versao Solicitacao Pagamento\" adiciona rastreabilidade ao payload. Uma vez que se recomenda que o payload assinado seja armazenado pelo PSP do pagador em seus registros, fica facilitada a comunicação entre PSPs acerca de qual payload especificamente está se tratando, no contexto de resolução de possíveis problemas."
+                    },
+                    "linkQrCode": {
+                      "type": "string",
+                      "description": "O campo Link URL representa uma URL que será utilizada para recuperação dos dados que fazem parte do pagamento.\n\nO formato dessa URL, bem como os demais detalhes sobre segurança relacionados ao QR Code,está detalhadono Manual de Segurança do SFN."
+                    },
+                    "qrCode": {
+                      "type": "string",
+                      "description": "Texto para geração da imagem do QrCode Dinâmico."
+                    },
+                    "cpfDevedor": {
+                      "type": "integer",
+                      "description": "Determina o CPF do devedor."
+                    },
+                    "cnpjDevedor": {
+                      "type": "integer",
+                      "description": "Determina o CNPJ do devedor."
+                    },
+                    "nomeDevedor": {
+                      "type": "string",
+                      "description": "Determina o nome da instituição ou pessoa a quem a cobrança está endereçada. O preenchimento do campo \"Nome Devedor\" é obrigatório se o campo \"Numero CPF Devedor\" ou o campo \"Numero Cadastro Nac Pessoas Juridicas Devedor\" estiver preenchido."
+                    },
+                    "valorOriginalSolicitacao": {
+                      "type": "number",
+                      "description": "Valor original do documento."
+                    },
+                    "codigoSolicitacaoBancoCentralBrasil": {
+                      "type": "string",
+                      "description": "Chave DICT do Recebedor cadastrada no Banco Central - O campo \"Codigo Solicitação Banco Central\", obrigatório, determina a chave Pix registrada no DICT que será utilizada para a cobrança. Essa chave será lida pelo aplicativo do PSP do pagador para consulta ao DICT, que retornará a informação que identificará o recebedor da cobrança."
+                    },
+                    "descricaoSolicitacaoPagamento": {
+                      "type": "string",
+                      "description": "Determina um texto a ser apresentado ao pagador para\nque ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor. Esse\ntexto40 será preenchido, na pacs.008, pelo PSP do pagador, no campo RemittanceInformation\n<RmtInf>. O tamanho do campo <RmtInf> na pacs.008 está limitado a 140 caracteres."
+                    },
+                    "listaInformacaoAdicional": {
+                      "type": "array",
+                      "uniqueItems": false,
+                      "description": "",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "codigoInformacaoAdicional": {
+                            "type": "string",
+                            "description": "Título/Descrição da informação adicional."
+                          },
+                          "textoInformacaoAdicional": {
+                            "type": "string",
+                            "description": "Dados da informação adicional."
+                          }
+                        },
+                        "required": [
+                          "codigoInformacaoAdicional",
+                          "textoInformacaoAdicional"
+                        ]
+                      }
+                    },
+                    "codigoIdentificadorPagamento": {
+                      "type": "string",
+                      "description": "EndToEndIdentification que transita na PACS002, PACS004 e PACS008."
+                    },
+                    "valorPagamento": {
+                      "type": "number",
+                      "description": "Valor do pagamento (pix)."
+                    },
+                    "timestampPagamento": {
+                      "type": "string",
+                      "description": "Horário em que o Pix foi processado no PSP."
+                    },
+                    "cpfPagador": {
+                      "type": "integer",
+                      "description": "CPF do usuário pagador."
+                    },
+                    "cnpjPagador": {
+                      "type": "integer",
+                      "description": "CNPJ do usuário pagador."
+                    },
+                    "nomeClientePagador": {
+                      "type": "string",
+                      "description": "Nome do usuário pagador."
+                    },
+                    "textoInformativoPagador": {
+                      "type": "string",
+                      "description": " Informação livre do pagador <= 140 characters."
+                    }
+                  },
+                  "required": [
+                    "codigoConciliacaoSolicitante",
+                    "emailDevedor",
+                    "codigoPaisTelefoneDevedor",
+                    "dddTelefoneDevedor",
+                    "numeroTelefoneDevedor",
+                    "timestampCriacaoSolicitacao",
+                    "quantidadeSegundoExpiracao",
+                    "estadoSolicitacao",
+                    "numeroVersaoSolicitacaoPagamento",
+                    "linkQrCode",
+                    "qrCode",
+                    "cpfDevedor",
+                    "cnpjDevedor",
+                    "nomeDevedor",
+                    "valorOriginalSolicitacao",
+                    "codigoSolicitacaoBancoCentralBrasil",
+                    "descricaoSolicitacaoPagamento",
+                    "listaInformacaoAdicional",
+                    "codigoIdentificadorPagamento",
+                    "valorPagamento",
+                    "timestampPagamento",
+                    "cpfPagador",
+                    "cnpjPagador",
+                    "nomeClientePagador",
+                    "textoInformativoPagador"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "codigoConciliacaoSolicitante": "D3EG71WTYKLVQJT9ZNASBKN1A",
+                      "emailDevedor": "mariadasilva@bb.com.br",
+                      "codigoPaisTelefoneDevedor": 55,
+                      "dddTelefoneDevedor": 61,
+                      "numeroTelefoneDevedor": 999731240,
+                      "timestampCriacaoSolicitacao": "2020-10-20T21:11:34.9673040000",
+                      "quantidadeSegundoExpiracao": 86400,
+                      "estadoSolicitacao": "ATIVA",
+                      "numeroVersaoSolicitacaoPagamento": 0,
+                      "linkQrCode": "qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b84014",
+                      "qrCode": "00020101021226900014br.gov.bcb.pix2568qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b8401452040000530398654041.235802BR5914Maria da Silva6008BRASILIA62070503***630471DA",
+                      "cpfDevedor": 49622181108,
+                      "cnpjDevedor": 35990785000171,
+                      "nomeDevedor": "Maria da Silva",
+                      "valorOriginalSolicitacao": 100.1,
+                      "codigoSolicitacaoBancoCentralBrasil": "3d22962e-a2a1-42ec-a68c-a8f66b69b09a",
+                      "descricaoSolicitacaoPagamento": "Informe o número da sua CNH",
+                      "listaInformacaoAdicional": [
+                        {
+                          "codigoInformacaoAdicional": "123132132",
+                          "textoInformacaoAdicional": "Renavam"
+                        }
+                      ],
+                      "codigoIdentificadorPagamento": "string",
+                      "valorPagamento": 100.1,
+                      "timestampPagamento": "2020-10-20T21:11:45.9864040000",
+                      "cpfPagador": 49622181108,
+                      "cnpjPagador": 35990785000171,
+                      "nomeClientePagador": "Maria da Silva",
+                      "textoInformativoPagador": "Pagamento do Licenciamento"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NÃO ENCONTRADO. O servidor não pode encontrar o recurso solicitado."
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "description": "Consulta um QR Code de pagamentos instantâneos (PIX) por guia de recebimento (com ou sem código de barras).",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.Ex: Bearer [ACCESS_TOKEN]",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "gw-app-key",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número do convenio registrado no Banco do Brasil.  No ambiente de testes utilize o número de convênio de arrecadação: 78806",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "codigoGuiaRecebimento",
+            "description": "Código de Barras  ou outro identificador do cliente informado no momento da criação da solicitação de pagamento.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "qrCodes"
+        ]
+      }
+    },
+    "/arrecadacao-qrcodes/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "D3EG71WTYKLVQJT9ZNASBKN1A"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\nNa pacs.008, é referenciado como TransactionIdentification <txId> ou idConciliacaoRecebedor. O preenchimento do campo txid é limitado a 35 caracteres na pacs.008.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado.\n"
+        }
+      ],
+      "put": {
+        "summary": "Gerenciar QRCode de Pagamento Instantâneo de uma Guia de Arrecadação",
+        "operationId": "alteraQrCodeArrecadacao",
+        "parameters": [
+          {
+            "name": "gw-app-key",
+            "in": "query",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.\nEx: Bearer [ACCESS_TOKEN]",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroConvenio": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Refere-se ao número de convênio de arrecadação de um Ente Público com o Banco do Brasil e possui até 6 posições numéricas.  No ambiente de testes utilize o número de convênio de arrecadação: 78806"
+                  },
+                  "indicadorCodigoBarras": {
+                    "type": "string",
+                    "example": "S",
+                    "description": "Informe S (sim) caso envie um código de barras padrão Febraban no campo seguinte (codigoGuiaRecebimento) ou N (não) caso não seja informado um código de barras mas apenas um código para conciliação."
+                  },
+                  "codigoGuiaRecebimento": {
+                    "type": "string",
+                    "description": "Código de Barras padrão Febraban de 44 posições (se S no indicadorCodigoBarras) ou outro identificador do cliente  (se N no indicadorCodigoBarras).  O código de barras deverá ser gerado para o Número de Convênio informado no campo “NumeroConvenio”.",
+                    "example": "81620000900000031902020102600390000011517750"
+                  },
+                  "emailDevedor": {
+                    "type": "string",
+                    "description": "E-mail do devedor para contato",
+                    "example": "joaodasilva@bb.com.br"
+                  },
+                  "codigoPaisTelefoneDevedor": {
+                    "type": "integer",
+                    "description": "Código do País do Telefone do Devedor",
+                    "example": 55,
+                    "format": "int32"
+                  },
+                  "dddTelefoneDevedor": {
+                    "type": "integer",
+                    "description": "DDD do telefone do devedor",
+                    "example": 61,
+                    "format": "int32"
+                  },
+                  "numeroTelefoneDevedor": {
+                    "type": "string",
+                    "description": "Numero do telefone do devedor",
+                    "example": "999731240",
+                    "format": "int32"
+                  },
+                  "codigoSolicitacaoBancoCentralBrasil": {
+                    "type": "string",
+                    "description": "Refere-se à Chave Pix do Recebedor cadastrada no Banco do Brasil. O campo é obrigatório. Em ambiente de produção, a Chave Pix deverá estar vinculada a uma conta cujo CNPJ seja o mesmo utilizado na credencial de acesso à API. Em ambiente de homologação, use as chaves Pix criadas para usuários testes. A chave será lida pelo aplicativo do PSP do pagador para consulta ao DICT que retornará a informação e identificará o recebedor da arrecadação.",
+                    "example": "88a33759-78b0-43b7-8c60-e5e3e7cb55fe"
+                  },
+                  "descricaoSolicitacaoPagamento": {
+                    "type": "string",
+                    "description": "Determina um texto a ser apresentado ao pagador em formato livre limitado a 140 caracteres.",
+                    "example": "Taxa de limpeza urbana ano competência 2021"
+                  },
+                  "valorOriginalSolicitacao": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Valor original do documento. O valor do QRCode deverá, obrigatoriamente, corresponder ao valor registrado no código de barras.",
+                    "example": 100.1
+                  },
+                  "cpfDevedor": {
+                    "type": "string",
+                    "description": "Determina o CPF do devedor, caso haja. O campo não é obrigatório, porém, se informado, o campo NomeDevedor também deverá ser preenchido. Este campo não poderá ser informado, caso o campo cnpjDevedor contenha dados. Para fins de testes, usar os CPF da seção de dados para testes do portal BB Developers.",
+                    "example": "19917885250"
+                  },
+                  "cnpjDevedor": {
+                    "type": "string",
+                    "description": "Determina o CNPJ do devedor, caso haja. O campo não é obrigatório, porém se informado, o campo NomeDevedor também deverá ser preenchido. Este campo não poderá ser informado, caso o campo cpfDevedor contenha dados. Para fins de testes, usar os CNPJ da seção de dados para testes do portal BB Developers.",
+                    "example": "95288107000193"
+                  },
+                  "nomeDevedor": {
+                    "type": "string",
+                    "description": "Determina o nome da instituição ou pessoa a quem a cobrança está endereçada. O preenchimento do campo \"Nome Devedor\" é obrigatório se o campo \"Numero CPF Devedor\" ou o campo \"Numero Cadastro Nac Pessoas Juridicas Devedor\" estiver preenchido",
+                    "example": "João da Silva"
+                  },
+                  "quantidadeSegundoExpiracao": {
+                    "type": "integer",
+                    "description": "Duração que indica limite, com granularidade de segundos, para que o pagamento do QR Code possa ser realizado, a partir da data-hora de criação. Deve ser utilizado como espécie de data de vencimentos em segundos que deverá ser calculada da data-hora de criação até a data-hora de vencimento. Caso não informado, assume-se a duração de 86400 segundos, que corresponde a 24 horas.",
+                    "example": 3600,
+                    "format": "int32"
+                  },
+                  "listaInformacaoAdicional": {
+                    "type": "array",
+                    "description": "O campo \"listaInformacaoAdicional\", se estiver presente, se refere a uma lista em que cada elemento deve\nutilizar o esquema abaixo:",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "codigoInformacaoAdicional": {
+                          "type": "string",
+                          "description": "Título das informações adicionais"
+                        },
+                        "textoInformacaoAdicional": {
+                          "type": "string",
+                          "description": "Valor/texto das informações adicionais"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "numeroConvenio",
+                  "indicadorCodigoBarras",
+                  "codigoGuiaRecebimento",
+                  "codigoSolicitacaoBancoCentralBrasil",
+                  "valorOriginalSolicitacao"
+                ]
+              }
+            }
+          },
+          "required": true,
+          "description": ""
+        },
+        "responses": {
+          "201": {
+            "description": "CRIADO. A solicitação foi atendida e resultou em um novo recurso sendo criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestampCriacaoSolicitacao": {
+                      "type": "string",
+                      "description": "Timestamp que indica o momento em que foi criada a cobrança. Respeita o formato definido na RFC 3339",
+                      "example": "2020-10-12T21:11:44.9673040000"
+                    },
+                    "estadoSolicitacao": {
+                      "type": "string",
+                      "description": "Texto descritivo do Estado Solicitacao",
+                      "example": "ATIVA"
+                    },
+                    "codigoConciliacaoSolicitante": {
+                      "type": "string",
+                      "description": "O campo \"\"Codigo Conciliacao Solicitacao\"\" determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\nNa pacs.008, é referenciado como TransactionIdentification <txId> ou idConciliacaoRecebedor. O\npreenchimento do campo txid é limitado a 35 caracteres na pacs.008.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de\nconfirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP\ndo recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber\num recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário\nrecebedor, informando que um pagamento específico foi liquidado",
+                      "example": "D3EG71WTYKLVQJT9ZNASBKN1A"
+                    },
+                    "numeroVersaoSolicitacaoPagamento": {
+                      "type": "integer",
+                      "description": "O tipo do campo \"\"Numero Versao Solicitacao Pagamento\"\" é um número. Sempre começa em zero. Sempre varia em acréscimos de 1.\n\nO campo \"\"Numero Versao Solicitacao Pagamento\"\" adiciona rastreabilidade ao payload. Uma vez que se recomenda que o payload\nassinado seja armazenado pelo PSP do pagador em seus registros, fica facilitada a comunicação entre PSPs acerca de qual payload especificamente está se tratando, no contexto de resolução de possíveis problemas",
+                      "example": 0
+                    },
+                    "linkQrCode": {
+                      "type": "string",
+                      "description": "O campo Link URL representa uma URL que será utilizada para recuperação dos dados que fazem parte do pagamento. \n\nO formato dessa URL, bem como os demais detalhes sobre segurança relacionados ao QR Code,está detalhadono Manual de Segurança do SFN",
+                      "example": "qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b84014"
+                    },
+                    "qrCode": {
+                      "type": "string",
+                      "description": "Texto para geração da imagem do QrCode Dinâmico",
+                      "example": "00020101021226900014br.gov.bcb.pix2568qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b8401452040000530398654041.235802BR5914Maria da Silva6008BRASILIA62070503***630471DA"
+                    }
+                  },
+                  "required": [
+                    "timestampCriacaoSolicitacao",
+                    "estadoSolicitacao",
+                    "codigoConciliacaoSolicitante",
+                    "numeroVersaoSolicitacaoPagamento",
+                    "linkQrCode",
+                    "qrCode"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NÃO ENCONTRADO. O servidor não pode encontrar o recurso solicitado."
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "description": "Altera um QR Code de pagamento instantâneo (PIX) de uma guia de arrecadação (com ou sem código de barras).",
+        "tags": [
+          "qrCodes"
+        ],
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-requisicao"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "summary": "Gerenciar QRCode de Pagamento Instantâneo de uma Guia de Arrecadação",
+        "operationId": "consultaQrCodeArrecadacao",
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "codigoGuiaRecebimento": {
+                      "type": "string",
+                      "description": "Código de Barras  ou Outro identificador do cliente informado no momento da criação da solicitação de pagamento."
+                    },
+                    "emailDevedor": {
+                      "type": "string",
+                      "description": "E-mail do devedor para contato."
+                    },
+                    "codigoPaisTelefoneDevedor": {
+                      "type": "integer",
+                      "description": "Código do País do Telefone do devedor."
+                    },
+                    "dddTelefoneDevedor": {
+                      "type": "integer",
+                      "description": "DDD do telefone do devedor."
+                    },
+                    "numeroTelefoneDevedor": {
+                      "type": "integer",
+                      "description": "Número do telefone do devedor."
+                    },
+                    "timestampCriacaoSolicitacao": {
+                      "type": "string",
+                      "description": "Timestamp que indica o momento em que foi criada a cobrança. Respeita o formato definido na RFC 3339."
+                    },
+                    "quantidadeSegundoExpiracao": {
+                      "type": "integer",
+                      "description": "Duração que indica limite, com granularidade de segundos, para que o pagamento do QR Code possa ser realizado, a partir da data-hora de criação. Deve ser utilizado como espécie de data de vencimentos em segundos que deverá ser calculada da data-hora de criação até a data-hora de vencimento. Caso não informado, assume-se a duração de 86400 segundos, que corresponde a 24 horas.",
+                      "example": 3600
+                    },
+                    "estadoSolicitacao": {
+                      "type": "string",
+                      "description": "Texto descritivo do Estado Solicitacao."
+                    },
+                    "numeroVersaoSolicitacaoPagamento": {
+                      "type": "integer",
+                      "description": "O tipo do campo \"Numero Versao Solicitacao Pagamento\" é um número. Sempre começa em zero. Sempre varia em acréscimos de 1.\n\nO campo \"Numero Versao Solicitacao Pagamento\" adiciona rastreabilidade ao payload. Uma vez que se recomenda que o payload\nassinado seja armazenado pelo PSP do pagador em seus registros, fica facilitada a comunicação entre PSPs acerca de qual payload especificamente está se tratando, no contexto de resolução de possíveis problemas."
+                    },
+                    "linkQrCode": {
+                      "type": "string",
+                      "description": "O campo Link URL representa uma URL que será utilizada para recuperação dos dados que fazem parte do pagamento. \n\nO formato dessa URL, bem como os demais detalhes sobre segurança relacionados ao QR Code,está detalhadono Manual de Segurança do SFN."
+                    },
+                    "qrCode": {
+                      "type": "string",
+                      "description": "Texto para geração da imagem do QrCode Dinâmico."
+                    },
+                    "cpfDevedor": {
+                      "type": "integer",
+                      "description": "Determina o CPF do devedor."
+                    },
+                    "cnpjDevedor": {
+                      "type": "integer",
+                      "description": "Determina o CNPJ do devedor. Não é permitido que o campo \"Numero CPF Devedor\" e campo \"Numero Cadastro Nac Pessoas Juridicas Devedor\" estejam preenchidos ao mesmo tempo. Se o campo  \"Numero Cadastro Nac Pessoas Juridicas Devedor\" está preenchido, então o campo \"Numero CPF Devedor\" não pode estar preenchido, e vice-versa. Se o campo \"Nome Devedor\" está preenchido, então deve existir ou um campo \"Numero CPF Devedor\" ou um campo  \"Numero Cadastro Nac Pessoas Juridicas Devedor\" preenchido."
+                    },
+                    "nomeDevedor": {
+                      "type": "string",
+                      "description": "Determina o nome da instituição ou pessoa a quem a cobrança está endereçada. O preenchimento do campo \"Nome Devedor\" é obrigatório se o campo \"Numero CPF Devedor\" ou o campo \"Numero Cadastro Nac Pessoas Juridicas Devedor\" estiver preenchido."
+                    },
+                    "valorOriginalSolicitacao": {
+                      "type": "number",
+                      "description": "Valor original do documento."
+                    },
+                    "codigoSolicitacaoBancoCentralBrasil": {
+                      "type": "string",
+                      "description": "Chave DICT do Recebedor cadastrada no Banco Central - O campo \"Codigo Solicitação Banco Central\", obrigatório, determina a chave Pix registrada no DICT que será utilizada para a cobrança. Essa chave será lida pelo aplicativo do PSP do pagador para consulta ao DICT, que retornará a informação que identificará o recebedor da cobrança."
+                    },
+                    "descricaoSolicitacaoPagamento": {
+                      "type": "string",
+                      "description": "Determina um texto a ser apresentado ao pagador para\nque ele possa digitar uma informação correlata, em formato livre, a ser enviada ao recebedor. Esse\ntexto40 será preenchido, na pacs.008, pelo PSP do pagador, no campo RemittanceInformation\n<RmtInf>. O tamanho do campo <RmtInf> na pacs.008 está limitado a 140 caracteres."
+                    },
+                    "listaInformacaoAdicional": {
+                      "type": "object",
+                      "required": [
+                        "codigoInformacaoAdicional",
+                        "textoInformacaoAdicional"
+                      ],
+                      "description": "O campo \"listaInformacaoAdicional\", se estiver presente, se refere a uma lista.",
+                      "properties": {
+                        "codigoInformacaoAdicional": {
+                          "type": "string",
+                          "description": "Título/Descrição da informação adicional."
+                        },
+                        "textoInformacaoAdicional": {
+                          "type": "string",
+                          "description": "Dados da informação adicional."
+                        }
+                      }
+                    },
+                    "codigoIdentificadorPagamento": {
+                      "type": "string",
+                      "description": "EndToEndIdentification que transita na PACS002, PACS004 e PACS008."
+                    },
+                    "valorPagamento": {
+                      "type": "number",
+                      "description": "Valor do pagamento (pix)."
+                    },
+                    "timestampPagamento": {
+                      "type": "string",
+                      "description": "Horário em que o Pix foi processado no PSP."
+                    },
+                    "cpfPagador": {
+                      "type": "integer",
+                      "description": "CPF do usuário pagador."
+                    },
+                    "cnpjPagador": {
+                      "type": "integer",
+                      "description": "CNPJ do usuário pagador."
+                    },
+                    "nomeClientePagador": {
+                      "type": "string",
+                      "description": "Nome do usuário pagador."
+                    },
+                    "textoInformativoPagador": {
+                      "type": "string",
+                      "description": " Informação livre do pagador <= 140 characters."
+                    }
+                  },
+                  "required": [
+                    "codigoGuiaRecebimento",
+                    "emailDevedor",
+                    "codigoPaisTelefoneDevedor",
+                    "dddTelefoneDevedor",
+                    "numeroTelefoneDevedor",
+                    "timestampCriacaoSolicitacao",
+                    "quantidadeSegundoExpiracao",
+                    "estadoSolicitacao",
+                    "numeroVersaoSolicitacaoPagamento",
+                    "linkQrCode",
+                    "qrCode",
+                    "cpfDevedor",
+                    "cnpjDevedor",
+                    "nomeDevedor",
+                    "valorOriginalSolicitacao",
+                    "codigoSolicitacaoBancoCentralBrasil",
+                    "descricaoSolicitacaoPagamento",
+                    "listaInformacaoAdicional",
+                    "codigoIdentificadorPagamento",
+                    "valorPagamento",
+                    "timestampPagamento",
+                    "cpfPagador",
+                    "cnpjPagador",
+                    "nomeClientePagador",
+                    "textoInformativoPagador"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "codigoGuiaRecebimento": "string",
+                      "emailDevedor": "string",
+                      "codigoPaisTelefoneDevedor": 0,
+                      "dddTelefoneDevedor": 0,
+                      "numeroTelefoneDevedor": 0,
+                      "timestampCriacaoSolicitacao": "string",
+                      "quantidadeSegundoExpiracao": 3600,
+                      "estadoSolicitacao": "string",
+                      "numeroVersaoSolicitacaoPagamento": 0,
+                      "linkQrCode": "string",
+                      "qrCode": "string",
+                      "cpfDevedor": 0,
+                      "cnpjDevedor": 0,
+                      "nomeDevedor": "string",
+                      "valorOriginalSolicitacao": 0,
+                      "codigoSolicitacaoBancoCentralBrasil": "string",
+                      "descricaoSolicitacaoPagamento": "string",
+                      "listaInformacaoAdicional": {
+                        "codigoInformacaoAdicional": "string",
+                        "textoInformacaoAdicional": "string"
+                      },
+                      "codigoIdentificadorPagamento": "string",
+                      "valorPagamento": 0,
+                      "timestampPagamento": "string",
+                      "cpfPagador": 0,
+                      "cnpjPagador": 0,
+                      "nomeClientePagador": "string",
+                      "textoInformativoPagador": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "erros": [
+                        {
+                          "codigo": "9999999",
+                          "versao": "1",
+                          "mensagem": "O campo CPF não foi informado ou está inválido",
+                          "ocorrencia": "bxds-cald-a1"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NÃO ENCONTRADO. O servidor não pode encontrar o recurso solicitado."
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "description": "Consulta um QR Code de pagamento instantâneo (PIX) de uma guia de arrecadação (com ou sem código de barras).",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.\nEx: Bearer [ACCESS_TOKEN]",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "gw-app-key",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número do convenio registrado no Banco do Brasil.  No ambiente de testes utilize o número de convênio de arrecadação: 78806",
+            "required": true
+          }
+        ],
+        "tags": [
+          "qrCodes"
+        ]
+      }
+    },
+    "/arrecadacao-qrcodes/{id}/baixar": {
+      "post": {
+        "summary": "Baixar QRCode de Pagamento Instantâneo de uma Guia de Arrecadação",
+        "description": "Dar baixa em um QR Code de pagamento instantâneo (PIX) de uma guia de arrecadação (com ou sem código de barras).",
+        "parameters": [
+          {
+            "name": "gw-app-key",
+            "in": "query",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.\nEx: Bearer [ACCESS_TOKEN]",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroConvenio": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Refere-se ao número de convênio de arrecadação de um Ente Público com o Banco do Brasil e possui até 6 posições numéricas.  No ambiente de testes utilize o número de convênio de arrecadação: 78806",
+                    "example": 176520
+                  },
+                  "codigoSolicitacaoBancoCentralBrasil": {
+                    "type": "string",
+                    "description": "Refere-se à Chave Pix do Recebedor cadastrada no Banco do Brasil. O campo é obrigatório. Em ambiente de produção, a Chave Pix deverá estar vinculada a uma conta cujo CNPJ seja o mesmo utilizado na credencial de acesso à API. Em ambiente de homologação, use as chaves Pix criadas para usuários testes. A chave será lida pelo aplicativo do PSP do pagador para consulta ao DICT que retornará a informação e identificará o recebedor da arrecadação.",
+                    "example": "88a33759-78b0-43b7-8c60-e5e3e7cb55fe"
+                  },
+                  "cpfDevedor": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Determina o CPF do devedor, caso haja. O campo não é obrigatório, porém, se informado, o campo NomeDevedor também deverá ser preenchido. Este campo não poderá ser informado, caso o campo cnpjDevedor contenha dados. Para fins de testes, usar os CPF da seção de dados para testes do portal BB Developers.",
+                    "example": 19917885250
+                  },
+                  "cnpjDevedor": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Determina o CNPJ do devedor, caso haja. O campo não é obrigatório, porém se informado, o campo NomeDevedor também deverá ser preenchido. Este campo não poderá ser informado, caso o campo cpfDevedor contenha dados. Para fins de testes, usar os CNPJ da seção de dados para testes do portal BB Developers.",
+                    "example": 35990785000171
+                  }
+                },
+                "required": [
+                  "numeroConvenio",
+                  "codigoSolicitacaoBancoCentralBrasil"
+                ]
+              }
+            }
+          },
+          "required": true,
+          "description": ""
+        },
+        "responses": {
+          "200": {
+            "description": "CRIADO. A solicitação foi atendida e resultou em um novo recurso sendo criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "\"O campo \"Código Conciliação Solicitação\" determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\nNa pacs.008, é referenciado como TransactionIdentification <txId> ou idConciliacaoRecebedor. O\npreenchimento do campo txid é limitado a 35 caracteres na pacs.008.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de\nconfirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP\ndo recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber\num recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário\nrecebedor, informando que um pagamento específico foi liquidado.\"",
+                      "example": "D3EG71WTYKLVQJT9ZNASBKN1A"
+                    },
+                    "estadoSolicitacao": {
+                      "type": "string",
+                      "description": "Texto descritivo do estado solicitação.",
+                      "example": "ATIVA"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "estadoSolicitacao"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-requisicao"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body",
+        "operationId": "baixarQRCode",
+        "tags": [
+          "qrCodes"
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "D3EG71WTYKLVQJT9ZNASBKN1A"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.Na pacs.008, é referenciado como TransactionIdentification <txId> ou idConciliacaoRecebedor. O preenchimento do campo txid é limitado a 35 caracteres na pacs.008.Em termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado."
+        }
+      ]
+    },
+    "/arrecadacao-qrcodes/pagamentos/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "E0000000020201118141857354881338"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "EndToEndIdentification que transita na PACS002, PACS004 e PACS008"
+        }
+      ],
+      "get": {
+        "summary": "Consulta um pagamento vinculado ao QRCode Registrado de uma Guia de Arrecadação",
+        "tags": [
+          "qrCodes"
+        ],
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "codigoEstado": 0,
+                      "timestamp": "2020-11-18-11.19.16.000001",
+                      "valor": 698.31,
+                      "codigoTipoPessoaRecebedor": 2,
+                      "cpfCnpjRecebedor": 99999999999,
+                      "codigoSolicitacaoBancoCentralBrasil": "afe81db3-e206-4e3a-802c-f25074becee5",
+                      "codigoBancoRecebedor": 0,
+                      "nomeBancoRecebedor": "BCO DO BRASIL S.A.",
+                      "codigoTipoPessoaPagador": 1,
+                      "cpfCnpjPagador": 99999999999,
+                      "codigoBancoPagador": 0,
+                      "nomeBancoPagador": "BCO DO BRASIL S.A.",
+                      "codigoIdentificadorSolicitacaoPagamentoInstantaneo": "2dfa6690-c91f-45a1-8bb0-e39d5e8502ac",
+                      "codigoConciliacaoRecebedor": "UR2FHZUL4VElMsXWfd5Df2HoyYU51V8wq0x",
+                      "descricaoPagamentoPagador": "Pix - Pagamento",
+                      "descricaoComplementarPagador": "EPITACIO DA COSTA MAGALHAES",
+                      "codigoErroPagamento": "fj894f9",
+                      "textoErro": "Erro X"
+                    }
+                  },
+                  "properties": {
+                    "codigoEstado": {
+                      "type": "integer",
+                      "description": "Codigo Estado Pagamento",
+                      "format": "int32",
+                      "example": 0
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Horário em que o Pix foi processado no PSP.",
+                      "example": "2020-11-18-11.19.16.000001"
+                    },
+                    "valor": {
+                      "type": "number",
+                      "description": "Valor do pagamento (pix)",
+                      "format": "float",
+                      "example": 698.31
+                    },
+                    "codigoTipoPessoaRecebedor": {
+                      "type": "integer",
+                      "description": "Código que informa se o recebedor é PF ou PJ",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "cpfCnpjRecebedor": {
+                      "type": "integer",
+                      "description": "Informa o CNPJ do recebedor.",
+                      "format": "int64",
+                      "example": 99999999999
+                    },
+                    "codigoSolicitacaoBancoCentralBrasil": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Chave DICT do Recebedor cadastrada no Banco Central. ",
+                      "example": "afe81db3-e206-4e3a-802c-f25074becee5"
+                    },
+                    "codigoBancoRecebedor": {
+                      "type": "integer",
+                      "description": "Codigo da Instituicao Financeira Banco Recebedor",
+                      "format": "int32",
+                      "example": 0
+                    },
+                    "nomeBancoRecebedor": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Nome de identificação da instituição Financeira Banco Recebedor",
+                      "example": "BCO DO BRASIL S.A."
+                    },
+                    "codigoTipoPessoaPagador": {
+                      "type": "integer",
+                      "description": "Codigo Tipo Pessoa Pagador",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "cpfCnpjPagador": {
+                      "type": "integer",
+                      "description": "CPF/CNPJ Pagador",
+                      "format": "int64",
+                      "example": 99999999999
+                    },
+                    "codigoBancoPagador": {
+                      "type": "integer",
+                      "description": "Codigo Instituicao Financeira Banco Pagador",
+                      "example": 0,
+                      "format": "int32"
+                    },
+                    "nomeBancoPagador": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Nome de identificação da instituição Financeira Banco Pagador",
+                      "example": "BCO DO BRASIL S.A."
+                    },
+                    "codigoIdentificadorSolicitacaoPagamentoInstantaneo": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Codigo Identificador Solicitacao Sistema De Pagamento Instantaneo",
+                      "example": "2dfa6690-c91f-45a1-8bb0-e39d5e8502ac"
+                    },
+                    "codigoConciliacaoRecebedor": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Codigo Chave Conciliacao Recebedor",
+                      "example": "UR2FHZUL4VElMsXWfd5Df2HoyYU51V8wq0x"
+                    },
+                    "descricaoPagamentoPagador": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Texto Descricao Pagador",
+                      "example": "Pix - Pagamento"
+                    },
+                    "descricaoComplementarPagador": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Texto Complementar Pagador",
+                      "example": "EPITACIO DA COSTA MAGALHAES"
+                    },
+                    "codigoErroPagamento": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Código do motivo do erro de pagamento",
+                      "example": "fj894f9"
+                    },
+                    "textoErro": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Texto complementar do erro",
+                      "example": "Erro X"
+                    }
+                  },
+                  "required": [
+                    "codigoEstado",
+                    "timestamp",
+                    "valor",
+                    "codigoTipoPessoaRecebedor",
+                    "cpfCnpjRecebedor",
+                    "codigoSolicitacaoBancoCentralBrasil",
+                    "codigoBancoRecebedor",
+                    "nomeBancoRecebedor",
+                    "codigoTipoPessoaPagador",
+                    "cpfCnpjPagador",
+                    "codigoBancoPagador",
+                    "nomeBancoPagador",
+                    "codigoIdentificadorSolicitacaoPagamentoInstantaneo",
+                    "codigoConciliacaoRecebedor",
+                    "descricaoPagamentoPagador",
+                    "descricaoComplementarPagador",
+                    "codigoErroPagamento",
+                    "textoErro"
+                  ]
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "codigoEstado": 0,
+                      "timestamp": "2020-11-18-11.19.16.000001",
+                      "valor": 698.31,
+                      "codigoTipoPessoaRecebedor": 2,
+                      "cpfCnpjRecebedor": 99999999999,
+                      "codigoSolicitacaoBancoCentralBrasil": "afe81db3-e206-4e3a-802c-f25074becee5",
+                      "codigoBancoRecebedor": 0,
+                      "nomeBancoRecebedor": "BCO DO BRASIL S.A.",
+                      "codigoTipoPessoaPagador": 1,
+                      "cpfCnpjPagador": 99999999999,
+                      "codigoBancoPagador": 0,
+                      "nomeBancoPagador": "BCO DO BRASIL S.A.",
+                      "codigoIdentificadorSolicitacaoPagamentoInstantaneo": "2dfa6690-c91f-45a1-8bb0-e39d5e8502ac",
+                      "codigoConciliacaoRecebedor": "UR2FHZUL4VElMsXWfd5Df2HoyYU51V8wq0x",
+                      "descricaoPagamentoPagador": "Pix - Pagamento",
+                      "descricaoComplementarPagador": "EPITACIO DA COSTA MAGALHAES",
+                      "codigoErroPagamento": "fj894f9",
+                      "textoErro": "Erro X"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "erros": [
+                        {
+                          "codigo": "9999999",
+                          "versao": "1",
+                          "mensagem": "O campo id não foi informado ou está inválido",
+                          "ocorrencia": "bxds-cald-a1"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A solicitação foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "erros": [
+                        {
+                          "codigo": "9999999",
+                          "versao": "1",
+                          "mensagem": "O pagamento informado não pertence ao cliente",
+                          "ocorrencia": "bxds-cald-a1"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NÃO ENCONTRADO. O servidor não pode encontrar o recurso solicitado."
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "erros": [
+                        {
+                          "codigo": "9999999",
+                          "versao": "1",
+                          "mensagem": "O servidor está indisponível temporariamente",
+                          "ocorrencia": "bxds-cald-a1"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "pagamentosQRCodeArrecadacao",
+        "description": "A partir do código de pagamento, consulta dados do registro de Pagamento PIX QRCode de uma Guia de Arrecadação",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.Ex: Bearer [ACCESS_TOKEN]",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "gw-app-key",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/pagamentos/codigo-barras/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "maxLength": 44
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Texto código de barras."
+        }
+      ],
+      "get": {
+        "summary": "Consultar lista de pagamentos por código de barras na arregadação",
+        "tags": [
+          "codigoBarras"
+        ],
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "quantidadePagamento": {
+                      "type": "integer",
+                      "description": "Indica a quatidade de pagamentos presente no campo \"listaPagamento\".",
+                      "format": "int32"
+                    },
+                    "listaPagamento": {
+                      "type": "array",
+                      "description": "Refere-se a uma lista de pagamentos.",
+                      "minItems": 0,
+                      "maxItems": 999,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "codigoIdentificadorPagamento": {
+                            "type": "string",
+                            "description": "Código identificador do pagamento.",
+                            "maxLength": 32
+                          },
+                          "valorPagamento": {
+                            "type": "number",
+                            "description": "Valor do pagamento.",
+                            "format": "double"
+                          },
+                          "timestampPagamento": {
+                            "type": "string",
+                            "description": "Timestamp do pagamento.",
+                            "maxLength": 32
+                          },
+                          "codigoTipoPessoaPagador": {
+                            "type": "integer",
+                            "description": "Código tipo pessoa pagador (1) para Pessoa Física e (2) para Pessoa Jurídica.",
+                            "format": "int32"
+                          },
+                          "numeroCpfCadastroNacPessoasJuridicasPagador": {
+                            "type": "integer",
+                            "description": "Número do CPF da pessoa jurídica pagadora.",
+                            "format": "int64"
+                          },
+                          "codigoInstituicaoFinanceiraBancoPagador": {
+                            "type": "integer",
+                            "description": "Codigo instituicao financeira banco do pagador.",
+                            "format": "int32"
+                          },
+                          "nomeIdentificadorSisPgtoBrlPagador": {
+                            "type": "string",
+                            "description": "Nome identificador SIS PGTO BRL do pagador.",
+                            "maxLength": 100
+                          },
+                          "textoDescricaoPagador": {
+                            "type": "string",
+                            "description": "Texto de descrição do pagador.",
+                            "maxLength": 50
+                          },
+                          "textoComplementarPagador": {
+                            "type": "string",
+                            "description": "Texto complementar do pagador.",
+                            "maxLength": 50
+                          },
+                          "textoInformativoPagador": {
+                            "type": "string",
+                            "description": "Texto informativo do pagador.",
+                            "maxLength": 140
+                          }
+                        },
+                        "required": [
+                          "codigoIdentificadorPagamento",
+                          "valorPagamento",
+                          "timestampPagamento",
+                          "codigoTipoPessoaPagador",
+                          "numeroCpfCadastroNacPessoasJuridicasPagador",
+                          "codigoInstituicaoFinanceiraBancoPagador",
+                          "nomeIdentificadorSisPgtoBrlPagador",
+                          "textoDescricaoPagador",
+                          "textoComplementarPagador",
+                          "textoInformativoPagador"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "quantidadePagamento",
+                    "listaPagamento"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A requisição foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NÃO ENCONTRADO. O servidor não pode encontrar o recurso solicitado."
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getPagamentosCodigoBarrasId",
+        "description": "Retorna uma lista de pagamentos Pix na arrecadação quando informado o código de barras.",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.Ex: Bearer [ACCESS_TOKEN]",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "gw-app-key",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número do convenio registrado no Banco do Brasil.  No ambiente de testes utilize o número de convênio de arrecadação: 78806",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/pagamentos/transacao/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.Na pacs.008, é referenciado como TransactionIdentification <txId> ou idConciliacaoRecebedor. O preenchimento do campo txid é limitado a 35 caracteres na pacs.008.Em termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, depois de confirmado o pagamento, é enviado para o SPI via pacs.008. Uma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais do pagamento, o txid. Ao perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, informando que um pagamento específico foi liquidado."
+        }
+      ],
+      "get": {
+        "summary": "Consultar lista de pagamentos por id de transação na arrecadação",
+        "tags": [
+          "idTransacao"
+        ],
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "",
+                  "properties": {
+                    "quantidadePagamento": {
+                      "type": "integer",
+                      "description": "Indica a quatidade de pagamentos presente no campo \"listaPagamento\".",
+                      "format": "int32"
+                    },
+                    "listaPagamento": {
+                      "type": "array",
+                      "description": "Refere-se a uma lista de pagamentos.",
+                      "minItems": 0,
+                      "maxItems": 999,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "codigoIdentificadorPagamento": {
+                            "type": "string",
+                            "description": "Código identificador do pagamento.",
+                            "maxLength": 32
+                          },
+                          "valorPagamento": {
+                            "type": "number",
+                            "description": "Valor do pagamento.",
+                            "format": "double"
+                          },
+                          "timestampPagamento": {
+                            "type": "string",
+                            "description": "Timestamp do pagamento.",
+                            "maxLength": 32
+                          },
+                          "codigoTipoPessoaPagador": {
+                            "type": "integer",
+                            "description": "Código tipo pessoa pagador (1) para Pessoa Física e (2) para Pessoa Jurídica.",
+                            "format": "int32"
+                          },
+                          "numeroCpfCadastroNacPessoasJuridicasPagador": {
+                            "type": "integer",
+                            "description": "Número do CPF da pessoa jurídica pagadora.",
+                            "format": "int64"
+                          },
+                          "codigoInstituicaoFinanceiraBancoPagador": {
+                            "type": "integer",
+                            "description": "Codigo instituicao financeira banco do pagador.",
+                            "format": "int32"
+                          },
+                          "nomeIdentificadorSisPgtoBrlPagador": {
+                            "type": "string",
+                            "description": "Nome identificador SIS PGTO BRL do pagador.",
+                            "maxLength": 100
+                          },
+                          "textoDescricaoPagador": {
+                            "type": "string",
+                            "description": "Texto de descrição do pagador.",
+                            "maxLength": 50
+                          },
+                          "textoComplementarPagador": {
+                            "type": "string",
+                            "description": "Texto complementar do pagador.",
+                            "maxLength": 50
+                          },
+                          "textoInformativoPagador": {
+                            "type": "string",
+                            "description": "Texto informativo do pagador.",
+                            "maxLength": 140
+                          }
+                        },
+                        "required": [
+                          "codigoIdentificadorPagamento",
+                          "valorPagamento",
+                          "timestampPagamento",
+                          "codigoTipoPessoaPagador",
+                          "numeroCpfCadastroNacPessoasJuridicasPagador",
+                          "codigoInstituicaoFinanceiraBancoPagador",
+                          "nomeIdentificadorSisPgtoBrlPagador",
+                          "textoDescricaoPagador",
+                          "textoComplementarPagador",
+                          "textoInformativoPagador"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "quantidadePagamento",
+                    "listaPagamento"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A requisição foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NÃO ENCONTRADO. O servidor não pode encontrar o recurso solicitado."
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getPagamentosTransacaoId",
+        "description": "Retorna uma lista de pagamentos Pix na arrecadação quando informado o ID de transação.",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "pix.arrecadacao-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization",
+            "description": "É um \"token\" de acesso fornecido pelo OAuth 2.0.Ex: Bearer [ACCESS_TOKEN]",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "gw-app-key",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo. Em produção o nome do parâmetro deve ser alterado para gw-dev-app-key.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número do convenio registrado no Banco do Brasil.  No ambiente de testes utilize o número de convênio de arrecadação: 78806",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErroOAuthNaoAutorizado": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "description": "Código do estado do erro."
+          },
+          "error": {
+            "type": "string",
+            "description": "Tipo do erro."
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensagem do erro."
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "description": "Mensagem do erro."
+              }
+            },
+            "description": "Atributos do erro."
+          }
+        },
+        "description": "Representação de um objeto de erro do OAuth 2.0."
+      },
+      "Erro": {
+        "title": "Erro",
+        "type": "object",
+        "description": "Representa os campos de erro de resposta do acionamento de um recurso.",
+        "properties": {
+          "erros": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "codigo": {
+                  "type": "string",
+                  "example": "9999999",
+                  "description": "Código da mensagem de erro."
+                },
+                "versao": {
+                  "type": "string",
+                  "example": "1",
+                  "description": "Versão da mensagem de erro."
+                },
+                "mensagem": {
+                  "type": "string",
+                  "example": "O campo CPF não foi informado ou está inválido",
+                  "description": "Texto da mensagem de erro."
+                },
+                "ocorrencia": {
+                  "type": "string",
+                  "example": "bxds-cald-a1",
+                  "description": "Código da ocorrência que identifica o erro internamente no BB."
+                }
+              },
+              "required": [
+                "codigo",
+                "versao",
+                "mensagem",
+                "ocorrencia"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2-ClientCredentials": {
+        "type": "oauth2",
+        "description": "pt-BR: Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros.",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.hm.bb.com.br/oauth/token",
+            "scopes": {
+              "pix.arrecadacao-requisicao": "Permite a geração de um QrCode de pagamento instantâneo (PIX) a partir dos dados de uma guia de arrecadação (com ou sem código de barras)",
+              "pix.arrecadacao-info": "Permite a consulta de um QrCode de pagamento instantâneo (PIX) a partir dos dados de uma guia de arrecadação (com ou sem código de barras)"
+            },
+            "refreshUrl": "https://oauth.sandbox.bb.com.br/oauth/token"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "qrCodes",
+      "description": "Recursos relacionados a qrCodes."
+    }
+  ]
+}

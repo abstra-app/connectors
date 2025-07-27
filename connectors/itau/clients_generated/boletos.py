@@ -86,44 +86,72 @@ class BoletosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "idBeneficiario": id_beneficiario,
-            "nomePagador": nome_pagador,
-            "cpfPagador": cpf_pagador,
-            "cnpjPagador": cnpj_pagador,
-            "seuNumero": seu_numero,
-            "nossoNumero": nosso_numero,
-            "codigoCarteira": codigo_carteira,
-            "codigoBarra": codigo_barra,
-            "situacao": situacao,
-            "instrumentoCobranca": instrumento_cobranca,
-            "situacaoProtesto": situacao_protesto,
-            "situacaoVencimento": situacao_vencimento,
-            "situacaoNegativacao": situacao_negativacao,
-            "motivoCancelamento": motivo_cancelamento,
-            "dataEntrada": data_entrada,
-            "dataEmissao": data_emissao,
-            "dataCancelamento": data_cancelamento,
-            "dataVencimento": data_vencimento,
-            "dataPagamento": data_pagamento,
-            "orderBy": order_by,
-            "order": order,
-            "view": view,
-            "indicadorDescontado": indicador_descontado,
-            "page": page,
-            "pageSize": page_size,
-        }
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-flowid": x_itau_flowid,
-            "Authorization": authorization,
-            "Content-type": content_type,
-        }
+        query = {}
+        if id_beneficiario is not None:
+            query["idBeneficiario"] = id_beneficiario
+        if nome_pagador is not None:
+            query["nomePagador"] = nome_pagador
+        if cpf_pagador is not None:
+            query["cpfPagador"] = cpf_pagador
+        if cnpj_pagador is not None:
+            query["cnpjPagador"] = cnpj_pagador
+        if seu_numero is not None:
+            query["seuNumero"] = seu_numero
+        if nosso_numero is not None:
+            query["nossoNumero"] = nosso_numero
+        if codigo_carteira is not None:
+            query["codigoCarteira"] = codigo_carteira
+        if codigo_barra is not None:
+            query["codigoBarra"] = codigo_barra
+        if situacao is not None:
+            query["situacao"] = situacao
+        if instrumento_cobranca is not None:
+            query["instrumentoCobranca"] = instrumento_cobranca
+        if situacao_protesto is not None:
+            query["situacaoProtesto"] = situacao_protesto
+        if situacao_vencimento is not None:
+            query["situacaoVencimento"] = situacao_vencimento
+        if situacao_negativacao is not None:
+            query["situacaoNegativacao"] = situacao_negativacao
+        if motivo_cancelamento is not None:
+            query["motivoCancelamento"] = motivo_cancelamento
+        if data_entrada is not None:
+            query["dataEntrada"] = data_entrada
+        if data_emissao is not None:
+            query["dataEmissao"] = data_emissao
+        if data_cancelamento is not None:
+            query["dataCancelamento"] = data_cancelamento
+        if data_vencimento is not None:
+            query["dataVencimento"] = data_vencimento
+        if data_pagamento is not None:
+            query["dataPagamento"] = data_pagamento
+        if order_by is not None:
+            query["orderBy"] = order_by
+        if order is not None:
+            query["order"] = order
+        if view is not None:
+            query["view"] = view
+        if indicador_descontado is not None:
+            query["indicadorDescontado"] = indicador_descontado
+        if page is not None:
+            query["page"] = page
+        if page_size is not None:
+            query["pageSize"] = page_size
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_flowid is not None:
+            headers["x-itau-flowid"] = x_itau_flowid
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if content_type is not None:
+            headers["Content-type"] = content_type
         path_params = {}
         path_rendered = "/boletos".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )

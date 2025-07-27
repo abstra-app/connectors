@@ -42,22 +42,28 @@ class BoletosConsultaClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "id_beneficiario": id_beneficiario,
-            "codigo_carteira": codigo_carteira,
-            "nosso_numero": nosso_numero,
-            "view": view,
-        }
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationid": x_itau_correlationid,
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-flowid": x_itau_flowid,
-        }
+        query = {}
+        if id_beneficiario is not None:
+            query["id_beneficiario"] = id_beneficiario
+        if codigo_carteira is not None:
+            query["codigo_carteira"] = codigo_carteira
+        if nosso_numero is not None:
+            query["nosso_numero"] = nosso_numero
+        if view is not None:
+            query["view"] = view
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlationid is not None:
+            headers["x-itau-correlationid"] = x_itau_correlationid
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_flowid is not None:
+            headers["x-itau-flowid"] = x_itau_flowid
         path_params = {}
         path_rendered = "/boletos".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )

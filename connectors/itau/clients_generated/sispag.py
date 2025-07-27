@@ -35,15 +35,17 @@ class SispagClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-flowID": x_itau_flow_id,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_flow_id is not None:
+            headers["x-itau-flowID"] = x_itau_flow_id
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/transferencias".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -145,37 +147,58 @@ class SispagClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "agencia_operacao": agencia_operacao,
-            "conta_operacao": conta_operacao,
-            "cnpj_empresa": cnpj_empresa,
-            "numero_lote": numero_lote,
-            "valor_minimo": valor_minimo,
-            "valor_maximo": valor_maximo,
-            "referencia_empresa": referencia_empresa,
-            "nome_beneficiario": nome_beneficiario,
-            "data_inicial": data_inicial,
-            "data_final": data_final,
-            "tipo_lista": tipo_lista,
-            "modalidade_fornecedores": modalidade_fornecedores,
-            "modalidade_impostos": modalidade_impostos,
-            "modalidade_salario": modalidade_salario,
-            "status": status,
-            "tipo_pagamento": tipo_pagamento,
-            "order_by": order_by,
-            "order": order,
-            "page": page,
-            "page_size": page_size,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-flowID": x_itau_flow_id,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        query = {}
+        if agencia_operacao is not None:
+            query["agencia_operacao"] = agencia_operacao
+        if conta_operacao is not None:
+            query["conta_operacao"] = conta_operacao
+        if cnpj_empresa is not None:
+            query["cnpj_empresa"] = cnpj_empresa
+        if numero_lote is not None:
+            query["numero_lote"] = numero_lote
+        if valor_minimo is not None:
+            query["valor_minimo"] = valor_minimo
+        if valor_maximo is not None:
+            query["valor_maximo"] = valor_maximo
+        if referencia_empresa is not None:
+            query["referencia_empresa"] = referencia_empresa
+        if nome_beneficiario is not None:
+            query["nome_beneficiario"] = nome_beneficiario
+        if data_inicial is not None:
+            query["data_inicial"] = data_inicial
+        if data_final is not None:
+            query["data_final"] = data_final
+        if tipo_lista is not None:
+            query["tipo_lista"] = tipo_lista
+        if modalidade_fornecedores is not None:
+            query["modalidade_fornecedores"] = modalidade_fornecedores
+        if modalidade_impostos is not None:
+            query["modalidade_impostos"] = modalidade_impostos
+        if modalidade_salario is not None:
+            query["modalidade_salario"] = modalidade_salario
+        if status is not None:
+            query["status"] = status
+        if tipo_pagamento is not None:
+            query["tipo_pagamento"] = tipo_pagamento
+        if order_by is not None:
+            query["order_by"] = order_by
+        if order is not None:
+            query["order"] = order
+        if page is not None:
+            query["page"] = page
+        if page_size is not None:
+            query["page_size"] = page_size
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_flow_id is not None:
+            headers["x-itau-flowID"] = x_itau_flow_id
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/pagamentos_sispag".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -195,15 +218,15 @@ class SispagClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "id_pagamento_sispag": id_pagamento_sispag,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if id_pagamento_sispag is not None:
+            path_params["id_pagamento_sispag"] = id_pagamento_sispag
         path_rendered = "/pagamentos_sispag/{id_pagamento_sispag}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )

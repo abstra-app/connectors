@@ -1,0 +1,692 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fundos de Investimento",
+    "description": "API pública que permita a clientes pessoa jurídica realizar solicitações de aplicação e resgate em seus fundos de investimento exclusivos por meio da integração com o sistema ERP por ele utilizado.",
+    "contact": {
+      "name": "Banco do Brasil S.A. - Portal Developers",
+      "url": "https://developers.bb.com.br"
+    },
+    "version": "1.0.3"
+  },
+  "externalDocs": {
+    "description": "APIs no BB - Documentação de Apoio",
+    "url": "https://apoio.developers.bb.com.br/referency/post/5f4f8342b71fb5001268c9ac"
+  },
+  "servers": [
+    {
+      "url": "https://fundos.mtls.api.hm.bb.com.br/v1",
+      "description": "Teste"
+    },
+    {
+      "url": "https://fundos.mtls.api.bb.com.br/v1",
+      "description": "Produção"
+    }
+  ],
+  "paths": {
+    "/saldo/agencia/{numeroAgencia}/conta/{numeroConta}": {
+      "get": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Listar o Saldo do Cliente nos Fundos de Investimento",
+        "description": "Lista os fundos de investimento do cliente com os valores de seus respectivos saldos bruto e líquido para resgate.",
+        "operationId": "12166268",
+        "parameters": [
+          {
+            "name": "numeroAgencia",
+            "in": "path",
+            "description": "Número da agência do cliente sem o dígito verificador.",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "name": "numeroConta",
+            "in": "path",
+            "description": "Número da conta do cliente sem o dígito verificador.",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "quantidadeFundosInvestimento": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Quantidade de fundos de investimento do cliente.",
+                      "examples": [
+                        "1"
+                      ]
+                    },
+                    "listaFundosInvestimento": {
+                      "type": "array",
+                      "description": "Lista dos fundos de investimento do cliente, com seus respectivos saldos.",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "codigoFundoInvestimento": {
+                            "type": "integer",
+                            "format": "int32",
+                            "description": "Código do fundo de investimento que o cliente possui saldo.",
+                            "examples": [
+                              "1320"
+                            ]
+                          },
+                          "nomeFundoInvestimento": {
+                            "type": "string",
+                            "description": "Nome do fundo de investimento que o cliente possui saldo.",
+                            "maxLength": 50,
+                            "examples": [
+                              "BB Fundo de Investimento Exclusivo"
+                            ]
+                          },
+                          "valorSaldoBruto": {
+                            "type": "number",
+                            "format": "float",
+                            "description": "Valor do saldo bruto do cliente no fundo de investimento. É igual ao saldo de cotas do cliente no fundo de investimento multiplicado pelo valor da última cota disponível.",
+                            "examples": [
+                              "1000000.00"
+                            ]
+                          },
+                          "valorSaldoLiquidoResgate": {
+                            "type": "number",
+                            "format": "float",
+                            "description": "Valor do saldo líquido para resgate. É o valor do saldo bruto do cliente, deduzindo o valor dos bloqueios de saldo, eventualmente existentes, e das provisões para pagamento de impostos, taxas.",
+                            "examples": [
+                              "999854.12"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "quantidadeFundosInvestimento",
+                    "listaFundosInvestimento"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          },
+          {
+            "mutualTLS": [
+              "fundos.info"
+            ]
+          },
+          {
+            "OAuth2_Teste": [
+              "fundos.info"
+            ]
+          },
+          {
+            "OAuth2_Producao": [
+              "fundos.info"
+            ]
+          }
+        ]
+      }
+    },
+    "/aplicacao": {
+      "post": {
+        "tags": [
+          "Movimentações"
+        ],
+        "summary": "Solicitar aplicação em fundo de investimento",
+        "description": "Solicita a aplicação de um valor, proveniente de Conta Corrente, em um fundo de investimento.",
+        "operationId": "9272963",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroAgencia": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Número da agência sem o dígito verificador.",
+                    "examples": [
+                      "7984"
+                    ]
+                  },
+                  "numeroConta": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Número da conta sem o dígito verificador.",
+                    "examples": [
+                      "4024"
+                    ]
+                  },
+                  "codigoFundo": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Código do Fundo de Investimento no sistema GFI.",
+                    "examples": [
+                      "1320"
+                    ]
+                  },
+                  "dataAplicacao": {
+                    "type": "string",
+                    "description": "Data da aplicação no fundo de investimento.",
+                    "maxLength": 10,
+                    "examples": [
+                      "2024-11-11"
+                    ]
+                  },
+                  "valorAplicacao": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Valor da aplicação no fundo de investimento.",
+                    "examples": [
+                      "100.55"
+                    ]
+                  }
+                },
+                "required": [
+                  "numeroAgencia",
+                  "numeroConta",
+                  "codigoFundo",
+                  "dataAplicacao",
+                  "valorAplicacao"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "textoIdentificadorSolicitacao": {
+                      "type": "string",
+                      "description": "Identificador da solicitação de movimentação em fundos de investimento.",
+                      "maxLength": 50,
+                      "examples": [
+                        "1-7984-4010-20241111185925468"
+                      ]
+                    },
+                    "nomeFundoInvestimento": {
+                      "type": "string",
+                      "description": "Nome do Fundo de Investimento que recebeu a aplicação.",
+                      "maxLength": 50,
+                      "examples": [
+                        "BB Fundo de Investimento Exclusivo"
+                      ]
+                    },
+                    "valorAnotacao": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Valor da anotação de débito realizada na conta corrente do cliente.",
+                      "examples": [
+                        "100.55"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "textoIdentificadorSolicitacao",
+                    "nomeFundoInvestimento",
+                    "valorAnotacao"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          },
+          {
+            "mutualTLS": [
+              "fundos.requisicao"
+            ]
+          },
+          {
+            "OAuth2_Teste": [
+              "fundos.requisicao"
+            ]
+          },
+          {
+            "OAuth2_Producao": [
+              "fundos.requisicao"
+            ]
+          }
+        ]
+      }
+    },
+    "/resgate": {
+      "post": {
+        "tags": [
+          "Movimentações"
+        ],
+        "summary": "Solicitar resgate de valor em fundo de investimento",
+        "description": "Solicita o resgate de um valor, a ser crédito na Conta Corrente, em um fundo de investimento.",
+        "operationId": "9272996",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroAgencia": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Número da Agência sem o dígito verificador.",
+                    "examples": [
+                      "7984"
+                    ]
+                  },
+                  "numeroConta": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Número da Conta sem o dígito verificador.",
+                    "examples": [
+                      "4010"
+                    ]
+                  },
+                  "codigoFundo": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Código do Fundo de Investimento no sistema GFI.",
+                    "examples": [
+                      "1320"
+                    ]
+                  },
+                  "dataResgate": {
+                    "type": "string",
+                    "description": "Data do resgate no fundo de investimento.",
+                    "maxLength": 10,
+                    "examples": [
+                      "2024-11-11"
+                    ]
+                  },
+                  "valorResgate": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Valor do resgate no fundo de investimento.",
+                    "examples": [
+                      "100.33"
+                    ]
+                  }
+                },
+                "required": [
+                  "numeroAgencia",
+                  "numeroConta",
+                  "codigoFundo",
+                  "dataResgate",
+                  "valorResgate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "textoIdentificadorSolicitacao": {
+                      "type": "string",
+                      "description": "Identificador da solicitação de movimentação em fundos de investimento.",
+                      "maxLength": 50,
+                      "examples": [
+                        "1-7984-4010-20241111185925468"
+                      ]
+                    },
+                    "nomeFundoInvestimento": {
+                      "type": "string",
+                      "description": "Nome do Fundo de Investimento resgatado.",
+                      "maxLength": 50,
+                      "examples": [
+                        "BB Fundo de Investimento Exclusivo"
+                      ]
+                    },
+                    "valorAnotacao": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Valor da anotação de crédito realizada na conta corrente do cliente.",
+                      "examples": [
+                        "100.33"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "textoIdentificadorSolicitacao",
+                    "nomeFundoInvestimento",
+                    "valorAnotacao"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          },
+          {
+            "mutualTLS": [
+              "fundos.requisicao"
+            ]
+          },
+          {
+            "OAuth2_Teste": [
+              "fundos.requisicao"
+            ]
+          },
+          {
+            "OAuth2_Producao": [
+              "fundos.requisicao"
+            ]
+          }
+        ]
+      }
+    },
+    "/resgate-total": {
+      "post": {
+        "tags": [
+          "Movimentações"
+        ],
+        "summary": "Solicitar Resgate Total no Fundo de Investimento",
+        "description": "Solicita resgate de todo saldo em um fundo de investimento, a ser crédito na Conta Corrente.",
+        "operationId": "9272998",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroAgencia": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Número da Agência sem o dígito verificador.",
+                    "examples": [
+                      "7984"
+                    ]
+                  },
+                  "numeroConta": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Número da Conta sem o dígito verificador.",
+                    "examples": [
+                      "4010"
+                    ]
+                  },
+                  "codigoFundo": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Código do Fundo de Investimento no sistema GFI.",
+                    "examples": [
+                      "1320"
+                    ]
+                  },
+                  "dataResgate": {
+                    "type": "string",
+                    "description": "Data do resgate de todo o saldo no fundo de investimento.",
+                    "maxLength": 10,
+                    "examples": [
+                      "2024-11-11"
+                    ]
+                  }
+                },
+                "required": [
+                  "numeroAgencia",
+                  "numeroConta",
+                  "codigoFundo",
+                  "dataResgate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "textoIdentificadorSolicitacao": {
+                      "type": "string",
+                      "description": "Identificador da solicitação de movimentação em fundos de investimento.",
+                      "maxLength": 50,
+                      "examples": [
+                        "1-7984-4010-20241111185925468"
+                      ]
+                    },
+                    "nomeFundoInvestimento": {
+                      "type": "string",
+                      "description": "Nome do Fundo de Investimento resgatado.",
+                      "maxLength": 50,
+                      "examples": [
+                        "BB Fundo de Investimento Exclusivo"
+                      ]
+                    },
+                    "valorAnotacao": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Valor da anotação de crédito realizada na conta corrente do cliente.",
+                      "examples": [
+                        "1523544.75"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "textoIdentificadorSolicitacao",
+                    "nomeFundoInvestimento"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          },
+          {
+            "mutualTLS": [
+              "fundos.requisicao"
+            ]
+          },
+          {
+            "OAuth2_Teste": [
+              "fundos.requisicao"
+            ]
+          },
+          {
+            "OAuth2_Producao": [
+              "fundos.requisicao"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "erro": {
+        "type": "object",
+        "title": "Modelo Resposta",
+        "properties": {
+          "variaveisMonitoradas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "additionalProp1": {
+                  "type": "string"
+                },
+                "additionalProp2": {
+                  "type": "string"
+                },
+                "additionalProp3": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "apiKey",
+        "name": "gw-dev-app-key",
+        "in": "query",
+        "description": "Chave da aplicação. É a developer_application_key que pode ser encontrada acessando o item Credenciais dentro da sua aplicação no Portal Developers BB"
+      },
+      "mutualTLS": {
+        "type": "mutualTLS",
+        "description": "A utilização da certificação mútua de certificados (mTLS) garante mais segurança nas transações da API"
+      },
+      "OAuth2_Teste": {
+        "type": "oauth2",
+        "name": "OAuth2 homologacao",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.hm.bb.com.br/oauth/token",
+            "scopes": {
+              "fundos.requisicao": "",
+              "fundos.info": ""
+            }
+          }
+        }
+      },
+      "OAuth2_Producao": {
+        "type": "oauth2",
+        "name": "OAuth2 producao",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.bb.com.br/oauth/token",
+            "scopes": {
+              "fundos.requisicao": "",
+              "fundos.info": ""
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Consultas",
+      "description": "Possibilita consultar o saldo das suas aplicações."
+    },
+    {
+      "name": "Movimentações",
+      "description": "Permite movimentar suas aplicações."
+    }
+  ]
+}

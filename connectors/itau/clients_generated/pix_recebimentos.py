@@ -45,15 +45,18 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cob/{txid}".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -86,16 +89,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cob/{txid}".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -120,18 +124,18 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "revisao": revisao,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        query = {}
+        if revisao is not None:
+            query["revisao"] = revisao
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cob/{txid}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -162,14 +166,15 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/cob".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -208,24 +213,32 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "cpf": cpf,
-            "cnpj": cnpj,
-            "locationPresente": location_presente,
-            "status": status,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if cpf is not None:
+            query["cpf"] = cpf
+        if cnpj is not None:
+            query["cnpj"] = cnpj
+        if location_presente is not None:
+            query["locationPresente"] = location_presente
+        if status is not None:
+            query["status"] = status
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/cob".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -253,16 +266,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cob/{txid}/qrcode".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -298,15 +312,18 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cobv/{txid}".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -339,16 +356,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cobv/{txid}".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -373,18 +391,18 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "revisao": revisao,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        query = {}
+        if revisao is not None:
+            query["revisao"] = revisao
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cobv/{txid}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -427,25 +445,34 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "cpf": cpf,
-            "cnpj": cnpj,
-            "locationPresente": location_presente,
-            "status": status,
-            "loteCobVId": lote_cob_v_id,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if cpf is not None:
+            query["cpf"] = cpf
+        if cnpj is not None:
+            query["cnpj"] = cnpj
+        if location_presente is not None:
+            query["locationPresente"] = location_presente
+        if status is not None:
+            query["status"] = status
+        if lote_cob_v_id is not None:
+            query["loteCobVId"] = lote_cob_v_id
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/cobv".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -473,16 +500,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cobv/{txid}/qrcode".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -528,15 +556,18 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/lotecobv/{id}".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -571,16 +602,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/lotecobv/{id}".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -610,16 +642,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/lotecobv/{id}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -667,20 +700,24 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/lotecobv".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -711,14 +748,15 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/loc".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -755,22 +793,28 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "txIdPresente": tx_id_presente,
-            "tipoCob": tipo_cob,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if tx_id_presente is not None:
+            query["txIdPresente"] = tx_id_presente
+        if tipo_cob is not None:
+            query["tipoCob"] = tipo_cob
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/loc".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -791,15 +835,15 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/loc/{id}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -831,16 +875,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/loc/{id}/txid".format(**path_params)
         response = requests.delete(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -861,15 +906,15 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "e2eid": e2eid,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if e2eid is not None:
+            path_params["e2eid"] = e2eid
         path_rendered = "/pix/{e2eid}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -912,25 +957,34 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "txid": txid,
-            "txidPresente": txid_presente,
-            "devolucaoPresente": devolucao_presente,
-            "cpf": cpf,
-            "cnpj": cnpj,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if txid is not None:
+            query["txid"] = txid
+        if txid_presente is not None:
+            query["txidPresente"] = txid_presente
+        if devolucao_presente is not None:
+            query["devolucaoPresente"] = devolucao_presente
+        if cpf is not None:
+            query["cpf"] = cpf
+        if cnpj is not None:
+            query["cnpj"] = cnpj
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/pix".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -967,16 +1021,20 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "e2eid": e2eid,
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if e2eid is not None:
+            path_params["e2eid"] = e2eid
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/pix/{e2eid}/devolucao/{id}".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -997,16 +1055,17 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "e2eid": e2eid,
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if e2eid is not None:
+            path_params["e2eid"] = e2eid
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/pix/{e2eid}/devolucao/{id}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -1032,14 +1091,16 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "chave": chave,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if chave is not None:
+            path_params["chave"] = chave
         path_rendered = "/webhook/{chave}".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -1057,15 +1118,15 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "chave": chave,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if chave is not None:
+            path_params["chave"] = chave
         path_rendered = "/webhook/{chave}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -1086,15 +1147,15 @@ class PixRecebimentosClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "chave": chave,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if chave is not None:
+            path_params["chave"] = chave
         path_rendered = "/webhook/{chave}".format(**path_params)
         response = requests.delete(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -1127,20 +1188,24 @@ class PixRecebimentosClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/webhook".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )

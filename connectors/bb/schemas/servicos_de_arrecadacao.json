@@ -1,0 +1,1056 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Serviços de Arrecadação",
+    "version": "2.0.9",
+    "description": "API referente aos serviços de arrecadação para parceiros arrecadadores do Banco do Brasil S.A.\nUtiliza autenticação mútua do certificado.",
+    "contact": {
+      "url": "https://developers.bb.com.br",
+      "name": "Banco do Brasil S.A. - BB for Developers"
+    }
+  },
+  "externalDocs": {
+    "url": "https://apoio.developers.bb.com.br/referency/post/653686db0e7bd20013994455"
+  },
+  "servers": [
+    {
+      "url": "https://api.extranet.hm.bb.com.br/servicos-arrecadacao/v2",
+      "description": "Homologação"
+    },
+    {
+      "url": "https://api-ip.bb.com.br/servicos-arrecadacao/v2",
+      "description": "Produção"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "DadosRequisicaoValidarGuiaArrecadacaoLinkPagamentosAPI": {
+        "type": "object",
+        "properties": {
+          "codigoClienteSolicitacao": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "codigoClienteParceiro": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "codigoBarraDigitado": {
+            "type": "string"
+          },
+          "codigoBarraCapturado": {
+            "type": "string"
+          },
+          "valorPagamento": {
+            "type": "number"
+          }
+        }
+      },
+      "DadosRequisicaoLiquidarGuiaArrecadacaoLinkPagamentosAPI": {
+        "type": "object",
+        "properties": {
+          "codigoClienteSolicitacao": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "codigoBarraDigitado": {
+            "type": "string"
+          },
+          "codigoBarraCapturado": {
+            "type": "string"
+          },
+          "valorPagamento": {
+            "type": "number"
+          },
+          "codigoConciliacao": {
+            "type": "string"
+          }
+        }
+      },
+      "DadosRespostaValidarGuiaArrecadacaoLinkPagamentosAPI": {
+        "type": "object",
+        "properties": {
+          "codigoConciliacaoSolicitacao": {
+            "type": "string"
+          },
+          "textoLinkQrcode": {
+            "type": "string"
+          }
+        }
+      },
+      "DadosRespostaLiquidarGuiaArrecadacaoLinkPagamentosAPI": {
+        "type": "object",
+        "properties": {
+          "quantidadeLinhaComprovante": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "textoAutenticacaoPagamentoComprovante": {
+            "type": "string"
+          },
+          "textoIdentificador": {
+            "type": "string"
+          },
+          "textoLinhaComprovante": {
+            "type": "string"
+          },
+          "textoNomeConvenio": {
+            "type": "string"
+          }
+        }
+      },
+      "DadosRespostaConsultarPagamentoParceiroArrecadacaoAPI": {
+        "type": "object",
+        "properties": {
+          "codigoAutenticacaoTransacao": {
+            "type": "string"
+          },
+          "codigoBarraCapturado": {
+            "type": "string"
+          },
+          "codigoEstadoPagamento": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "codigoIdentificadorDocumentoConciliacao": {
+            "type": "string"
+          },
+          "dataPagamento": {
+            "type": "string"
+          },
+          "horarioPagamento": {
+            "type": "string"
+          },
+          "nomeConves": {
+            "type": "string"
+          },
+          "quantidadeLinhaComprovante": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "valorPagamento": {
+            "type": "number"
+          },
+          "textoIdentificadorRetorno": {
+            "type": "string"
+          },
+          "textoLinhaComprovante": {
+            "type": "array",
+            "items": {
+              "type": "object",
+                "properties": {
+                  "textoLinha": {
+                    "type": "string",
+                    "example": "Convenio CEB",
+                    "description": "Informa cada linha do texto do comprovante de recebimento para que parceiro realize formação conforme o leiaute de sua marca. Limite de 50 linhas."
+                  }
+              }
+            }
+          }
+        }
+      },      
+      "HealthCheckResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/HealthCheckStatus"
+          }
+        }
+      },
+      "HealthCheckStatus": {
+        "enum": [
+          "DOWN",
+          "UP"
+        ],
+        "type": "string"
+      },
+      "VariavelMonitorada": {
+        "type": "object",
+        "properties": {
+          "ORIGEM-ERRO": {
+            "type": "string"
+          },
+          "MOTIVO-ERRO": {
+            "type": "string"
+          },
+          "ID-REQUISICAO": {
+            "type": "string"
+          }
+        }
+      },
+      "Info": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
+      "Chave": {
+        "type": "object",
+        "properties": {
+          "chave": {
+            "type": "string"
+          },
+          "tamanho": {
+            "type": "integer"
+          }
+        }
+      },
+      "MensagemErro": {
+        "type": "object",
+        "properties": {
+          "identificador": {
+            "type": "string"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "providencia": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "chaves": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Chave"
+            }
+          }
+        }
+      },
+      "Mensagens": {
+        "type": "object",
+        "properties": {
+          "erros": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MensagemErro"
+            }
+          }
+        }
+      },
+      "Erro": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariavelMonitorada"
+          }
+        }
+      },
+      "Errors": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Erro"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2-ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.sandbox.bb.com.br/oauth/token",
+            "scopes": {
+              "servicos-arrecadacao.info": "Realizar validação das arrecadações feitas pelos parceiros arrecadadores",
+              "servicos-arrecadacao.requisicao": "Permite realização de requisições a respeito das arrecadações feitas pelos parceiros arrecadadores"
+            }
+          }
+        },
+        "description": "Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros."
+      }
+    },
+    "responses": {
+      "Erro": {
+        "description": "Representa os campos de erro de uma requisição a um recurso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "erros": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "minItems": 1,
+                  "description": "Lista que contém os objetos de erro",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "description": "Código da mensagem de erro",
+                        "example": "9999999"
+                      },
+                      "message": {
+                        "type": "string",
+                        "description": "Mensagem de erro",
+                        "example": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB."
+                      },
+                       "variaveisMonitoradas": {
+                          "type": "object",
+                          "properties": {
+                            "ORIGEM-ERRO": {
+                              "type": "string",
+                              "example": "br.com.bb.rec.services.ValidacoesRequisicao - linha: 56.",
+                              "description": "Informações sobre a validação do erro."
+      			                  },
+      			                "MOTIVO-ERRO": {
+                              "type": "string",
+                              "example": "br.com.bb.rec.exceptions.ErrosSistema$ValorPagamentoInvalido:     Valor de pagamento informado não é válido!",
+                              "description": "Motivo do erro."
+      			                  },
+      			                "ID-REQUISICAO": {
+                              "type": "string",
+                              "example": "d29f3e0c-d7b9-46f4-a567-4dd8e4ba9bed",
+                              "description": "ID de requisição do erro."
+      			                  }
+                            }
+                        }
+                    },
+                    "required": [
+                      "code",
+                      "message",
+                      "variaveisMonitoradas"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "erros"
+              ]
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "erros": [
+                    {
+                      "code": "109",
+                      "message": "Valor de pagamento informado não é válido!",
+                      "variaveisMonitoradas": {
+                          "type": "object",
+                          "properties": {
+                            "ORIGEM-ERRO": {
+                              "type": "string",
+                              "example": "br.com.bb.rec.services.ValidacoesRequisicao - linha: 56.",
+                              "description": "Informa a classe do erro."
+                            },
+                            "MOTIVO-ERRO": {
+                              "type": "string",
+                              "example": "br.com.bb.rec.exceptions.ErrosSistema$ValorPagamentoInvalido: Valor de pagamento informado não é válido!",
+                              "description": "Informa o motivo do erro."
+                            },
+                            "ID-REQUISICAO": {
+                              "type": "string",
+                              "example": "d29f3e0c-d7b9-46f4-a567-4dd8e4ba9bed",
+                              "description": "Informa o ID do erro."
+                            }
+                          }
+                      }
+                    }
+                  ]
+                }
+              },
+              "example-2": {
+                "value": {
+                  "erros": [
+                    {
+                      "code": "ERRO_SISTEMA",
+                      "message": "Erro na execução da solicitação.",
+                      "variaveisMonitoradas": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "ORIGEM-ERRO": {
+                              "type": "string",
+                              "example": "br.com.bb.rec.services.ValidacoesRequisicao - linha: 56.",
+                              "description": "Erro ao consumir a operação op6413613v1.."
+                            },
+                            "CURIO-ERRO-NUMERO-OCORRENCIA": {
+                              "type": "string",
+                              "example": "0",
+                              "description": "Número da ocorrência do Curió."
+                            },
+                            "CURIO-ERRO-SEQUENCIAL": {
+                              "type": "string",
+                              "example": "000",
+                              "description": "Número sequencial do erro do Curió."
+                            },
+                            "CURIO-ERRO-CATEGORY": {
+                              "type": "string",
+                              "example": "2",
+                              "description": "Número categoria do erro do Curió."
+                            },
+                            "ID-REQUISICAO": {
+                              "type": "string",
+                              "example": "d29f3e0c-d7b9-46f4-a567-4dd8e4ba9bed",
+                              "description": "Informa o ID do erro."
+                            },
+                            "CURIO-ERRO-USER-HELP": {
+                              "type": "string",
+                              "example": "Informe um novo identificador de documento!",
+                              "description": "Mensagem de sugestão para correção do erro."
+                            },
+                            "MOTIVO-ERRO": {
+                              "type": "string",
+                              "example": "br.com.bb.rec.exceptions.ErrosSistema$ValorPagamentoInvalido: Valor de pagamento informado não é válido!",
+                              "description": "Informa o motivo do erro."
+                            },
+                            "CURIO-ERRO-MSG-CORRELATION-ID": {
+                              "type": "string",
+                              "example": "DkqgdFNiRpPJFkkeiArE0101",
+                              "description": "ID de correlação do erro no Curió"
+                            },
+                            "CURIO-ERRO-CODE": {
+                              "type": "string",
+                              "example": "315",
+                              "description": "Erro ao consumir a operação op6413613v1."
+                            },
+                            "CURIO-ERRO-MENSAGEM": {
+                              "type": "string",
+                              "example": "O código identificador do pagamento não foi informado.",
+                              "description": "Mensagem de erro"
+                            },
+                            "CURIO-ERRO-OPERACAO": {
+                              "type": "string",
+                              "example": "op6413613v1",
+                              "description": "Operação que apresentou o erro."
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "headers": {
+          "Content-type": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "application/json"
+          }
+        }
+      },
+      "ErrorOAuthUnauthorized": {
+        "description": "Representação de um objeto de erro do OAuth 2.0.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "statusCode": {
+                  "type": "number",
+                  "description": "Código do estado do erro."
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Tipo do erro."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Mensagem do erro."
+                },
+                "attributes": {
+                  "type": "object",
+                  "description": "Atributos do erro.",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Mensagem do erro."
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "statusCode": 401,
+                  "error": "Unauthorized",
+                  "message": "Bad Credentials",
+                  "attributes": {
+                    "error": "Bad Credentials"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "headers": {
+          "Content-type": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "application/json"
+          }
+        }
+      },
+      "consultaParceiroArrecadador": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "codigoConciliacao": {
+                  "type": "string",
+                  "example": "API21351091426976436",
+                  "description": "Este campo determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao parceiro a funcionalidade de conciliação da sua solicitação de pagamento junto ao BB."
+                },
+                "textoLinkQrcode": {
+                  "type": "string",
+                  "description": "Texto para geração da imagem do QrCode\n",
+                  "example": "00020101021226900014br.gov.bcb.pix2568qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b8401452040000530398654041.235802BR5914Maria da Silva6008BRASILIA62070503***630471DA"
+                }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "codigoConciliacaoSolicitacao": "API23331093222726243",
+                  "textoLinkQrcode": ""
+                }
+              },
+              "example-2": {
+                "value": {
+                  "codigoConciliacaoSolicitacao": "API21351091426976436",
+                  "textoLinkQrcode": "00020101021226900014br.gov.bcb.pix2568qrcode.sed.desenv.bb.com.br/pix/7f3e5710-a34c-4f35-86d8-7e6b91b8401452040000530398654041.235802BR5914Maria da Silva6008BRASILIA62070503***630471DA"
+                }
+              }
+            }
+          }
+        }
+      },
+      "respostaLiquidarGuia": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "quantidadeLinhaComprovante": {
+                  "type": "integer",
+                  "example": "7",
+                  "description": "Quantidade de linhas do comprovante"
+                },
+                "textoAutenticacaoPagamentoComprovante": {
+                  "type": "string",
+                  "example": "3331351863332635",
+                  "description": "Código de autenticação eletrônica de recebimento do documento no BB"
+                },
+                "textoIdentificador": {
+                  "type": "string",
+                  "example": "API21337154450934228",
+                  "description": "Este campo determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao parceiro a funcionalidade de conciliação da sua solicitação de pagamento junto ao BB."
+                },
+                "textoLinhaComprovante": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "textoLinha": {
+                        "type": "string",
+                        "example": "Convenio ANDRE BREDA BAUAB",
+                        "description": "Informa cada linha do texto do comprovante de recebimento para que parceiro realize formação conforme o leiaute de sua marca. Limite de 50 linhas."
+                      }
+                    }
+                  }
+                },
+                "textoNomeConvenio": {
+                  "example": "CEB",
+                  "description": "Nome do convênio junto ao BB"
+                  }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "quantidadeLinhaComprovante": 7,
+                  "textoAutenticacaoPagamentoComprovante": "3331351863332635",
+                  "textoIdentificador": "API22018075654886620",
+                  "textoLinhaComprovante": [
+                    {
+                      "textoLinhaComprovanteRetorno": "Convenio: CEB"
+                    },
+                    {
+                      "textoLinhaComprovanteRetorno": "Codigo de Barras"
+                    },
+                    {
+                      "textoLinhaComprovanteRetorno": "83650000000-2   56200005281-0"
+                    },
+                    {
+                      "textoLinhaComprovanteRetorno": "61155977440-5   15597742309-6"
+                    },
+                    {
+                      "textoLinhaComprovanteRetorno": "Data do pagamento                     27/11/2023"
+                    },
+                    {
+                      "textoLinhaComprovanteRetorno": "Valor Total                                56,20"
+                    },
+                    {
+                      "textoLinhaComprovanteRetorno": "Autenticação:                  03331351863332635"
+                    }
+                  ],
+                  "textoNomeConvenio": "CEB"
+                }
+              }
+            }
+          }
+        }
+      },
+      "consultaPagamento": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "codigoAutenticacaoTransacao":{
+                  "type": "string",
+                  "example": "3318503799613677",
+                  "description": "Código Autenticação da Transação"
+                  
+                },
+                "codigoBarraCapturado": {
+                  "type": "string",
+                  "example": "84660000000579901090110045937669430142327770",
+                  "description": "Código de barras do documento de arrecadação"
+                },
+                "codigoEstadoPagamento": {
+                  "type": "integer",
+                  "example": 1,
+                  "enum": [
+                    1,
+                    2
+                  ],
+                  "description": "Situação do pagamento do sistema de Arrecadação:\n 1- Em aberto\n 2-Liquidado"
+                },
+                "dataPagamento": {
+                  "type": "string",
+                  "example": "15022022",
+                  "description": "Data de realização do pagamento"
+                },
+                "horaPagamento": {
+                  "type": "string",
+                  "example": "142056",
+                  "description": "Hora de efetivação do pagamento"
+                },
+                "valorPagamento": {
+                  "type": "number",
+                  "example": 57.99,
+                  "description": "Valor do pagamento"
+                },
+                "nomeConves": {
+                  "type": "string",
+                  "example": "Convenio CEB",
+                  "description": "Nome do convênio de arrecadação do BB junto ao Ente Público ou Concessionária de Serviços Públicos"
+                },
+                "quantidadeLinhaComprovante": {
+                  "type": "integer",
+                  "example": "7",
+                  "description": "Quantidade de linhas do comprovante"
+                },
+                "textoIdentificadorRetorno": {
+                  "type": "string",
+                  "example": "API23318135924733822",
+                  "description": "Este campo determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao parceiro a funcionalidade de conciliação da sua solicitação de pagamento junto ao BB."
+                },
+                "textoLinhaComprovanteRetorno": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "textoLinhaComprovante": {
+                        "type": "string",
+                        "description": "Informa cada linha do texto do comprovante de recebimento para que parceiro realize formação conforme o leiaute de sua marca. Limite de 50 linhas.",
+                        "example": "Convênio CEB"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "codigoAutenticacaoTransacao": "3318503799613677",
+                	"codigoBarraCapturado": "83650000000562000052816115597744015597742309",
+                	"codigoEstadoPagamento": 2,
+                	"codigoIdentificadorDocumentoConciliacao": "",
+                	"dataPagamento": "14112023",
+                	"horarioPagamento": "135924",
+                	"nomeConves": "COMPANHIA ENERGETICA DE BRASILIA - CEB",
+                	"quantidadeLinhaComprovante": 7,
+                	"textoIdentificadorRetorno": "API23318135924733822",
+                  "textoLinhaComprovanteRetorno": [
+                  		{
+                  			"textoLinhaComprovante": "Convenio: CEB"
+                  		},
+                  		{
+                  			"textoLinhaComprovante": "Codigo de Barras"
+                  		},
+                  		{
+                  			"textoLinhaComprovante": "83650000000-2   56200005281-0"
+                  		},
+                  		{
+                  			"textoLinhaComprovante": "61155977440-5   15597742309-6"
+                  		},
+                  		{
+                  			"textoLinhaComprovante": "Data do pagamento                     14/11/2023"
+                  		},
+                  		{
+                  			"textoLinhaComprovante": "Valor Total                                56,20"
+                  		},
+                  		{
+                  			"textoLinhaComprovante": "Autenticação:                  03318503799613677"
+                  		}
+                  	],
+                  "valorPagamento": 56.20
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "gw-dev-app-key": {
+        "name": "gw-dev-app-key",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "0021239456d80136bebf005056891bed"
+        },
+        "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo."
+      },
+      "Authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "Bearer <acess_token>"
+        },
+        "description": "É o valor do token de acesso fornecido pelo OAuth."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Pagamento Único",
+      "description": "Serviços com guia de arrecadação"
+    }
+  ],
+  "paths": {
+    "/arrecadacoes": {
+      "parameters": [],
+      "post": {
+        "operationId": "get-arrecadacoes-codigoBarras",
+        "summary": "Validar Guia do Parceiro Arrecadador",
+        "description": "A partir do código de barras (digitado OU capturado), valor, consulta o parceiro arrecadador",
+        "tags": [
+          "Pagamento Único"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/consultaParceiroArrecadador"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "codigoClienteSolicitacao": {
+                    "type": "integer",
+                    "description": "Código que identifica o parceiro de arrecadação no Banco do Brasil",
+                    "example": 1
+                  },
+                  "codigoBarraDigitado": {
+                    "type": "string",
+                    "description": "Código de barras digitado (48 posições). Obs: Deve ser informado o campo Barra Digitada ou Barra Capturada",
+                    "example": "846600000000579901090111004593766944301423277708"
+                  },
+                  "codigoBarraCapturado": {
+                    "type": "string",
+                    "description": "Código de barras capturado (44 posições). Obs: Deve ser informado o campo Barra Digitada ou Barra Capturada",
+                    "example": "84660000000579901090110045937669430142327770"
+                  },
+                  "valorPagamento": {
+                    "type": "number",
+                    "description": "Valor Pagamento da guia de arrecadação",
+                    "example": 57.99,
+                    "format": "double"
+                  }
+                },
+                "required": [
+                  "codigoClienteSolicitacao",
+                  "valorPagamento"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "codigoClienteSolicitacao": 1,
+                    "codigoBarraDigitado": "846600000000579901090111004593766944301423277708",
+                    "codigoBarraCapturado": "",
+                    "valorPagamento": 57.99
+                  }
+                },
+               "example-2": {
+                  "value": {
+                    "codigoClienteSolicitacao": 1,
+                    "codigoBarraDigitado": "",
+                    "codigoBarraCapturado": "84660000000579901090110045937669430142327770",
+                    "valorPagamento": 57.99
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "servicos-arrecadacao.requisicao"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          }
+        ]
+      }
+    },
+    "/liquidar-guia": {
+      "post": {
+        "summary": "Liquidar Guia do Parceiro Arrecadador",
+        "operationId": "post-liquidar-guia",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/respostaLiquidarGuia"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "description": "Liquidar Guia do Parceiro Arrecadador",
+        "tags": [
+          "Pagamento Único"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "codigoClienteSolicitacao": {
+                    "type": "integer",
+                    "description": "Código que identifica o parceiro de arrecadação no Banco do Brasil",
+                    "example": 1
+                  },
+                  "valorPagamento": {
+                    "type": "number",
+                    "description": "Valor Pagamento da guia de arrecadação",
+                    "example": 57.99,
+                    "format": "double"
+                  },
+                  "codigoBarraDigitado": {
+                    "type": "string",
+                    "description": "Código de barras digitado (48 posições). Obs: Deve ser informado o campo Barra Digitada ou Barra Capturada",
+                    "example": "846600000000579901090111004593766944301423277708"
+                  },
+                  "codigoBarraCapturado": {
+                    "type": "string",
+                    "description": "Código de barras capturado (44 posições). Obs: Deve ser informado o campo Barra Digitada ou Barra Capturada",
+                    "example": "84660000000579901090110045937669430142327770"
+                  },
+                  "codigoConciliacao": {
+                    "type": "string",
+                    "example": "API22018075654886620",
+                    "description": "Este campo determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao parceiro a funcionalidade de conciliação da sua solicitação de pagamento junto ao BB."
+                  }
+                },
+                "required": [
+                  "codigoClienteSolicitacao",
+                  "valorPagamento",
+                  "codigoConciliacao"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "codigoClienteSolicitacao": 1,
+                    "valorPagamento": 57.99,
+                    "codigoBarraDigitado": "846600000000579901090111004593766944301423277708",
+                    "codigoBarraCapturado": "",
+                    "codigoConciliacao": "API22018075654886620"
+                  }
+                },
+               "example-2": {
+                  "value": {
+                    "codigoClienteSolicitacao": 1,
+                    "valorPagamento": 57.99,
+                    "codigoBarraDigitado": "",
+                    "codigoBarraCapturado": "84660000000579901090110045937669430142327770",
+                    "codigoConciliacao": "API22018075654886620"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "servicos-arrecadacao.requisicao"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          }
+        ]
+      }
+    },
+    "/pagamentos": {
+      "get": {
+        "summary": "Consultar pagamento de Parceiro Arrecadador",
+        "tags": [
+          "Pagamento Único"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/consultaPagamento"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "operationId": "get-pagamentos-codigoConciliacao",
+        "description": "Consultar pagamento de Parceiro Arrecadador",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "example": 3015
+            },
+            "in": "query",
+            "name": "codigoParceiro",
+            "description": "Código do Parceiro de Arrecadação junto ao BB.",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "API23209095417131412"
+            },
+            "in": "query",
+            "name": "codigoConciliacao",
+            "description": "Este campo determina o identificador da transação. O objetivo desse campo é ser um elemento que possibilite ao parceiro a funcionalidade de conciliação da sua solicitação de pagamento junto ao BB.",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "servicos-arrecadacao.info"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

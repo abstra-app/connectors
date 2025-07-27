@@ -65,3 +65,9 @@ class TestMakeMethodName(TestCase):
             make_method_name("put", "/api/v1/resource/{id}/attributes/{attr}"),
             "put_api_v1_resource_by_id_attributes_by_attr",
         )
+
+    def test(self):
+        self.assertEqual(
+            make_method_name("get", "/contas/{agencia}-{conta}/situacao"),
+            "get_contas_by_agencia_by_conta_situacao",
+        )

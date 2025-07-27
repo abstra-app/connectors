@@ -1,0 +1,2269 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Débitos Veiculares",
+    "description": "API referente aos serviços de consultas e pagamentos de débitos veiculares para parceiros arrecadadores do Banco do Brasil S.A.",
+    "contact": {
+      "name": "Banco do Brasil S.A. - Portal Developers - Website",
+      "url": "https://developers.bb.com.br"
+    },
+    "version": "1.0.2",
+	"x-api-version": "1.0.3"
+  },
+  "externalDocs": {
+    "description": "APIs no BB",
+    "url": "https://apoio.developers.bb.com.br/referency/post/5f4f8342b71fb5001268c9ac"
+  },
+  "servers": [
+    {
+      "url": "https://api.extranet.hm.bb.com.br/debitos-veiculares/v1",
+      "description": "Homologação sem mTLS"
+    },
+    {
+      "url": "https://homologa-api-ip.bb.com.br:7144/debitos-veiculares/v1",
+      "description": "Homologacao com mTLS"
+    },
+    {
+      "url": "https://api-ip.bb.com.br/debitos-veiculares/v1",
+      "description": "Producao"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Consultas",      
+      "description": "Recursos referentes à consulta dos pagamentos."
+    },
+    {
+      "name": "Pagamentos",
+      "description": "Recursos referentes aos pagamentos dos débitos."
+    }
+  ],
+  "paths": {
+    "/solicitacoes": {
+      "post": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Cadastrar consulta de débitos veiculares",
+        "description": "Cadastra uma solicitação de consulta de dados de débitos veiculares. O retorno da consulta é assíncrono, com tempo estimado de processamento superior a 1000ms, sendo enviado automaticamente por meio de webhook previamente cadastrado quando a consulta estiver finalizada.",
+        "operationId": "9126101",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitacaoConsulta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaConsulta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/mciDiferenteDoCadastradoBb"
+                    },
+                    {
+                      "$ref": "#/components/schemas/convenioParceiroInativo"
+                    },
+                    {
+                      "$ref": "#/components/schemas/mciInformadoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoRenavamNaoInformado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCpfCnpjNaoInformado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroRenavamInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCpfInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCnpjInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoUfInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroPlacaInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/solicitacaoComItensInvalidos"
+                    },
+                    {
+                      "$ref": "#/components/schemas/camposIndevidos"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/codigoIdentificadorTokenInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizado"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/parceiroArrecadacaoNaoHabilitado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizado"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/parceiroArrecadacaoNaoEncontrado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/solicitacaoNaoEncontrada"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/erroExecucaoSql"
+                    },
+                    {
+                      "$ref": "#/components/schemas/cics"
+                    },
+                    {
+                      "$ref": "#/components/schemas/db2"
+                    },
+                    {
+                      "$ref": "#/components/schemas/timeoutOperacao"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/bancoDeDadosIndisponivel"
+                    },
+                    {
+                      "$ref": "#/components/schemas/servicoDeConsultaIndisponivel"
+                    },
+                    {
+                      "$ref": "#/components/schemas/problemasNaComunicacaoComOrgao"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          },
+          {
+            "OAuth2_homologacao": [
+              "debitos-veiculares.requisicao"
+            ]
+          },
+          {
+            "OAuth2_producao": [
+              "debitos-veiculares.requisicao"
+            ]
+          }
+        ]
+      }
+    },
+    "/pagamentos": {
+      "post": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Solicitar pagamento de débitos veiculares",
+        "description": "Permite a liquidação de débitos veiculares por meio de identificadores únicos, obtidos em consulta de débitos prévia.",
+        "operationId": "9301353",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitacaoPagamento"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaPagamento"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/mciDiferenteDoCadastradoBb"
+                    },
+                    {
+                      "$ref": "#/components/schemas/convenioParceiroInativo"
+                    },
+                    {
+                      "$ref": "#/components/schemas/mciInformadoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoRenavamNaoInformado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCpfCnpjNaoInformado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/dataSolicitacaoInvalida"
+                    },
+                    {
+                      "$ref": "#/components/schemas/tempoDeRequisicaoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoDeSolicitacaoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroRenavamInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCpfInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCnpjInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoUfInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroPlacaInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoEstadoSolicitacaoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/timestampPagamentoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/solicitacaoComItensInvalidos"
+                    },
+                    {
+                      "$ref": "#/components/schemas/naoFoiPossivelDebitarParceiro"
+                    },
+                    {
+                      "$ref": "#/components/schemas/comprovante"
+                    },
+                    {
+                      "$ref": "#/components/schemas/naoConstaDebitoParaIdentificador"
+                    },
+                    {
+                      "$ref": "#/components/schemas/jaExistePagamentoParaSolicitacaoItem"
+                    },
+                    {
+                      "$ref": "#/components/schemas/itemExpirado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/camposIndevidos"
+                    },
+                    {
+                      "$ref": "#/components/schemas/estadoSolicitacaoNaoPermiteAcao"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoServicoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroUnicoItemBancoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroIdentificadorItemInvalido"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/codigoIdentificadorTokenInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizadoPagamento"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/parceiroArrecadacaoNaoHabilitado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizadoPagamento"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/parceiroArrecadacaoNaoEncontrado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/solicitacaoNaoEncontrada"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/erroExecucaoSql"
+                    },
+                    {
+                      "$ref": "#/components/schemas/cics"
+                    },
+                    {
+                      "$ref": "#/components/schemas/db2"
+                    },
+                    {
+                      "$ref": "#/components/schemas/timeoutOperacao"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/bancoDeDadosIndisponivel"
+                    },
+                    {
+                      "$ref": "#/components/schemas/servicoDeConsultaIndisponivel"
+                    },
+                    {
+                      "$ref": "#/components/schemas/problemasNaComunicacaoComOrgao"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          },
+          {
+            "OAuth2_homologacao": [
+              "debitos-veiculares.requisicao"
+            ]
+          },
+          {
+            "OAuth2_producao": [
+              "debitos-veiculares.requisicao"
+            ]
+          }
+        ]
+      }
+    },
+    "/solicitacoes/{codigoSolicitacao}": {
+      "get": {
+        "tags": [
+          "Consultas"
+        ],
+        "summary": "Obter dados de consulta de débitos veiculares",
+        "description": "Obtém informações de débitos veiculares de consulta previamente registrada por codigoSolicitacao.",
+        "operationId": "9126430",
+        "parameters": [
+          {
+            "name": "codigoSolicitacao",
+            "in": "path",
+            "description": "Código de protocolo que identifica cada solicitação de consulta realizada.",
+            "required": true,
+            "example": "VEIC24M3SVVAY9",
+            "schema": {
+              "type": "string",
+              "maxLength": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaConsultaDetalhada"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/mciDiferenteDoCadastradoBb"
+                    },
+                    {
+                      "$ref": "#/components/schemas/convenioParceiroInativo"
+                    },
+                    {
+                      "$ref": "#/components/schemas/mciInformadoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoRenavamNaoInformado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCpfCnpjNaoInformado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/dataSolicitacaoInvalida"
+                    },
+                    {
+                      "$ref": "#/components/schemas/tempoDeRequisicaoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoDeSolicitacaoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroRenavamInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCpfInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoCnpjInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoUfInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroPlacaInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoEstadoSolicitacaoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/timestampPagamentoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/solicitacaoComItensInvalidos"
+                    },
+                    {
+                      "$ref": "#/components/schemas/naoFoiPossivelDebitarParceiro"
+                    },
+                    {
+                      "$ref": "#/components/schemas/comprovante"
+                    },
+                    {
+                      "$ref": "#/components/schemas/naoConstaDebitoParaIdentificador"
+                    },
+                    {
+                      "$ref": "#/components/schemas/jaExistePagamentoParaSolicitacaoItem"
+                    },
+                    {
+                      "$ref": "#/components/schemas/itemExpirado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/camposIndevidos"
+                    },
+                    {
+                      "$ref": "#/components/schemas/estadoSolicitacaoNaoPermiteAcao"
+                    },
+                    {
+                      "$ref": "#/components/schemas/codigoServicoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroUnicoItemBancoInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/numeroIdentificadorItemInvalido"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/codigoIdentificadorTokenInvalido"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizado"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/parceiroArrecadacaoNaoHabilitado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/parceiroNaoAutorizadoPagamento"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro Negocial",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/parceiroArrecadacaoNaoEncontrado"
+                    },
+                    {
+                      "$ref": "#/components/schemas/solicitacaoNaoEncontrada"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/erroExecucaoSql"
+                    },
+                    {
+                      "$ref": "#/components/schemas/cics"
+                    },
+                    {
+                      "$ref": "#/components/schemas/db2"
+                    },
+                    {
+                      "$ref": "#/components/schemas/timeoutOperacao"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Erro Sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/bancoDeDadosIndisponivel"
+                    },
+                    {
+                      "$ref": "#/components/schemas/servicoDeConsultaIndisponivel"
+                    },
+                    {
+                      "$ref": "#/components/schemas/problemasNaComunicacaoComOrgao"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          },
+          {
+            "OAuth2_homologacao": [
+              "debitos-veiculares.info"
+            ]
+          },
+          {
+            "OAuth2_producao": [
+              "debitos-veiculares.info"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SolicitacaoConsulta": {
+        "type": "object",
+        "properties": {
+          "numeroRenavam": {
+            "type": "string",
+            "description": "Código do Registro Nacional de Veículos Automotores a ser consultado. Informação obrigatória para realizar a consulta. O registro é único por unidades da federação.",
+            "example": "1367558066"
+          },
+          "codigoCpf": {
+            "type": "string",
+            "description": "Código do Cadastro de Pessoas Físicas do solicitante da consulta de veículo. Informação que deverá ser enviada para realizar a consulta. Para alguns entes é obrigatório informar, além do Renavam, a identificação do solicitante. Para outros entes a consulta é apenas pelo Renavam. Cada ente tem a sua característica. A identificação da pessoa poderá ser feita por CPF ou CNPJ, sendo este informado em campo específico.",
+            "example": "31212332112"
+          },
+          "codigoCnpj": {
+            "type": "string",
+            "description": "Código do Cadastro Nacional de Pessoa Jurídica do solicitante da consulta de veículo. Informação que deverá ser enviada para realizar a consulta. Para alguns entes é obrigatório informar, além do Renavam, a identificação do solicitante. Para outros entes a consulta é apenas pelo Renavam. Cada ente tem a sua característica. A identificação da pessoa poderá ser feita por CNPJ ou CPF, sendo este informado em campo específico.",
+            "example": "12123123000122"
+          },
+          "codigoUf": {
+            "type": "string",
+            "description": "Sigla da Unidade Federativa onde o veículo está cadastrado. Informação obrigatória para realizar a consulta.",
+            "example": "SP"
+          },
+          "codigoPlaca": {
+            "type": "string",
+            "description": "Número da placa do veículo a ser consultado. Informação que deverá ser enviada para realizar a consulta. Para alguns entes é obrigatório informar, além do Renavam, a placa do veículo. Para outros entes a consulta é apenas pelo Renavam. Cada ente tem a sua característica.",
+            "example": "ABC1234"
+          }
+        },
+        "required": [
+          "numeroRenavam",
+          "codigoUf"
+        ]
+      },
+      "RespostaConsulta": {
+        "type": "object",
+        "properties": {
+          "codigoSolicitacao": {
+            "type": "string",
+            "description": "Código de protocolo que identifica cada solicitação de consulta realizada.",
+            "example": "VEIC24M3SVVAY9",
+            "maxLength": 20
+          },
+          "timestampConsulta": {
+            "type": "string",
+            "description": "Momento do estado da solicitação de consulta (data, hora, minuto, segundo e microsegundos).",
+            "example": "2024-11-22T15:15:38.67388Z",
+            "maxLength": 26
+          }
+        }
+      },
+      "SolicitacaoPagamento": {
+        "type": "object",
+        "properties": {
+          "codigoSolicitacao": {
+            "type": "string",
+            "description": "Código de protocolo que identifica cada solicitação de consulta realizada.",
+            "maxLength": 20,
+            "example": "VEIC24M3SVVAY9"
+          },
+          "codigoServico": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Código que identifica unicamente um grupo no detalhamento de pagamento de tributos.",
+            "example": 1100
+          },
+          "numeroUnicoItemBanco": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificação do grupo do tributo no Banco do Brasil, no momento da realização da consulta. A cada consulta ao órgão, o BB gera esse número para identificação da consulta daquele grupo. Número gerado automaticamente (dinâmico) para cada tributo do grupo. Necessário para realizar o pagamento.",
+            "example": 12312423
+          },
+          "numeroIdentificadorItem": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 1
+          }
+        },
+        "required": [
+          "codigoSolicitacao",
+          "codigoServico",
+          "numeroUnicoItemBanco",
+          "numeroIdentificadorItem"
+        ]
+      },
+      "RespostaPagamento": {
+        "type": "object",
+        "properties": {
+          "quantidadeOcorrenciaListaMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências retornadas na lista de multas.",
+            "example": 5
+          },
+          "quantidadeOcorrenciaListaPagamento": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências retornadas na lista de pagamentos.",
+            "example": 3
+          },
+          "quantidadeTamanhoCodigoTextoMensagem": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade do tamanho do código texto mensagem.",
+            "example": 100
+          },
+          "numeroAgenciaRecolhimento": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número da agência de recolhimento.",
+            "example": 1234
+          },
+          "numeroTerminal": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número do Terminal onde foi efetuada a arrecadação.",
+            "example": 5678
+          },
+          "nomeCanal": {
+            "type": "string",
+            "description": "Nome do canal onde foi efetuada a arrecadação.",
+            "maxLength": 20,
+            "example": "Internet Banking"
+          },
+          "numeroUnicoItemBanco": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificação do grupo do tributo no Banco do Brasil, no momento da realização da consulta. A cada consulta ao órgão, o BB gera esse número para identificação da consulta daquele grupo. Número gerado automaticamente (dinâmico) para cada tributo do grupo. Necessário para realizar o pagamento.",
+            "example": 1234567890123456
+          },
+          "numeroUnicoItemOrgao": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificação do tributo do grupo do tributo no órgão que foi realizada a consulta. A cada consulta ao órgão, o órgão gera esse número para identificação da consulta. Origem externa. Número gerado automaticamente (dinâmico), não tem um padrão.",
+            "example": 6543210987654321
+          },
+          "numeroServico": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número do serviço solicitado para pagamento.",
+            "example": 1
+          },
+          "nomeServico": {
+            "type": "string",
+            "description": "Nome do serviço solicitado para pagamento.",
+            "maxLength": 30,
+            "example": "Licenciamento"
+          },
+          "horaPagamento": {
+            "type": "string",
+            "description": "Horário efetivo da liquidação do débito.",
+            "maxLength": 8,
+            "example": "14:30:00"
+          },
+          "dataPagamento": {
+            "type": "string",
+            "description": "Data efetiva da liquidação do débito.",
+            "maxLength": 10,
+            "example": "2024-12-31"
+          },
+          "dataTransacao": {
+            "type": "string",
+            "description": "Data da transação efetuada.",
+            "maxLength": 10,
+            "example": "2024-12-31"
+          },
+          "codigoReceita": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Código da receita.",
+            "example": 1234
+          },
+          "nomeProprietario": {
+            "type": "string",
+            "description": "Nome do proprietário do veículo automotor.",
+            "maxLength": 20,
+            "example": "João da Silva"
+          },
+          "codigoUf": {
+            "type": "string",
+            "description": "Sigla da Unidade Federativa onde o veículo está cadastrado.",
+            "maxLength": 2,
+            "example": "SP"
+          },
+          "numeroRenavam": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Código do Registro Nacional de Veículos Automotores. O registro é único por unidades da federação.",
+            "example": 12345678901
+          },
+          "codigoPlaca": {
+            "type": "string",
+            "description": "Número da placa do veículo consultado.",
+            "maxLength": 7,
+            "example": "ABC1234"
+          },
+          "codigoCpfCnpj": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Código do Cadastro de Pessoas Físicas ou do Código do Cadastro Nacional de Pessoa Jurídica.",
+            "example": 12345678901
+          },
+          "codigoMunicipioEstadual": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Código do Município Estadual do Cadastro do Renavam é um identificador numérico que representa o município onde o veículo está registrado no sistema do Renavam.",
+            "example": 1234
+          },
+          "valorTotal": {
+            "type": "number",
+            "format": "float",
+            "description": "Valor total do débito veicular pago.",
+            "example": 150.75
+          },
+          "numeroAutenticacao": {
+            "type": "string",
+            "description": "Código de autenticação de documento que identifica ao cliente a solicitação feita ao BB.",
+            "maxLength": 16,
+            "example": "ABC1234567890123"
+          },
+          "numeroAgenciaCliente": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Numero da agência do cliente.",
+            "example": 1234
+          },
+          "numeroContaCliente": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Numero da conta do cliente.",
+            "example": 123456
+          },
+          "nomeCliente": {
+            "type": "string",
+            "description": "Nome do cliente.",
+            "maxLength": 40,
+            "example": "João da Silva"
+          },
+          "codigoTextoMensagem": {
+            "type": "string",
+            "description": "Código texto da mensagem.",
+            "maxLength": 300,
+            "example": "Pagamento realizado com sucesso."
+          },
+          "listaPagamento": {
+            "type": "array",
+            "description": "Lista de informações dos itens pagos.",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/ItemPagamento"
+            }
+          },
+          "listaMulta": {
+            "type": "array",
+            "description": "Lista de informações das multas pagas.",
+            "maxItems": 30,
+            "items": {
+              "$ref": "#/components/schemas/ItemMultaPagamento"
+            }
+          },
+          "parametrosSolicitacaoPagamento": {
+            "type": "array",
+            "description": "Parametros de solicitacao para pagamento.",
+            "maxItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/ItemSolicitacaoPagamento"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "RespostaConsultaDetalhada": {
+        "type": "object",
+        "properties": {
+          "quantidadeOcorrenciaListaOnline": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências na lista online."
+          },
+          "quantidadeOcorrenciaListaLicenciamento": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências na lista de licenciamento.",
+            "example": 12
+          },
+          "quantidadeOcorrenciaListaTransferencia": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências na lista de transferência.",
+            "example": 12
+          },
+          "quantidadeOcorrenciaListaDpvat": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências na lista de DPVAT.",
+            "example": 12
+          },
+          "quantidadeOcorrenciaListaMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências na lista de multas.",
+            "example": 12
+          },
+          "quantidadeOcorrenciaListaIpva": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências na lista de IPVA.",
+            "example": 12
+          },
+          "quantidadeOcorrenciaServicos": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantidade de ocorrências na lista de serviços.",
+            "example": 12
+          },
+          "codigoSolicitacao": {
+            "type": "string",
+            "description": "Código de protocolo que identifica cada solicitação de consulta realizada.",
+            "example": "VEIC24M3SVVAY9"
+          },
+          "numeroRenavam": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Código do Registro Nacional de Veículos Automotores consultado. O registro é único por unidades da federação.",
+            "example": 1367558066
+          },
+          "codigoUf": {
+            "type": "string",
+            "description": "Sigla da Unidade Federativa onde o veículo está cadastrado.",
+            "example": "SP"
+          },
+          "numeroPlaca": {
+            "type": "string",
+            "description": "Número da placa do veículo consultado.",
+            "example": "ABC1234"
+          },
+          "nomeProprietario": {
+            "type": "string",
+            "description": "Nome do proprietário do veículo consultado.",
+            "example": "TESTE DE TESTES"
+          },
+          "numeroIdentificadorProprietario": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Código identificador do proprietário do veículo consultado na Unidade Federativa.",
+            "example": 1367558066
+          },
+          "codigoMunicipioEstadual": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Código do Município Estadual do Cadastro do Renavam é um identificador numérico que representa o município onde o veículo está registrado no sistema do Renavam.",
+            "example": 12
+          },
+          "codigoMunicipioFederal": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Código do Município Federal do Cadastro do Renavam é um identificador numérico que representa o município onde o veículo está registrado no sistema do Renavam, mas em relação à jurisdição federal. Esse código é utilizado principalmente para veículos registrados sob a responsabilidade de órgãos federais, como a Polícia Rodoviária Federal (PRF).",
+            "example": 12
+          },
+          "nomeMunicipio": {
+            "type": "string",
+            "description": "Nome do município.",
+            "example": "TESTECWB"
+          },
+          "timestampLimitePagamento": {
+            "type": "string",
+            "description": "Timestamp limite do pagamento do débito veicular será calculado conforme a Unidade Federativa do veículo. Cada estado tem uma regra de tempo de pagamento diferente. A contagem é feita a partir do momento da consulta.",
+            "example": "2024-11-22T15:15:38.673881574Z"
+          },
+          "listaServicos": {
+            "type": "array",
+            "description": "Lista de serviços.",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/ItemServico"
+            }
+          },
+          "listaIpva": {
+            "type": "array",
+            "description": "Lista de IPVA.",
+            "maxItems": 30,
+            "items": {
+              "$ref": "#/components/schemas/ItemIpva"
+            }
+          },
+          "listaMulta": {
+            "type": "array",
+            "description": "Lista de multas.",
+            "maxItems": 30,
+            "items": {
+              "$ref": "#/components/schemas/ItemMulta"
+            }
+          },
+          "listaDpvat": {
+            "type": "array",
+            "description": "Lista de DPVAT.",
+            "maxItems": 10,
+            "items": {
+              "$ref": "#/components/schemas/ItemDpvat"
+            }
+          },
+          "listaTransferencia": {
+            "type": "array",
+            "description": "Lista de transferências.",
+            "maxItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/ItemTransferencia"
+            }
+          },
+          "listaLicenciamento": {
+            "type": "array",
+            "description": "Lista de licenciamentos.",
+            "maxItems": 2,
+            "items": {
+              "$ref": "#/components/schemas/ItemLicenciamento"
+            }
+          },
+          "listaOnline": {
+            "type": "array",
+            "description": "Lista de retorno webservice.",
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/ItemOnline"
+            }
+          }
+        }
+      },
+      "ItemPagamento": {
+        "type": "object",
+        "properties": {
+          "codigoTextoItem": {
+            "type": "string",
+            "description": "Texto com informações adicionais referente ao grupo do tributo.",
+            "maxLength": 20,
+            "example": "Licenciamento"
+          },
+          "anoExercicioPagamento": {
+            "type": "string",
+            "description": "Refere-se ao ano em que a obrigação tributária foi gerada e, portanto, é o ano em que o tributo deve ser considerado para fins de cálculo e pagamento.",
+            "maxLength": 4,
+            "example": "2024"
+          },
+          "valorItem": {
+            "type": "number",
+            "format": "float",
+            "description": "Valor total do débito do veículo para o tributo do grupo.",
+            "example": 100.5
+          },
+          "dataVencimento": {
+            "type": "string",
+            "description": "Prazo final estabelecido pela autoridade fiscal para que o contribuinte efetue o pagamento do tributo devido.",
+            "maxLength": 10,
+            "example": "2024-12-31"
+          },
+          "numeroIdentificadorItem": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 1
+          }
+        }
+      },
+      "ItemMultaPagamento": {
+        "type": "object",
+        "properties": {
+          "numeroAutoInfracao": {
+            "type": "string",
+            "description": "Código identificador atribuído a um documento oficial gerado quando uma infração de trânsito é registrada. Esse número serve para identificar de maneira única o registro de uma infração cometida pelo condutor ou pelo veículo, permitindo o controle e o acompanhamento pela autoridade de trânsito.",
+            "maxLength": 11,
+            "example": "12345678901"
+          },
+          "numeroIdentificadorMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 1
+          },
+          "numeroGuiaMulta": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Código ou referência associado a uma infração de trânsito, que aparece no documento de pagamento (guia) emitido pelas autoridades competentes. Esse número é utilizado para identificar a multa de forma única, facilitando o pagamento e o acompanhamento do processo de quitação da infração.",
+            "example": 1234567890123456
+          },
+          "codigoOrgaoMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número que identifica de forma única o órgão ou entidade responsável por emitir a multa de trânsito. Esse código é atribuído a cada órgão fiscalizador, como o Detran, a Polícia Rodoviária Federal (PRF), ou os órgãos municipais de trânsito, e serve para facilitar a identificação da origem da autuação.",
+            "example": 1234
+          },
+          "nomeOrgaoMulta": {
+            "type": "string",
+            "description": "Refere à instituição ou entidade governamental responsável pela fiscalização e aplicação da infração de trânsito.",
+            "maxLength": 30,
+            "example": "Detran"
+          }
+        }
+      },
+      "ItemSolicitacaoPagamento": {
+        "type": "object",
+        "properties": {
+          "codigoSolicitacaoPagamento": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Codigo Solicitacao Pagamento"
+          },
+          "textoUrlSolicitacao": {
+            "type": "string",
+            "description": "Texto Url Solicitacao",
+            "maxLength": 255
+          }
+        }
+      },
+      "ItemServico": {
+        "type": "object",
+        "properties": {
+          "codigoServico": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Código que identifica unicamente um grupo no detalhamento de pagamento de tributos.",
+            "example": 1
+          },
+          "nomeServico": {
+            "type": "string",
+            "description": "Texto descritivo de um grupo no detalhamento de pagamento de tributos.",
+            "maxLength": 30,
+            "example": "Licenciamento"
+          },
+          "numeroIdentificadorServico": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número identificador de um item do grupo de tributos.",
+            "example": 12
+          },
+          "valorItem": {
+            "type": "number",
+            "format": "float",
+            "description": "Valor total do débito do veículo para o tributo do grupo.",
+            "example": 12.12
+          },
+          "codigoTextoItem": {
+            "type": "string",
+            "description": "Texto com informações adicionais referente ao grupo do tributo.",
+            "maxLength": 30,
+            "example": "TESTE"
+          },
+          "numeroUnicoItemBanco": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificação do grupo do tributo no Banco do Brasil, no momento da realização da consulta. A cada consulta ao órgão, o BB gera esse número para identificação da consulta daquele grupo. Número gerado automaticamente (dinâmico) para cada tributo do grupo. Necessário para realizar o pagamento.",
+            "example": 1367558066
+          },
+          "numeroUnicoItemOrgao": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Identificação do tributo do grupo do tributo no órgão que foi realizada a consulta. A cada consulta ao órgão, o órgão gera esse número para identificação da consulta. Origem externa. Número gerado automaticamente (dinâmico), não tem um padrão.",
+            "example": 1367558066
+          },
+          "codigoSituacaoItem": {
+            "type": "string",
+            "description": "Mensagem de retorno que o órgão enviou no momento da consulta indicando se há ou não débitos para o veículo.",
+            "example": "TESTE"
+          }
+        }
+      },
+      "ItemIpva": {
+        "type": "object",
+        "properties": {
+          "numeroIdentificadorIpva": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 1
+          },
+          "anoExercicioIpva": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Refere-se ao ano em que a obrigação tributária foi gerada e, portanto, é o ano em que o tributo deve ser considerado para fins de cálculo e pagamento.",
+            "example": 2024
+          },
+          "dataVencimentoIpva": {
+            "type": "string",
+            "description": "Prazo final estabelecido pela autoridade fiscal para que o contribuinte efetue o pagamento do tributo devido.",
+            "maxLength": 20,
+            "example": "2024-12-31"
+          },
+          "numeroCotaIpva": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Refere-se ao identificador específico de uma das parcelas em um plano de parcelamento de tributos relacionados a veículos.",
+            "example": 2
+          },
+          "nomeCotaIpva": {
+            "type": "string",
+            "description": "Texto com informações adicionais referente ao tributo do grupo.",
+            "maxLength": 30
+          }
+        }
+      },
+      "ItemMulta": {
+        "type": "object",
+        "properties": {
+          "numeroIdentificadorMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 12
+          },
+          "numeroGuiaMulta": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Código ou referência associado a uma infração de trânsito, que aparece no documento de pagamento (guia) emitido pelas autoridades competentes. Esse número é utilizado para identificar a multa de forma única, facilitando o pagamento e o acompanhamento do processo de quitação da infração.",
+            "example": 123456
+          },
+          "numeroAutoInfracao": {
+            "type": "string",
+            "description": "Código identificador atribuído a um documento oficial gerado quando uma infração de trânsito é registrada. Esse número serve para identificar de maneira única o registro de uma infração cometida pelo condutor ou pelo veículo, permitindo o controle e o acompanhamento pela autoridade de trânsito.",
+            "maxLength": 11,
+            "example": "TESTE"
+          },
+          "codigoEmpresaMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número presente em boletos ou guias de pagamento de multas de trânsito, utilizado para identificar a instituição ou empresa responsável pelo processamento do pagamento. No contexto de multas de trânsito, esse código geralmente está relacionado ao banco ou instituição financeira que gerencia o recebimento dos valores.",
+            "example": 123
+          },
+          "codigoSegmentoMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Referência usada por algumas instituições financeiras e órgãos de trânsito para identificar de forma específica o tipo de pagamento que está sendo realizado, nesse caso, relacionado a multas de trânsito.",
+            "example": 12
+          },
+          "codigoOrgaoMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número que identifica de forma única o órgão ou entidade responsável por emitir a multa de trânsito. Esse código é atribuído a cada órgão fiscalizador, como o Detran, a Polícia Rodoviária Federal (PRF), ou os órgãos municipais de trânsito, e serve para facilitar a identificação da origem da autuação.",
+            "example": 12
+          },
+          "nomeOrgaoMulta": {
+            "type": "string",
+            "description": "Refere à instituição ou entidade governamental responsável pela fiscalização e aplicação da infração de trânsito.",
+            "maxLength": 20,
+            "example": "TESTE"
+          },
+          "codigoMunicipioMultaUf": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número que identifica o município onde a infração de trânsito ocorreu, dentro do estado correspondente.",
+            "example": 12
+          },
+          "codigoMunicipioMultaFederal": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Identificador numérico utilizado para designar o município em que uma infração de trânsito foi registrada, dentro do contexto de uma jurisdição federal. Ele é aplicável em casos onde a multa é emitida por órgãos federais, como a Polícia Rodoviária Federal (PRF), em rodovias ou áreas de responsabilidade federal.",
+            "example": 123
+          },
+          "nomeMunicipioMulta": {
+            "type": "string",
+            "description": "Nome do município no qual a infração foi registrada.",
+            "maxLength": 30,
+            "example": "TESTE"
+          },
+          "codigoUfMulta": {
+            "type": "string",
+            "description": "Identificador que representa a Unidade Federativa (UF) onde a infração de trânsito foi cometida.",
+            "maxLength": 2,
+            "example": "SP"
+          },
+          "codigoEnquadramentoMulta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Código que identifica a natureza da infração de trânsito cometida.",
+            "example": 122
+          },
+          "nomeEnquadramentoMulta": {
+            "type": "string",
+            "description": "Texto do Código de Enquadramento da Multa que identifica a natureza da infração de trânsito cometida.",
+            "maxLength": 30,
+            "example": "TESTE"
+          },
+          "dataInfracaoMulta": {
+            "type": "string",
+            "description": "Refere-se ao dia em que o auto de infração foi registrado no sistema do órgão de trânsito responsável, ou seja, quando a multa foi oficialmente criada após a constatação da infração. Essa data pode ser diferente da data da infração (quando a violação realmente aconteceu). Em muitos casos, a infração pode ser registrada posteriormente, como no caso de multas capturadas por radares automáticos ou câmeras de fiscalização, onde há um intervalo entre o momento da infração e o registro formal da multa.",
+            "maxLength": 20,
+            "example": "30122024"
+          },
+          "dataVencimentoMulta": {
+            "type": "string",
+            "description": "Prazo final estabelecido pela autoridade fiscal para que o contribuinte efetue o pagamento do tributo devido.",
+            "maxLength": 20,
+            "example": "30122024"
+          }
+        }
+      },
+      "ItemDpvat": {
+        "type": "object",
+        "properties": {
+          "numeroIdentificadorDpvat": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 1
+          },
+          "codigoCategoriaDpvat": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número que classifica o tipo de veículo em relação ao seguro DPVAT (Danos Pessoais causados por Veículos Automotores de Via Terrestre).",
+            "example": 1234
+          },
+          "anoExercicioDpvat": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Refere-se ao ano em que a obrigação tributária foi gerada e, portanto, é o ano em que o tributo deve ser considerado para fins de cálculo e pagamento.",
+            "example": 2024
+          },
+          "numeroParcelaDpvat": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Refere-se ao identificador específico de uma das parcelas em um plano de parcelamento de tributos relacionados a veículos.",
+            "example": 2
+          },
+          "nomeParcelaDpvat": {
+            "type": "string",
+            "description": "Texto com informações adicionais referente ao tributo do grupo.",
+            "maxLength": 30,
+            "example": "Parcela Única"
+          }
+        }
+      },
+      "ItemTransferencia": {
+        "type": "object",
+        "properties": {
+          "numeroIdentificadorTransferencia": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 1
+          },
+          "anoExercicioTransferencia": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Refere-se ao ano em que a obrigação tributária foi gerada e, portanto, é o ano em que o tributo deve ser considerado para fins de cálculo e pagamento.",
+            "example": 2024
+          },
+          "valorTaxaLicenciamentoTransferencia": {
+            "type": "number",
+            "format": "float",
+            "description": "Quantia que os proprietários de veículos devem pagar anualmente para regularizar a situação do veículo junto ao Departamento de Trânsito (Detran) do seu estado.",
+            "example": 150.75
+          },
+          "valorTaxaTransferencia": {
+            "type": "number",
+            "format": "float",
+            "description": "Quantia que deve ser paga para realizar a transferência de propriedade de um veículo de uma pessoa para outra.",
+            "example": 200.5
+          }
+        }
+      },
+      "ItemLicenciamento": {
+        "type": "object",
+        "properties": {
+          "numeroIdentificadorLicenciamento": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Número sequencial que identifica o tributo dentro do grupo no qual foi constatado débito na consulta.",
+            "example": 1
+          },
+          "anoExercicioLicenciamento": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Refere-se ao ano em que a obrigação tributária foi gerada e, portanto, é o ano em que o tributo deve ser considerado para fins de cálculo e pagamento.",
+            "example": 2024
+          },
+          "valorTaxaLicenciamento": {
+            "type": "number",
+            "format": "float",
+            "description": "Quantia que os proprietários de veículos devem pagar anualmente para regularizar a situação do veículo junto ao Departamento de Trânsito (Detran) do seu estado.",
+            "example": 150.75
+          },
+          "valorTaxaCorreio": {
+            "type": "number",
+            "format": "float",
+            "description": "Quantia cobrada para o envio de documentos oficiais do Detran pelo serviço postal, oferecendo conveniência aos proprietários que preferem receber a documentação em casa.",
+            "example": 20.5
+          },
+          "codigoIndicadorCorreio": {
+            "type": "string",
+            "description": "Código identificador do tipo de serviço postal solicitado.",
+            "maxLength": 1,
+            "example": "S"
+          }
+        }
+      },
+      "ItemOnline": {
+        "type": "object",
+        "properties": {
+          "numeroIdentificadorOnline": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Numero Identificador Online"
+          },
+          "dataOnline": {
+            "type": "string",
+            "description": "Data Online",
+            "maxLength": 20
+          },
+          "textoOnline": {
+            "type": "string",
+            "description": "Texto Online",
+            "maxLength": 70
+          }
+        }
+      },
+      "VariaveisMonitoradas": {
+        "type": "object",
+        "title": "variaveisMonitoradas",
+        "properties": {
+          "variaveisMonitoradas": {
+            "type": "object",
+            "properties": {
+              "ORIGEM-ERRO": {
+                "type": "string",
+                "example": "Servidor do Banco do Brasil S.A."
+              },
+              "MOTIVO-ERRO": {
+                "type": "string",
+                "example": "Erro na execução da solicitação."
+              },
+              "ID-REQUISICAO": {
+                "type": "string",
+                "example": "70861501-1a4b-41b9-b8fd-530ae65d0523"
+              }
+            }
+          }
+        }
+      },
+      "mciDiferenteDoCadastradoBb": {
+        "type": "object",
+        "description": "MCI diferente do cadastrado no BB",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-001"
+          },
+          "message": {
+            "type": "string",
+            "example": "Campo (codigoClienteSolicitacao) não corresponde ao cadastro do parceiro."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "convenioParceiroInativo": {
+        "type": "object",
+        "description": "Convênio Parceiro Inativo",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-002"
+          },
+          "message": {
+            "type": "string",
+            "example": "Campo (codigoClienteSolicitacao) apresenta cadastro inativo no Banco do Brasil."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "mciInformadoInvalido": {
+        "type": "object",
+        "description": "MCI Informado Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-003"
+          },
+          "message": {
+            "type": "string",
+            "example": "Campo (codigoClienteSolicitacao) não informado."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoRenavamNaoInformado": {
+        "type": "object",
+        "description": "Código Renavam Não Informado",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-004"
+          },
+          "message": {
+            "type": "string",
+            "example": "Campo (codigoRenavam) não informado ou inválido."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoCpfCnpjNaoInformado": {
+        "type": "object",
+        "description": "Código CPF/CNPJ Não Informado",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-005"
+          },
+          "message": {
+            "type": "string",
+            "example": "Campo (CodigoCpfCnpj) não informado ou inválido."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "dataSolicitacaoInvalida": {
+        "type": "object",
+        "description": "Data de Solicitação Inválida",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-006"
+          },
+          "message": {
+            "type": "string",
+            "example": "Data da solicitação do pagamento deve estar no formado DD/MM/YYYY."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "tempoDeRequisicaoInvalido": {
+        "type": "object",
+        "description": "Tempo de Requisição Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-007"
+          },
+          "message": {
+            "type": "string",
+            "example": "A consulta ainda está em processamento. Tempo de requisição inválido!"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoDeSolicitacaoInvalido": {
+        "type": "object",
+        "description": "Código de Solicitação Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-008"
+          },
+          "message": {
+            "type": "string",
+            "example": "Codigo de Solicitação Inválido"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "numeroRenavamInvalido": {
+        "type": "object",
+        "description": "Número Renavam Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-009"
+          },
+          "message": {
+            "type": "string",
+            "example": "Numero Renavam Inválido"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoCpfInvalido": {
+        "type": "object",
+        "description": "Código CPF Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-010"
+          },
+          "message": {
+            "type": "string",
+            "example": "Codigo Cpf Inválido"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoCnpjInvalido": {
+        "type": "object",
+        "description": "Código CNPJ Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-011"
+          },
+          "message": {
+            "type": "string",
+            "example": "Codigo Cnpj Inválido"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoUfInvalido": {
+        "type": "object",
+        "description": "Código UF Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-012"
+          },
+          "message": {
+            "type": "string",
+            "example": "Codigo Uf Inválido"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "numeroPlacaInvalido": {
+        "type": "object",
+        "description": "Número Placa Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-013"
+          },
+          "message": {
+            "type": "string",
+            "example": "Numero Placa Inválido."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoEstadoSolicitacaoInvalido": {
+        "type": "object",
+        "description": "Código Estado Solicitação Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-014"
+          },
+          "message": {
+            "type": "string",
+            "example": "Codigo de Estado de Solicitação Inválido."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "timestampPagamentoInvalido": {
+        "type": "object",
+        "description": "Timestamp Pagamento Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-015"
+          },
+          "message": {
+            "type": "string",
+            "example": "Codigo Timestamp Inválido."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "solicitacaoComItensInvalidos": {
+        "type": "object",
+        "description": "Solicitação com Itens Inválidos",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-016"
+          },
+          "message": {
+            "type": "string",
+            "example": "Solicitação com itens inválidos."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "naoFoiPossivelDebitarParceiro": {
+        "type": "object",
+        "description": "Não Foi Possível Debitar Parceiro",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-017"
+          },
+          "message": {
+            "type": "string",
+            "example": "Não foi possível debitar parceiro."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "comprovante": {
+        "type": "object",
+        "description": "Comprovante",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-018"
+          },
+          "message": {
+            "type": "string",
+            "example": "Comprovante."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "naoConstaDebitoParaIdentificador": {
+        "type": "object",
+        "description": "Não Consta Débito para Identificador",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-019"
+          },
+          "message": {
+            "type": "string",
+            "example": "Não consta débito para identificador."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "jaExistePagamentoParaSolicitacaoItem": {
+        "type": "object",
+        "description": "Já Existe Pagamento para a Solicitação/Item",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-020"
+          },
+          "message": {
+            "type": "string",
+            "example": "Já existe pagamento para a solicitação / item."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "itemExpirado": {
+        "type": "object",
+        "description": "Item Expirado",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-021"
+          },
+          "message": {
+            "type": "string",
+            "example": "Item expirado."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "camposIndevidos": {
+        "type": "object",
+        "description": "Campos Indevidos",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-022"
+          },
+          "message": {
+            "type": "string",
+            "example": "Campos indevidos."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "estadoSolicitacaoNaoPermiteAcao": {
+        "type": "object",
+        "description": "Estado da Solicitação Não Permite Ação",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-023"
+          },
+          "message": {
+            "type": "string",
+            "example": "Estado da solicitação não permite a ação."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoServicoInvalido": {
+        "type": "object",
+        "description": "Código de Serviço Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-024"
+          },
+          "message": {
+            "type": "string",
+            "example": "Código de serviço inválido."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "numeroUnicoItemBancoInvalido": {
+        "type": "object",
+        "description": "Número Único Item Banco Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-025"
+          },
+          "message": {
+            "type": "string",
+            "example": "Número Único Item Banco Inválido"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "numeroIdentificadorItemInvalido": {
+        "type": "object",
+        "description": "Número Identificador Item Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "400-026"
+          },
+          "message": {
+            "type": "string",
+            "example": "Número Identificador Item Inválido"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "codigoIdentificadorTokenInvalido": {
+        "type": "object",
+        "description": "Código Identificador Token Inválido",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "401-001"
+          },
+          "message": {
+            "type": "string",
+            "example": "O token de atendimento é inválido!"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "parceiroArrecadacaoNaoHabilitado": {
+        "type": "object",
+        "description": "Parceiro Arrecadação Não Habilitado",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "403-001"
+          },
+          "message": {
+            "type": "string",
+            "example": "Parceiro não habilitado para o serviço %.50s."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "parceiroNaoAutorizado": {
+        "type": "object",
+        "description": "Parceiro Não Autorizado",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "403-002"
+          },
+          "message": {
+            "type": "string",
+            "example": "O parceiro não está autorizado a realizar a consulta para o código de solicitação informado!"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "parceiroNaoAutorizadoPagamento": {
+        "type": "object",
+        "description": "Parceiro Não Autorizado Pagamento",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "403-003"
+          },
+          "message": {
+            "type": "string",
+            "example": "O parceiro não está autorizado a realizar o pagamento para o código de solicitação informado!"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "parceiroArrecadacaoNaoEncontrado": {
+        "type": "object",
+        "description": "Parceiro Arrecadação Não Encontrado",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "404-001"
+          },
+          "message": {
+            "type": "string",
+            "example": "Campo (codigoClienteSolicitacao) não encontrado na base do Banco do Brasil."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "openapiNaoEncontrado": {
+        "type": "object",
+        "description": "OpenAPI Não Encontrado",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "404-002"
+          },
+          "message": {
+            "type": "string",
+            "example": "Especificação OpenAPI não encontrada."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "solicitacaoNaoEncontrada": {
+        "type": "object",
+        "description": "Solicitação Não Encontrada",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "404-003"
+          },
+          "message": {
+            "type": "string",
+            "example": "Solicitação não encontrada."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "erroExecucaoSql": {
+        "type": "object",
+        "description": "Erro Execução SQL",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "500-001"
+          },
+          "message": {
+            "type": "string",
+            "example": "Inserção Não Realizada."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "erroLeituraOpenapi": {
+        "type": "object",
+        "description": "Erro Leitura OpenAPI",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "500-002"
+          },
+          "message": {
+            "type": "string",
+            "example": "Erro na leitura do arquivo openapi."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "cics": {
+        "type": "object",
+        "description": "CICS",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "500-003"
+          },
+          "message": {
+            "type": "string",
+            "example": "CICS."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "db2": {
+        "type": "object",
+        "description": "DB2",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "500-004"
+          },
+          "message": {
+            "type": "string",
+            "example": "DB2."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "timeoutOperacao": {
+        "type": "object",
+        "description": "Timeout Operação",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "500-005"
+          },
+          "message": {
+            "type": "string",
+            "example": "Timeout na operação."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "bancoDeDadosIndisponivel": {
+        "type": "object",
+        "description": "Banco de Dados Indisponível",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "503-001"
+          },
+          "message": {
+            "type": "string",
+            "example": "Banco de dados indisponível."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "servicoDeConsultaIndisponivel": {
+        "type": "object",
+        "description": "Serviço de Consulta Indisponível",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "503-002"
+          },
+          "message": {
+            "type": "string",
+            "example": "O serviço de consulta está indisponível. Tente novamente mais tarde!"
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      },
+      "problemasNaComunicacaoComOrgao": {
+        "type": "object",
+        "description": "Problemas na Comunicação com Órgão",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "503-003"
+          },
+          "message": {
+            "type": "string",
+            "example": "Problemas na comunicação com órgão."
+          },
+          "variaveisMonitoradas": {
+            "$ref": "#/components/schemas/VariaveisMonitoradas"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apikey": {
+        "type": "apiKey",
+        "name": "gw-dev-app-key",
+        "in": "query"
+      },
+      "OAuth2_homologacao": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.hm.bb.com.br/oauth/token",
+            "scopes": {
+              "debitos-veiculares.requisicao": "",
+              "debitos-veiculares.info": ""
+            }
+          }
+        }
+      },
+      "OAuth2_producao": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.bb.com.br/oauth/token",
+            "scopes": {
+              "debitos-veiculares.requisicao": "",
+              "debitos-veiculares.info": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

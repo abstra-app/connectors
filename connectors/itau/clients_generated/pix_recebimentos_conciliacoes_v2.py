@@ -40,14 +40,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/decodificacoes_qrcode".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -78,17 +79,18 @@ class PixRecebimentosConciliacoesV2Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "estatisticas": estatisticas,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        query = {}
+        if estatisticas is not None:
+            query["estatisticas"] = estatisticas
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/leituras_qrcodes_pix".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -117,14 +119,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/cobrancas_imediata_pix".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -158,18 +161,19 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_cobranca_imediata_pix": id_cobranca_imediata_pix,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_cobranca_imediata_pix is not None:
+            path_params["id_cobranca_imediata_pix"] = id_cobranca_imediata_pix
         path_rendered = "/cobrancas_imediata_pix/{id_cobranca_imediata_pix}".format(
             **path_params
         )
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -195,20 +199,21 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-correlationID": x_correlation_id,
-        }
-        path_params = {
-            "id_cobranca_imediata_pix": id_cobranca_imediata_pix,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        path_params = {}
+        if id_cobranca_imediata_pix is not None:
+            path_params["id_cobranca_imediata_pix"] = id_cobranca_imediata_pix
         path_rendered = (
             "/cobrancas_imediata_pix/{id_cobranca_imediata_pix}/qrcode".format(
                 **path_params
             )
         )
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -239,14 +244,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/cobrancas_vencimento_pix".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -280,18 +286,19 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_cobranca_vencimento_pix": id_cobranca_vencimento_pix,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_cobranca_vencimento_pix is not None:
+            path_params["id_cobranca_vencimento_pix"] = id_cobranca_vencimento_pix
         path_rendered = "/cobrancas_vencimento_pix/{id_cobranca_vencimento_pix}".format(
             **path_params
         )
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -317,20 +324,21 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-correlationID": x_correlation_id,
-        }
-        path_params = {
-            "id_cobranca_vencimento_pix": id_cobranca_vencimento_pix,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        path_params = {}
+        if id_cobranca_vencimento_pix is not None:
+            path_params["id_cobranca_vencimento_pix"] = id_cobranca_vencimento_pix
         path_rendered = (
             "/cobrancas_vencimento_pix/{id_cobranca_vencimento_pix}/qrcode".format(
                 **path_params
             )
         )
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -361,14 +369,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/cobrancas_estatico_pix".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -402,18 +411,19 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_cobranca_estatico_pix": id_cobranca_estatico_pix,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_cobranca_estatico_pix is not None:
+            path_params["id_cobranca_estatico_pix"] = id_cobranca_estatico_pix
         path_rendered = "/cobrancas_estatico_pix/{id_cobranca_estatico_pix}".format(
             **path_params
         )
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -439,20 +449,21 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-correlationID": x_correlation_id,
-        }
-        path_params = {
-            "id_cobranca_estatico_pix": id_cobranca_estatico_pix,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        path_params = {}
+        if id_cobranca_estatico_pix is not None:
+            path_params["id_cobranca_estatico_pix"] = id_cobranca_estatico_pix
         path_rendered = (
             "/cobrancas_estatico_pix/{id_cobranca_estatico_pix}/qrcode".format(
                 **path_params
             )
         )
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -571,39 +582,62 @@ class PixRecebimentosConciliacoesV2Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "id_conta": id_conta,
-            "data_criacao_lancamento": data_criacao_lancamento,
-            "data_lancamento": data_lancamento,
-            "txid": txid,
-            "e2eid": e2eid,
-            "visao": visao,
-            "tipo_lancamento": tipo_lancamento,
-            "tipo_operacao": tipo_operacao,
-            "tipo": tipo,
-            "id_documento": id_documento,
-            "valor_documento_pagador_efetivo": valor_documento_pagador_efetivo,
-            "documento": documento,
-            "chaves": chaves,
-            "devolvido": devolvido,
-            "page": page,
-            "page_size": page_size,
-            "view": view,
-            "order_by": order_by,
-            "order": order,
-            "sub_tipo_pix": sub_tipo_pix,
-            "sub_categoria": sub_categoria,
-            "canal_operacao": canal_operacao,
-            "operacao_credito": operacao_credito,
-        }
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if id_conta is not None:
+            query["id_conta"] = id_conta
+        if data_criacao_lancamento is not None:
+            query["data_criacao_lancamento"] = data_criacao_lancamento
+        if data_lancamento is not None:
+            query["data_lancamento"] = data_lancamento
+        if txid is not None:
+            query["txid"] = txid
+        if e2eid is not None:
+            query["e2eid"] = e2eid
+        if visao is not None:
+            query["visao"] = visao
+        if tipo_lancamento is not None:
+            query["tipo_lancamento"] = tipo_lancamento
+        if tipo_operacao is not None:
+            query["tipo_operacao"] = tipo_operacao
+        if tipo is not None:
+            query["tipo"] = tipo
+        if id_documento is not None:
+            query["id_documento"] = id_documento
+        if valor_documento_pagador_efetivo is not None:
+            query["valor_documento_pagador_efetivo"] = valor_documento_pagador_efetivo
+        if documento is not None:
+            query["documento"] = documento
+        if chaves is not None:
+            query["chaves"] = chaves
+        if devolvido is not None:
+            query["devolvido"] = devolvido
+        if page is not None:
+            query["page"] = page
+        if page_size is not None:
+            query["page_size"] = page_size
+        if view is not None:
+            query["view"] = view
+        if order_by is not None:
+            query["order_by"] = order_by
+        if order is not None:
+            query["order"] = order
+        if sub_tipo_pix is not None:
+            query["sub_tipo_pix"] = sub_tipo_pix
+        if sub_categoria is not None:
+            query["sub_categoria"] = sub_categoria
+        if canal_operacao is not None:
+            query["canal_operacao"] = canal_operacao
+        if operacao_credito is not None:
+            query["operacao_credito"] = operacao_credito
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/lancamentos_pix".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -627,15 +661,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "id_lancamento_pix": id_lancamento_pix,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if id_lancamento_pix is not None:
+            path_params["id_lancamento_pix"] = id_lancamento_pix
         path_rendered = "/lancamentos_pix/{id_lancamento_pix}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -666,17 +700,18 @@ class PixRecebimentosConciliacoesV2Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "ponto_atendimento_id": ponto_atendimento_id,
-        }
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if ponto_atendimento_id is not None:
+            query["ponto_atendimento_id"] = ponto_atendimento_id
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/estabelecimento_saque_troco_pix".format(**path_params)
         response = requests.delete(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -710,19 +745,22 @@ class PixRecebimentosConciliacoesV2Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "ponto_atendimento_id": ponto_atendimento_id,
-            "page": page,
-            "page-size": page_size,
-        }
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if ponto_atendimento_id is not None:
+            query["ponto_atendimento_id"] = ponto_atendimento_id
+        if page is not None:
+            query["page"] = page
+        if page_size is not None:
+            query["page-size"] = page_size
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/estabelecimento_saque_troco_pix".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -750,14 +788,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-correlationID": x_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if x_correlation_id is not None:
+            headers["x-correlationID"] = x_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/estabelecimento_saque_troco_pix".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -783,19 +822,19 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "ponto_atendimento_id": ponto_atendimento_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if ponto_atendimento_id is not None:
+            path_params["ponto_atendimento_id"] = ponto_atendimento_id
         path_rendered = (
             "/estabelecimento_saque_troco_pix/{ponto_atendimento_id}".format(
                 **path_params
             )
         )
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -821,14 +860,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/boletos_pix".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -854,14 +894,15 @@ class PixRecebimentosConciliacoesV2Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/boletos_pix_indireto".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()

@@ -1,0 +1,1230 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "PagBB",
+    "description": "A API de pagamentos em lote permite que, de forma automatizada, realize o envio de pagamentos a fornecedores, prestadores de serviços e colaboradores.\n - Receba seus dados de pagamentos agrupados de forma rápida e segura.\n- Ideal para clientes que já utilizam o sistema de pagamentos em lote do Banco do Brasil.\n- Envie pagamentos de forma eficiente e automatizada.\n",
+    "contact": {
+      "name": "Banco do Brasil S.A. - BB for Developers",
+      "url": "https://developers.bb.com.br"
+    },
+    "version": "1.0.3"
+  },
+  "servers": [
+    {
+      "url": "https://pagbb.mtls.api.hm.bb.com.br/v1",
+      "description": "Testes"
+    },
+    {
+      "url": "https://pagbb.mtls.api.bb.com.br/v1",
+      "description": "Produção"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2-ClientCredentials-testes": [
+        "pagbb.info",
+        "pagbb.requisicao",
+        "pagbb.pix-info",
+        "pagbb.pix-requisicao"
+      ]
+    },
+    {
+      "OAuth2-ClientCredentials-prd": [
+        "pagbb.info",
+        "pagbb.requisicao",
+        "pagbb.pix-info",
+        "pagbb.pix-requisicao"
+      ]
+    }
+  ],
+  "paths": {
+    "/lotes/pix": {
+      "post": {
+        "summary": "Incluir lote Pix",
+        "description": "Permite a inclusão de um lote contendo lançamentos do tipo PIX.",
+        "operationId": "IncluirLotePix",
+        "parameters": [
+          {
+            "name": "gw-dev-app-key",
+            "in": "query",
+            "description": "Chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequisicaoIncluirLotePix"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaIncluirLotePix"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A solicitação foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CONFLITO. A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials-testes": [
+              "pagbb.pix-requisicao"
+            ]
+          },
+          {
+            "OAuth2-ClientCredentials-prd": [
+              "pagbb.pix-requisicao"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body",
+        "tags": [
+          "Pix"
+        ]
+      },
+      "x-oad-type": "operation"
+    },
+    "/lotes/{id-lote}/pix/lancamentos": {
+      "get": {
+        "summary": "Consultar um lote PIX.",
+        "description": "Permite detalhar as informações de um lote PIX.",
+        "operationId": "ConsultarLotePix",
+        "parameters": [
+          {
+            "name": "gw-dev-app-key",
+            "in": "query",
+            "description": "Chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contrato",
+            "in": "query",
+            "description": "Número do contrato PagBB do cliente com o Banco do Brasil.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 100001001
+            }
+          },
+          {
+            "name": "id-lote",
+            "in": "path",
+            "required": true,
+            "description": "Número identificador do lote informado pelo cliente no momento da inclusão.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaConsultarLotePix"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A solicitação foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CONFLITO. A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials-testes": [
+              "pagbb.pix-info"
+            ]
+          },
+          {
+            "OAuth2-ClientCredentials-prd": [
+              "pagbb.pix-info"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body",
+        "tags": [
+          "Pix"
+        ]
+      },
+      "x-oad-type": "operation"
+    },
+    "/lotes/{id-lote}/pix/lancamentos/{id-lancamento}": {
+      "get": {
+        "summary": "Consutar um lançamento específico em um lote Pix.",
+        "description": "Permite detalhar os dados de um lançamento específico realizado dentro de um lote PIX.",
+        "operationId": "ConsultarLancamentoLotePix",
+        "parameters": [
+          {
+            "name": "gw-dev-app-key",
+            "in": "query",
+            "description": "Chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contrato",
+            "in": "query",
+            "description": "Número do contrato PagBB do cliente com o Banco do Brasil.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 100001001
+            }
+          },
+          {
+            "name": "id-lote",
+            "in": "path",
+            "required": true,
+            "description": "Número identificador do lote informado pelo cliente no momento da inclusão.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id-lancamento",
+            "in": "path",
+            "required": true,
+            "description": "Número identificador do lançamento em um lote.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaConsultarLancamentoLotePix"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A solicitação foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CONFLITO. A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials-testes": [
+              "pagbb.pix-info"
+            ]
+          },
+          {
+            "OAuth2-ClientCredentials-prd": [
+              "pagbb.pix-info"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body",
+        "tags": [
+          "Pix"
+        ]
+      },
+      "x-oad-type": "operation"
+    },
+    "/lotes/{id-lote}/liberacoes": {
+      "put": {
+        "summary": "Liberar um lote para pagamento.",
+        "description": "Autoriza o pagamento dos lançamentos de um lote.",
+        "operationId": "LiberarLotePix",
+        "parameters": [
+          {
+            "name": "gw-dev-app-key",
+            "in": "query",
+            "description": "Chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contrato",
+            "in": "query",
+            "description": "Número do contrato PagBB do cliente com o Banco do Brasil.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 100001001
+            }
+          },
+          {
+            "name": "id-lote",
+            "in": "path",
+            "required": true,
+            "description": "Número identificador do lote informado pelo cliente no momento da inclusão.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaLiberarLotePix"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A solicitação foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CONFLITO. A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials-testes": [
+              "pagbb.requisicao"
+            ]
+          },
+          {
+            "OAuth2-ClientCredentials-prd": [
+              "pagbb.requisicao"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body",
+        "tags": [
+          "Pix"
+        ]
+      },
+      "x-oad-type": "operation"
+    },
+    "/lotes/{id-lote}/cancelamentos": {
+      "put": {
+        "summary": "Cancelar um lote.",
+        "description": "Cancela um lote e todos os seus lançamentos.",
+        "operationId": "CancelarLotePix",
+        "parameters": [
+          {
+            "name": "gw-dev-app-key",
+            "in": "query",
+            "description": "Chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contrato",
+            "in": "query",
+            "description": "Número do contrato PagBB do cliente com o Banco do Brasil.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 100001001
+            }
+          },
+          {
+            "name": "id-lote",
+            "in": "path",
+            "required": true,
+            "description": "Número identificador do lote informado pelo cliente no momento da inclusão.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SUCESSO. A requisição foi atendida pelo servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespostaCancelarLotePix"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "REQUISIÇÃO INVÁLIDA. O servidor não pôde processar a requisição devido a uma sintaxe de requisição malformada, estrutura da mensagem da requisição inválida, ou valores inválidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "NÃO AUTORIZADO. A requisição requer autenticação do usuário.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroOAuthNaoAutorizado"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PROIBIDO. A solicitação foi válida, mas o servidor está recusando a ação. O usuário pode não ter as permissões necessárias para um recurso ou pode precisar de uma conta de algum tipo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CONFLITO. A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "ERRO INTERNO. O servidor encontrou uma condição inesperada que o impediu de atender a requisição.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials-testes": [
+              "pagbb.requisicao"
+            ]
+          },
+          {
+            "OAuth2-ClientCredentials-prd": [
+              "pagbb.requisicao"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body",
+        "tags": [
+          "Pix"
+        ]
+      },
+      "x-oad-type": "operation"
+    }
+  },
+  "components": {
+    "schemas": {
+      "Erro": {
+        "type": "object",
+        "description": "Representa os campos de erro a uma requisição.",
+        "x-oad-type": "object",
+        "properties": {
+          "erros": {
+            "type": "array",
+            "description": "Lista que contém os objetos de erro.",
+            "x-oad-type": "array",
+            "items": {
+              "type": "object",
+              "description": "Objeto de erro.",
+              "x-oad-type": "object",
+              "properties": {
+                "codigo": {
+                  "type": "string",
+                  "description": "Código da mensagem de erro.",
+                  "example": "9999999"
+                },
+                "versao": {
+                  "type": "string",
+                  "description": "Versão da mensagem de erro.",
+                  "example": "1"
+                },
+                "mensagem": {
+                  "type": "string",
+                  "description": "Mensagem de erro.",
+                  "example": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB."
+                },
+                "ocorrencia": {
+                  "type": "string",
+                  "description": "Código da ocorrência do erro. Não se trata de código HTTP.",
+                  "example": "d560884916ba480c936dc42674d14af4"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErroOAuthNaoAutorizado": {
+        "type": "object",
+        "description": "Representação de um objeto de erro do OAuth 2.0.",
+        "x-oad-type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "description": "Código do estado do erro.",
+            "format": "int32",
+            "example": 401
+          },
+          "error": {
+            "type": "string",
+            "description": "Tipo do erro.",
+            "example": "Unauthorized"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensagem do erro.",
+            "example": "The request has not been applied because it lacks valid authentication credentials for the target resource."
+          },
+          "attributes": {
+            "type": "object",
+            "description": "Lista de atributos do erro.",
+            "properties": {
+              "error": {
+                "type": "string",
+                "description": "Mensagem do erro.",
+                "example": "999"
+              }
+            }
+          }
+        }
+      },
+      "RequisicaoIncluirLotePix": {
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "description": "Número identificador do lote Pix que deve ser informado pelo cliente no momento da inclusão. Não precisa ser sequencial. De uso único, por contrato PagBB.",
+            "type": "integer",
+            "format": "int64",
+            "maxLength": 11,
+            "example": 1234567891
+          },
+          "numeroAgenciaDebito": {
+            "description": "Número da agência da conta corrente onde será efetuado o débito do valor total do lote.",
+            "type": "string",
+            "example": "1234"
+          },
+          "numeroContaDebito": {
+            "description": "Número da conta corrente onde será efetuado o débito do valor total do lote.",
+            "type": "string",
+            "example": "987654321"
+          },
+          "numeroContrato": {
+            "description": "Número do contrato PagBB firmado entre o cliente e o Banco do Brasil.",
+            "type": "integer",
+            "format": "int64",
+            "example": 900056789
+          },
+          "lancamentos": {
+            "description": "Lista de Lançamentos",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LancamentoPIX"
+            }
+          }
+        }
+      },
+      "LancamentoPIX": {
+        "type": "object",
+        "properties": {
+          "idLancamento": {
+            "format": "int32",
+            "description": "Número identificador do lançamento Pix que deve ser informado pelo cliente no momento da inclusão.",
+            "type": "integer",
+            "example": 1
+          },
+          "tipoChavePix": {
+            "format": "int32",
+            "description": "Tipo de chave Pix informada para pagamento, sendo (1)Telefone, (2)email, (3)CPF/CNPJ, (4)Chave Aleatoria e (5)Dados Bancários.",
+            "type": "integer",
+            "example": 3
+          },
+          "chavePIX": {
+            "description": "Chave Pix do beneficiário do pagamento informada (campo texto), podendo ser Telefone com DDD, email, CPF/CNPJ ou Chave Aleatória. Obrigatório caso o campo tipoChavePix seja do tipo 1, 2, 3 ou 4.",
+            "type": "string",
+            "example": "09542920903"
+          },
+          "codigoIspb": {
+            "description": "Código identificador do Sistema de Pagamento Brasileiro da instituição detentora da conta do beneficiário. Uma lista de códigos permitidos é obtida por meio do site do Banco Central. Preenchimento obrigatório caso o campo tipoChavePix seja 5 e o campo codigoCompe não seja informado.",
+            "type": "integer",
+            "format": "int32",
+            "example": 60746948
+          },
+          "codigoCompe": {
+            "description": "Código identificador do Sistema de Compensação de Cheques e Outros Papéis da instituição detentora da conta do beneficiário. Uma lista de códigos permitidos é obtida por meio do site do Banco Central. Preenchimento obrigatório caso o campo tipoChavePix seja 5 e o campo codigoIspb não seja informado.",
+            "type": "integer",
+            "format": "int32",
+            "example": 237
+          },
+          "codigoTipoPessoaBeneficiario": {
+            "format": "int32",
+            "description": "Tipo de pessoa beneficiária, sendo (1)Pessoa física ou (2)Pessoa jurídica. Obrigatório caso o campo tipoChavePix seja 5.",
+            "type": "integer",
+            "example": 1
+          },
+          "numeroCpfCnpjBeneficiario": {
+            "description": "Número do CPF ou CNPJ do beneficiário do crédito. Obrigatório caso o campo tipoChavePix seja 3 ou 5.",
+            "maxLength": 99,
+            "type": "string",
+            "example": "09542920903"
+          },
+          "numeroAgenciaBeneficiario": {
+            "description": "Número da agência da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5.",
+            "type": "string"
+          },
+          "tipoContaBeneficiario": {
+            "format": "int32",
+            "description": "Código do tipo de conta de crédito do beneficiário, sendo (1)Conta Corrente, (2)Conta poupança e (3)Conta Pagamento. Obrigatório caso campo tipoChavePix seja 5.",
+            "type": "integer"
+          },
+          "numeroContaBeneficiario": {
+            "description": "Número da conta de crédito do beneficiário. Obrigatório caso o número do CPF ou CNPJ do beneficiário seja informado.",
+            "type": "string"
+          },
+          "digitoVerificadorContaBeneficiario": {
+            "description": "Dígito verificador da agência da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5. Não substituir o X por zero.",
+            "type": "string"
+          },
+          "dataPagamento": {
+            "description": "Data de pagamento do lançamento.",
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocalDate"
+              }
+            ],
+            "example": "31-12-2025"
+          },
+          "valorLancamento": {
+            "description": "Valor do lançamento em reais. Usar “.” como separador decimal dos centavos.",
+            "type": "number",
+            "example": 500
+          }
+        }
+      },
+      "RespostaConsultarLotePix": {
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "format": "int64",
+            "description": "Número identificador do lote informado pelo cliente no momento da inclusão.",
+            "type": "integer"
+          },
+          "estadoLote": {
+            "description": "Descrição da situação do lote:\r\n\nAguardando liberação – Aguardando liberação do lote pelo cliente.\r\n\nProcessando – Aguardando o processamento de todos os lançamentos do lote.\r\n\nPagamento parcial - Processamento de todo o lote concluído com apenas parte dos lançamentos efetivada.\r\n\nPagamento completo - Processamento de todo o lote concluído com todos os lançamentos efetivados.\r\n\nCancelado -Lote cancelado pelo cliente.\r\n\nRejeitado - Rejeição de dados lógicos do lote ou todos os lançamentos do lote rejeitados ou saldo insuficiente para pagamento.",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "numeroAgenciaDebito": {
+            "description": "Número da agência da conta corrente onde será efetuado o débito do valor total do lote.",
+            "maxLength": 11,
+            "type": "string"
+          },
+          "numeroContaDebito": {
+            "description": "Número da conta corrente onde será efetuado o débito do valor total do lote.",
+            "maxLength": 11,
+            "type": "string"
+          },
+          "digitoVerificadorContaDebito": {
+            "description": "Dígito verificador da conta de débito do cliente pagador onde será efetuado o débito do valor total de cada lote.",
+            "maxLength": 1,
+            "type": "string"
+          },
+          "quantidadeTotalLancamentos": {
+            "format": "int32",
+            "description": "Quantidade total de lançamentos encaminhados pelo cliente no lote.",
+            "type": "integer"
+          },
+          "valorTotalLancamentos": {
+            "format": "double",
+            "description": "Valor total dos lançamentos encaminhados pelo cliente no lote.",
+            "type": "number"
+          },
+          "quantidadeTotalLancamentosValidos": {
+            "format": "int32",
+            "description": "Quantidade total de lançamentos processados com sucesso (pagos) de um lote.",
+            "type": "integer"
+          },
+          "valorTotalLancamentosValidos": {
+            "format": "double",
+            "description": "Valor total dos lançamentos processados com sucesso (pagos) de um lote.",
+            "type": "number"
+          },
+          "dataInclusaoLote": {
+            "format": "date",
+            "description": "Data da inclusão do lote no sistema do Banco do Brasil.",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "dataLiberacaoLote": {
+            "format": "date",
+            "description": "Data da liberação do lote.",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "quantidadeOcorrenciaListaLancamentos": {
+            "format": "int32",
+            "description": "Quantidade de itens apresentados na lista de lançamentos.",
+            "type": "integer"
+          },
+          "listaLancamentos": {
+            "description": "Lista de todos os lançamentos do lote.",
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LancamentoConsultarLotePix"
+            }
+          },
+          "quantidadeOcorrenciaListaErrosLote": {
+            "format": "int32",
+            "description": "Quantidade de itens apontados na lista de erros do lote.",
+            "type": "integer"
+          },
+          "listaErrosLote": {
+            "description": "Lista dos erros do lote.",
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErroConsultarLotePix"
+            }
+          }
+        }
+      },
+      "LancamentoConsultarLotePix": {
+        "type": "object",
+        "properties": {
+          "idLancamento": {
+            "format": "int64",
+            "description": "Número identificador do lançamento em um lote. O valor é atribuído pelo Banco do Brasil.",
+            "type": "integer"
+          },
+          "estadoLancamento": {
+            "description": "Descrição da situação do lançamento:\r\n\nProcessando - Dados recebidos pelo Banco sem ocorrências quanto ao formato. Aguardando processamento para liberação/efetivação dos pagamentos.\r\n\nRejeitado - Dados do pagamento não passaram nas validações lógicas ou Saldo insuficiente para pagamento ou Erro de processamento.\r\n\nPago - Pagamento efetuado.\r\n\nCancelado - Lançamento cancelado pelo cliente\r\n\nAguardando liberação do lote - Aguardando autorização do cliente para o débito do lote na conta informada.\r\n\nLote cancelado - Quando um lote é cancelado pelo cliente, todos os lançamentos pertencentes a esse lote são cancelados.",
+            "maxLength": 40,
+            "type": "string"
+          },
+          "tipoChavePix": {
+            "format": "int32",
+            "description": "Tipo de chave Pix informada para pagamento, sendo (1)Telefone, (2)email, (3)CPF/CNPJ, (4)Chave Aleatoria e (5)Dados Bancários.",
+            "type": "integer"
+          },
+          "chavePIX": {
+            "description": "Chave Pix do beneficiário do pagamento informada (campo texto), podendo ser Telefone com DDD, email, CPF/CNPJ ou Chave Aleatória. Obrigatório caso o campo tipoChavePix seja do tipo 1, 2, 3 ou 4.",
+            "maxLength": 99,
+            "type": "string"
+          },
+          "valorLancamento": {
+            "format": "double",
+            "description": "Valor do lançamento em reais. Usar “.” como separador decimal dos centavos.",
+            "type": "number"
+          },
+          "dataPagamento": {
+            "format": "date",
+            "description": "Data de pagamento do lançamento em formato dd-mm-aaaa.",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "codigoIspb": {
+            "format": "int32",
+            "description": "Código identificador do Sistema de Pagamento Brasileiro da instituição detentora da conta do favorecido. Uma lista de códigos permitidos é obtida por meio do site do Banco Central. Preenchimento obrigatório caso o campo tipoChavePix seja 5 e o campo codigoCompe não seja informado.",
+            "type": "integer"
+          },
+          "codigoCompe": {
+            "format": "int32",
+            "description": "Código identificador do Sistema de Compensação de Cheques e Outros Papéis da instituição detentora da conta do favorecido. Uma lista de códigos permitidos é obtida por meio do site do Banco Central. Preenchimento obrigatório caso o campo tipoChavePix seja 5 e o campo codigoIspb não seja informado.",
+            "type": "integer"
+          },
+          "tipoContaBeneficiario": {
+            "format": "int32",
+            "description": "Código do tipo de conta de crédito do beneficiário, sendo (1)Conta Corrente, (2)Conta poupança e (3)Conta Pagamento.\r\nObrigatório caso campo tipoChavePix seja 5.\r\n",
+            "type": "integer"
+          },
+          "numeroAgenciaBeneficiario": {
+            "description": "Número da agência da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5.",
+            "maxLength": 11,
+            "type": "string"
+          },
+          "numeroContaBeneficiario": {
+            "description": "Número da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5.",
+            "maxLength": 19,
+            "type": "string"
+          },
+          "digitoVerificadorContaBeneficiario": {
+            "description": "Dígito verificador da agência da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5. Não substituir o X por zero.",
+            "maxLength": 1,
+            "type": "string"
+          },
+          "digitoVerificadorAgenciaBeneficiario": {
+            "description": "Dígito verificador da agência de crédito do beneficiário.",
+            "maxLength": 1,
+            "type": "string"
+          }
+        }
+      },
+      "ErroConsultarLotePix": {
+        "type": "object",
+        "properties": {
+          "textoOcorrenciaErroLote": {
+            "description": "Detalhamento das ocorrências de erros do lote.",
+            "maxLength": 120,
+            "type": "string"
+          },
+          "codigoOcorrenciaErroLote": {
+            "format": "int32",
+            "description": "Código de ocorrência de erro do lote.",
+            "type": "integer"
+          }
+        }
+      },
+      "RespostaConsultarLancamentoLotePix": {
+        "description": "Dados de resposta do(s) lacamento(s) do lote",
+        "type": "object",
+        "properties": {
+          "idLancamento": {
+            "format": "int64",
+            "description": "Número identificador do lançamento em um lote. O valor é atribuído pelo Banco do Brasil.",
+            "type": "integer"
+          },
+          "idLote": {
+            "format": "int64",
+            "description": "Número identificador do lote informado pelo cliente no momento da inclusão.",
+            "type": "integer"
+          },
+          "estadoLancamento": {
+            "description": "Descrição da situação do lançamento:\r\n\nProcessando - Dados recebidos pelo Banco sem ocorrências quanto ao formato. Aguardando processamento para liberação/efetivação dos pagamentos.\r\n\nRejeitado - Dados do pagamento não passaram nas validações lógicas ou Saldo insuficiente para pagamento ou Erro de processamento.\r\n\nPago - Pagamento efetuado.\r\n\nCancelado - Lançamento cancelado pelo cliente.\r\n\nAguardando liberação do lote - Aguardando autorização do cliente para o débito do lote na conta informada.\r\n\nLote cancelado - Quando um lote é cancelado pelo cliente, todos os lançamentos pertencentes a esse lote são cancelados.",
+            "maxLength": 40,
+            "type": "string"
+          },
+          "numeroContaDebito": {
+            "description": "Número da conta corrente onde será efetuado o débito do valor total do lote.",
+            "maxLength": 11,
+            "type": "string"
+          },
+          "numeroAgenciaDebito": {
+            "description": "Número da agência da conta corrente onde será efetuado o débito do valor total do lote.",
+            "maxLength": 11,
+            "type": "string"
+          },
+          "dataPagamento": {
+            "format": "date",
+            "description": "Data de pagamento do lançamento em formato dd-mm-aaaa.",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "dataEfetivacaoPagamento": {
+            "format": "date",
+            "description": "Data e hora da efetivação do pagamento do lançamento.",
+            "maxLength": 19,
+            "type": "string"
+          },
+          "valorLancamento": {
+            "format": "double",
+            "description": "Valor do lançamento em reais. Usar “.” como separador decimal dos centavos.",
+            "type": "number"
+          },
+          "codigoIdentificacaoPagamentoInstantaneo": {
+            "description": "Código identificador único (ID Pix) que toda transação Pix possui - endToEndId.",
+            "maxLength": 32,
+            "type": "string"
+          },
+          "tipoChavePix": {
+            "format": "int32",
+            "description": "Tipo de chave Pix informada para pagamento, sendo (1)Telefone, (2)email, (3)CPF/CNPJ, (4)Chave Aleatoria e (5)Dados Bancários.",
+            "type": "integer"
+          },
+          "chavePIX": {
+            "description": "Chave Pix do beneficiário do pagamento informada (campo texto), podendo ser Telefone com DDD, email, CPF/CNPJ ou Chave Aleatória. Obrigatório caso o campo tipoChavePix seja do tipo 1, 2, 3 ou 4.",
+            "maxLength": 99,
+            "type": "string"
+          },
+          "codigoIspb": {
+            "format": "int32",
+            "description": "Código identificador do Sistema de Pagamento Brasileiro da instituição detentora da conta do favorecido. Uma lista de códigos permitidos é obtida por meio do site do Banco Central. Preenchimento obrigatório caso o campo tipoChavePix seja 5 e o campo codigoCompe não seja informado.",
+            "type": "integer"
+          },
+          "codigoCompe": {
+            "format": "int32",
+            "description": "Código identificador do Sistema de Compensação de Cheques e Outros Papéis da instituição detentora da conta do favorecido. Uma lista de códigos permitidos é obtida por meio do site do Banco Central. Preenchimento obrigatório caso o campo tipoChavePix seja 5 e o campo codigoIspb não seja informado.",
+            "type": "integer"
+          },
+          "tipoContaBeneficiario": {
+            "format": "int32",
+            "description": "Código do tipo de conta de crédito do beneficiário, sendo (1)Conta Corrente, (2)Conta poupança e (3)Conta Pagamento.\r\nObrigatório caso campo tipoChavePix seja 5.\r\n",
+            "type": "integer"
+          },
+          "numeroAgenciaBeneficiario": {
+            "description": "Número da agência da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5.",
+            "maxLength": 11,
+            "type": "string"
+          },
+          "numeroContaBeneficiario": {
+            "description": "Número da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5.",
+            "maxLength": 19,
+            "type": "string"
+          },
+          "digitoVerificadorContaBeneficiario": {
+            "description": "Dígito verificador da agência da conta de crédito do beneficiário. Obrigatório caso campo tipoChavePix seja 5. Não substituir o X por zero.",
+            "maxLength": 1,
+            "type": "string"
+          },
+          "digitoVerificadorAgenciaBeneficiario": {
+            "description": "Dígito verificador da agência de crédito do beneficiário.",
+            "maxLength": 1,
+            "type": "string"
+          },
+          "digitoVerificadorContaDebito": {
+            "description": "Dígito verificador da conta de débito do cliente pagador onde será efetuado o débito do valor total do lote.",
+            "maxLength": 1,
+            "type": "string"
+          },
+          "nomeBeneficiario": {
+            "description": "Nome do beneficiário do crédito.",
+            "maxLength": 100,
+            "type": "string"
+          },
+          "codigoTipoPessoaBeneficiario": {
+            "format": "int32",
+            "description": "Tipo de pessoa beneficiária, sendo (1)Pessoa física ou (2)Pessoa jurídica. Obrigatório caso o campo tipoChavePix seja 3.",
+            "type": "integer"
+          },
+          "numeroCpfCnpjBeneficiario": {
+            "description": "Número do CPF ou CNPJ do beneficiário do crédito. Obrigatório caso o campo tipoChavePix seja 3 ou 5.",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "tipoServico": {
+            "description": "Tipo de serviço que representa a maneira como o crédito foi realizado.",
+            "maxLength": 20,
+            "type": "string"
+          },
+          "listaErrosLancamento": {
+            "description": "Lista dos erros do lançamento",
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErroConsultarLancamentoLotePix"
+            }
+          },
+          "codigoAutenticacaoPagamento": {
+            "description": "Código de autenticação do pagamento utilizado para garantir autenticidade no comprovante de pagamento.",
+            "maxLength": 16,
+            "type": "string"
+          },
+          "quantidadeOcorrenciaListaErrosLancamento": {
+            "format": "int32",
+            "description": "Quantidade de itens apontados na lista de erros do lançamento.",
+            "type": "integer"
+          }
+        }
+      },
+      "ErroConsultarLancamentoLotePix": {
+        "type": "object",
+        "properties": {
+          "textoOcorrenciaErroLancamento": {
+            "description": "Detalhamento das ocorrências de erros do lançamento.",
+            "maxLength": 120,
+            "type": "string"
+          },
+          "codigoOcorrenciaErroLancamento": {
+            "format": "int32",
+            "description": "Código de ocorrência de erro do lançamento.",
+            "type": "integer"
+          }
+        }
+      },
+      "RespostaIncluirLotePix": {
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "format": "int64",
+            "type": "integer",
+            "description": "Número identificador do lote PIX incluído."
+          }
+        },
+        "description": "Representa os campos de uma resposta à solicitação de inclusão de Lote Pix."
+      },
+      "RespostaLiberarLotePix": {
+        "description": "Dados de resposta para liberação de Lote Pix",
+        "required": [
+          "idLote"
+        ],
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "description": "Número identificador do lote fornecido pelo cliente.",
+            "type": "integer",
+            "format": "int64",
+            "example": 2024050001
+          }
+        }
+      },
+      "RespostaCancelarLotePix": {
+        "description": "Dados de resposta para cancelamento de Lote Pix",
+        "required": [
+          "idLote"
+        ],
+        "type": "object",
+        "properties": {
+          "idLote": {
+            "description": "Número identificador do lote fornecido pelo cliente.",
+            "type": "integer",
+            "format": "int64",
+            "example": 2024050001
+          }
+        }
+      },
+      "LocalDate": {
+        "type": "string",
+        "format": "date",
+        "example": "31-12-2025",
+        "maxLength": 10
+      }
+    },
+    "securitySchemes": {
+      "OAuth2-ClientCredentials-testes": {
+        "type": "oauth2",
+        "description": "Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros.",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.hm.bb.com.br/oauth/token",
+            "scopes": {
+              "pagbb.info": "Permite consultar lotes de pagamento.",
+              "pagbb.requisicao": "Permite liberar e cancelar lotes de pagamento.",
+              "pagbb.pix-info": "Permite consultar um lote PIX.",
+              "pagbb.pix-requisicao": "Permite inclusão de lote PIX."
+            }
+          }
+        }
+      },
+      "OAuth2-ClientCredentials-prd": {
+        "type": "oauth2",
+        "description": "Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros.",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.bb.com.br/oauth/token",
+            "scopes": {
+              "pagbb.info": "Permite consultar lotes de pagamento.",
+              "pagbb.requisicao": "Permite liberar e cancelar lotes de pagamento.",
+              "pagbb.pix-info": "Permite consultar um lote PIX.",
+              "pagbb.pix-requisicao": "Permite inclusão de lote PIX."
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Pix"
+    }
+  ]
+}

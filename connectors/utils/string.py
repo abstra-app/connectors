@@ -45,11 +45,12 @@ def make_method_name(method: str, path_template: str) -> str:
     path_parts = path_template.strip("/").split("/")
     processed_parts = []
     for part in path_parts:
-        match = re.fullmatch(r"\{([^}]+)\}", part)
-        if match:
-            processed_parts.append(f"by_{match.group(1)}")
-        else:
-            processed_parts.append(part)
+        # Replace all occurrences of {param} with by_param
+        def replacer(match):
+            return f"by_{match.group(1)}"
+
+        new_part = re.sub(r"\{([^}]+)\}", replacer, part)
+        processed_parts.append(new_part)
     method_name = snake_case(f"{method}_{'_'.join(processed_parts)}")
     return method_name
 

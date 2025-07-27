@@ -33,14 +33,15 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/boletos".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -73,21 +74,26 @@ class BoletosEmissaoClient:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "id_beneficiario": id_beneficiario,
-            "codigo_carteira": codigo_carteira,
-            "nosso_numero": nosso_numero,
-            "data_inclusao": data_inclusao,
-            "view": view,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        query = {}
+        if id_beneficiario is not None:
+            query["id_beneficiario"] = id_beneficiario
+        if codigo_carteira is not None:
+            query["codigo_carteira"] = codigo_carteira
+        if nosso_numero is not None:
+            query["nosso_numero"] = nosso_numero
+        if data_inclusao is not None:
+            query["data_inclusao"] = data_inclusao
+        if view is not None:
+            query["view"] = view
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/boletos".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -123,16 +129,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/abatimento".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -162,16 +169,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/baixa".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -205,16 +213,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/data_vencimento".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -245,16 +254,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/juros".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -287,16 +297,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/multa".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -330,16 +341,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/valor_nominal".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -371,18 +383,19 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/data_limite_pagamento".format(
             **path_params
         )
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -415,16 +428,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/seu_numero".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -455,16 +469,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/protesto".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -498,16 +513,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/negativacao".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -539,16 +555,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/desconto".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -581,16 +598,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/pagador".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -622,16 +640,17 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/sacador_avalista".format(**path_params)
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -664,18 +683,19 @@ class BoletosEmissaoClient:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_boleto": id_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_boleto is not None:
+            path_params["id_boleto"] = id_boleto
         path_rendered = "/boletos/{id_boleto}/recebimento_divergente".format(
             **path_params
         )
         response = requests.patch(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )

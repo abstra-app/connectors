@@ -1,0 +1,313 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Validação de Contas",
+    "version": "1.0",
+    "description": "A API Validação de Contas permite acesso a consulta da situação de uma determinada conta.",
+    "contact": {
+      "url": "https://developers.bb.com.br",
+      "name": "Banco do Brasil S.A. - BB for Developers"
+    }
+  },
+  "externalDocs": {
+    "description": "Saiba mais sobre as APIS do BB",
+    "url": "https://developers.bb.com.br/docs"
+  },
+  "servers": [
+    {
+      "url": "https://api.hm.bb.com.br/validacao-contas/v1",
+      "description": "Servidor de Testes"
+    },
+    {
+      "url": "https://api.bb.com.br/validacao-contas/v1",
+      "description": "Servidor de Produção"
+    }
+  ],
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "OAuth2-ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.hm.bb.com.br/oauth/token",
+            "refreshUrl": "https://oauth.hm.bb.com.br/oauth/token",
+            "scopes": {
+              "validacao-contas.info": "Realizar consultas da situação da conta e sobre o titular."
+            }
+          }
+        },
+        "description": "Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros."
+      }
+    },
+    "responses": {
+      "Erro": {
+        "description": "Representa os campos de erro de uma requisição a um recurso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "erros": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "minItems": 1,
+                  "description": "Lista que contém os objetos de erro",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "codigo": {
+                        "type": "string",
+                        "description": "Código da mensagem de erro",
+                        "example": "9999999"
+                      },
+                      "versao": {
+                        "type": "string",
+                        "description": "Versão da mensagem de erro",
+                        "example": "1"
+                      },
+                      "mensagem": {
+                        "type": "string",
+                        "description": "Mensagem de erro",
+                        "example": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB."
+                      },
+                      "ocorrencia": {
+                        "type": "string",
+                        "description": "Código da ocorrência do erro. Não se trata de código HTTP",
+                        "example": "2AzBShK/zFE=C0700051620C"
+                      }
+                    },
+                    "required": [
+                      "codigo",
+                      "versao",
+                      "mensagem",
+                      "ocorrencia"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "erros"
+              ]
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "erros": [
+                    {
+                      "codigo": "9999999",
+                      "versao": "1",
+                      "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                      "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "headers": {
+          "Content-type": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "application/json"
+          }
+        }
+      },
+      "ErrorOAuthUnauthorized": {
+        "description": "Representação de um objeto de erro do OAuth 2.0.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "statusCode": {
+                  "type": "number",
+                  "description": "Código do estado do erro."
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Tipo do erro."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Mensagem do erro."
+                },
+                "attributes": {
+                  "type": "object",
+                  "description": "Atributos do erro.",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Mensagem do erro."
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "statusCode": 401,
+                  "error": "Unauthorized",
+                  "message": "Bad Credentials",
+                  "attributes": {
+                    "error": "Bad Credentials"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "headers": {
+          "Content-type": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "application/json"
+          }
+        }
+      },
+      "RespostaVerificarConta": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contaAtiva": {
+                  "type": "string",
+                  "description": "Caso a agência e conta informada esteja ativa, irá retornar \"S\". Caso contrário, se a conta não existir ou estiver inativa, irá retornar \"N\".",
+                  "enum": [
+                    "S",
+                    "N"
+                  ],
+                  "example": "S"
+                },
+                "titularConta": {
+                  "type": "string",
+                  "description": "Caso o CPF ou CNPJ informado seja titular da conta, irá retornar \"S\". Caso contrário, se o CPF ou CNPJ não pertencer a conta ou estiver inativo, irá retornar \"N\".",
+                  "enum": [
+                    "S",
+                    "N"
+                  ],
+                  "example": "S"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "gw-dev-app-key": {
+        "name": "gw-dev-app-key",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "0021239456d80136bebf005056891bed"
+        },
+        "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo."
+      },
+      "Authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "Bearer <acess_token>"
+        },
+        "description": "É o valor do token de acesso fornecido pelo OAuth."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "consultas"
+    }
+  ],
+  "paths": {
+    "/contas/{agencia}-{conta}/situacao": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "agencia",
+          "description": "Número da agência, sem digito verificador.",
+          "example": "0551",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "conta",
+          "description": "Número da conta, sem digito verificador.",
+          "example": "1000",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Verificar conta e titularidade - Domicílio Bancário",
+        "tags": [
+          "consultas"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RespostaVerificarConta"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "operationId": "get-contas-agencia---conta-situacao",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "validacao-contas.info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 5887148012,
+              "format": "int64"
+            },
+            "in": "query",
+            "name": "cpfCnpj",
+            "description": "Número do CPF ou CNPJ do cliente. Somente números.",
+            "required": true
+          }
+        ],
+        "description": "Verifica a situação da conta (corrente ou poupança) em uma agência específica, se ela está ativa ou não. E também verifica se o CPF/CNPJ informado é o titular da conta."
+      }
+    }
+  }
+}

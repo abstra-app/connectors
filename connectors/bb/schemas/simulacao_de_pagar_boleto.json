@@ -1,0 +1,87 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Simulação de pagar boleto",
+        "description": "API para simular o pagamento de um boleto no ambiente de testes do Banco do Brasil S.A.",
+        "contact": {
+            "name": "Banco do Brasil S.A. - BB for Developers",
+            "url": "https://developers.bb.com.br"
+        },
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.hm.bb.com.br/testes-portal-desenvolvedor/v1",
+            "description": "Simula pagamento de boleto"
+        }
+    ],
+    "paths": {
+        "/boletos-cobranca/{linhaDigitavel}/pagar": {
+            "parameters": [
+                {
+                    "name": "linhaDigitavel",
+                    "in": "path",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "required": true
+                },
+                {
+                    "name": "gw-dev-app-key",
+                    "in": "query",
+                    "schema": {
+                        "default": "b82315c0c31e0135776b005056891bef"
+                    },
+                    "required": true
+                }
+            ],
+            "post": {
+                "summary": "Paga um boleto no ambiente de testes",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Tente novamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["boletos"]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Response": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer"
+                    },
+                    "texto": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "boletos",
+            "description": "Recursos relacionados a teste de pagamento do boleto."
+        }
+    ]
+}

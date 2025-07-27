@@ -1,0 +1,3688 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "BB Pay API v2",
+        "version": "2.0.0",
+        "description": "O sistema BB Pay do Banco do Brasil é uma solução que permite o recebimento de valores por intermédio de diversos meios de pagamento. Ao se integrar com o BB Pay, você pode habilitar diversos meios de pagamento para disponibilizá-los a um cliente (pagador), conforme a necessidade de seu negócio e da venda em questão.\n\nEsta API permite o gerenciamento e consultas de pagamentos e recebimentos de clientes PJ BB que utilizam o BB Pay.",
+        "contact": {
+            "name": "Banco do Brasil S.A. - BB for Developers",
+            "url": "https://developers.bb.com.br"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.extranet.hm.bb.com.br/checkout/v2",
+            "description": "Url de homologação sem autenticação mTLS."
+        },
+        {
+            "url": "https://api-bbpay.hm.bb.com.br/checkout/v2/",
+            "description": "Url de homologação com autenticação mTLS."
+        },
+        {
+            "url": "https://api-bbpay.bb.com.br/checkout/v2/",
+            "description": "Url de produção com autenticação mTLS."
+        }
+    ],
+    "paths": {
+        "/solicitacoes": {
+            "description": "",
+            "get": {
+                "tags": [
+                    "Solicitacoes"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "codigoConciliacaoSolicitacao",
+                        "description": "Código de conciliação informado pelo convênio na criação da solicitação",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "dataSolicitacao",
+                        "description": "Data de criação das solicitações",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "codigoEstadoSolicitacao",
+                        "description": "Lista de códigos de estado das solicitações",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "format": "int32",
+                                "type": "integer"
+                            }
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "tokenPaginacao",
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "itensPorPagina",
+                        "description": "Número de itens retornados na consulta",
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "numeroParticipante",
+                        "description": "Número identificador único do Participante",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-solicitacoes"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.solicitacoes-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-solicitacoes",
+                "summary": "Listar solicitações"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/requisicao-POST-solicitacoes"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Solicitacoes"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/response-resposta-POST-solicitacoes"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.solicitacoes-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "post-solicitacoes",
+                "summary": "Cria uma solicitação de pagamento",
+                "description": ""
+            },
+            "parameters": [
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/pagamentos/{numeroPagamento}": {
+            "get": {
+                "tags": [
+                    "Pagamentos"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroPagamento",
+                        "description": "Número identificador do pagamento",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "examples": {
+                            "example1": {
+                                "value": "/v2/pagamentos/56789?numeroConvenio=81"
+                            }
+                        },
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-pagamento"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.pagamentos-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-pagamento",
+                "summary": "Consultar um pagamento"
+            },
+            "parameters": [
+                {
+                    "name": "numeroPagamento",
+                    "description": "Número identificador do pagamento",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/pagamentos": {
+            "get": {
+                "tags": [
+                    "Pagamentos"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "numeroSolicitacao",
+                        "description": "Número identificador da solicitação",
+                        "schema": {
+                            "format": "int64",
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "codigoConciliacaoSolicitacao",
+                        "description": "Código de conciliacao da solicitação de pagamento\n",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "codigoTipoPagamento",
+                        "description": "Lista de códigos de tipo dos pagamentos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "codigoEstadoPagamento",
+                        "description": "Lista de códigos de estado dos pagamentos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "dataPagamento",
+                        "description": "Data do pagamento",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "numeroDocumentoPagador",
+                        "description": "Número do CPF ou CNPJ do pagador",
+                        "schema": {
+                            "format": "int64",
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tokenPaginacao",
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "itensPorPagina",
+                        "description": "Limite de itens por pagina",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-pagamentos"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.pagamentos-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-pagamentos",
+                "summary": "Listar pagamentos"
+            },
+            "parameters": [
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/devolucoes/{numeroDevolucao}": {
+            "get": {
+                "tags": [
+                    "Devolucoes"
+                ],
+                "parameters": [
+                    {
+                        "examples": {
+                            "example1": {
+                                "value": "/v2/devolucoes/23457?numeroConvenio=81"
+                            }
+                        },
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay\n",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-devolucao"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.devolucoes-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-devolucao",
+                "summary": "Consultar uma devolução"
+            },
+            "parameters": [
+                {
+                    "name": "numeroDevolucao",
+                    "description": "Número identificador da devolução",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/devolucoes": {
+            "get": {
+                "tags": [
+                    "Devolucoes"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "numeroPagamento",
+                        "description": "Número identificador do pagamento",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "dataDevolucao",
+                        "description": "Data da devolução",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tokenPaginacao",
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "itensPorPagina",
+                        "description": "Número de itens retornados na consulta",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-devolucoes"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.devolucoes-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-devolucoes",
+                "summary": "Listar devoluções"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/requisicao-POST-devolucoes"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Devolucoes"
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/response-resposta-POST-devolucoes"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.devolucoes-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "post-devolucoes",
+                "summary": "Devolver um pagamento"
+            },
+            "parameters": [
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                },
+                {
+                    "name": "Authorization",
+                    "description": "Token de acesso fornecido pelo OAuth BB.",
+                    "schema": {
+                        "example": "Ex: Bearer [ACCESS_TOKEN]"
+                    },
+                    "in": "header"
+                }
+            ]
+        },
+        "/participantes": {
+            "get": {
+                "tags": [
+                    "Participantes"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "codigoEstadoParticipante",
+                        "description": "Código do estado do Participante. (0 - Ativo, 1 - Pendente, 900 - Cancelado)",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "itensPorPagina",
+                        "description": "Número de itens retornados na consulta",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tokenPaginacao",
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "numeroSolicitacao",
+                        "description": "Número identificador da solicitação de pagamento",
+                        "schema": {
+                            "format": "int64",
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-participantes"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.participantes-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-participantes",
+                "summary": "Listar participantes"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/requisicao-POST-participantes"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Participantes"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/response-resposta-POST-participantes"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.participantes-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "post-participantes",
+                "summary": "Cadastra um novo participante no split"
+            },
+            "parameters": [
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/participantes/{numeroParticipante}": {
+            "get": {
+                "tags": [
+                    "Participantes"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-participante"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.participantes-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-participante",
+                "summary": "Consultar um participante"
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/requisicao-PUT-participante"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Participantes"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Sucesso na alteração do participante sem body response"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.participantes-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "put-participante",
+                "summary": "Alterar um participante",
+                "description": "Altera nome e/ou dados bancários de um participante"
+            },
+            "delete": {
+                "tags": [
+                    "Participantes"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Sucesso na remoção do participante sem body response"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.participantes-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "delete-participante",
+                "summary": "Remover um participante"
+            },
+            "parameters": [
+                {
+                    "name": "numeroParticipante",
+                    "description": "Número identificador único do Participante",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "numeroConvenio",
+                    "description": "Número do convênio do cliente no BB Pay",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "query",
+                    "required": true
+                },
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/openfinance/autorizacoes": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/requisicao-POST-openfinance-autorizacoes"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Openfinance"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/response-resposta-POST-openfinance-autorizacoes"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.openfinance-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "post-openfinance-autorizacao",
+                "summary": "Inicia o fluxo do pagamento via Open Finance",
+                "description": "Esse recurso inicia o fluxo de pagamento no Open Finance, após pagador escolher a instituição detentora da sua conta (marca). Enquanto o pagador espera o redirecionamento, esse recurso deve ser chamado para dar ciência à instituição detentora da conta do pagador de sua intenção, para que ela crie uma autorização (que será confirmada pelo pagador em ambiente de sua confiança)"
+            },
+            "parameters": [
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/openfinance/autorizacoes/{numeroPagamento}": {
+            "get": {
+                "tags": [
+                    "Openfinance"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay\n",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-openfinance-autorizacao"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.openfinance-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-openfinance-autorizacao",
+                "summary": "Consultar autorização",
+                "description": "Esse recurso verifica se a autorização foi criada pela instituição escolhida pelo pagador e, em caso positivo, devolve a url para direcionamento do pagador ao ambiente da instituição escolhida, por ela fornecida"
+            },
+            "parameters": [
+                {
+                    "name": "numeroPagamento",
+                    "description": "Número do pagamento da solicitação que foi autorizado",
+                    "schema": {
+                        "type": "number"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/openfinance/marcas-ativas": {
+            "get": {
+                "tags": [
+                    "Openfinance"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "tokenPaginacao",
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-openfinance-marcas-ativas"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.openfinance-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-openfinance-marcas-ativas",
+                "summary": "Listar marcas ativas"
+            },
+            "parameters": [
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        },
+        "/solicitacoes/{numeroSolicitacao}": {
+            "get": {
+                "tags": [
+                    "Solicitacoes"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/response-resposta-GET-solicitacao"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.solicitacoes-info"
+                        ]
+                    }
+                ],
+                "operationId": "get-solicitacao",
+                "summary": "Consulta uma solicitação"
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/requisicao-PUT-solicitacao"
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "tags": [
+                    "Solicitacoes"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Sucesso na alteração da solicitação sem body response"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.solicitacoes-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "put-solicitacao",
+                "summary": "Altera uma solicitação",
+                "description": "Altera data de vencimento, data limite para pagamento, valor e/ou descrição de uma solicitação de pagamento, bem como o QRCode Pix e o boleto associados à solicitação. Não é possível fazer alterações em solicitações com split de valor fixo."
+            },
+            "delete": {
+                "tags": [
+                    "Solicitacoes"
+                ],
+                "parameters": [
+                    {
+                        "name": "numeroConvenio",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "schema": {
+                            "format": "int32",
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "Authorization",
+                        "description": "Token de acesso fornecido pelo OAuth BB.",
+                        "schema": {
+                            "example": "Ex: Bearer [ACCESS_TOKEN]"
+                        },
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Sucesso na exclusão da solicitação sem body response"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/responseErro400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/responseErrorOAuthUnauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/responseErro422"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/responseErro500"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2-ClientCredentials": [
+                            "checkout.solicitacoes-requisicao"
+                        ]
+                    }
+                ],
+                "operationId": "delete-solicitacao",
+                "summary": "Deleta uma solicitação"
+            },
+            "parameters": [
+                {
+                    "name": "numeroSolicitacao",
+                    "description": "Número identificador da solicitação de pagamento",
+                    "schema": {
+                        "format": "int64",
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "gw-dev-app-key",
+                    "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "query",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErroOAuthUnauthorized": {
+                "title": "ErroOAuthUnauthorized",
+                "description": "Erro OAuth Unauthorized",
+                "type": "object",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "error": {
+                                "type": "string"
+                            },
+                            "message": {
+                                "type": "string"
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "properties": {
+                                    "error": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/ErroOAuthUnauthorized"
+                    }
+                ],
+                "example": {
+                    "statusCode": 401,
+                    "error": "Unauthorized",
+                    "message": "Bad Credentials",
+                    "attributes": {
+                        "error": "Bad Credentials"
+                    }
+                }
+            },
+            "requisicao-POST-solicitacoes": {
+                "title": "Root Type for requisicao-POST-solicitacoes",
+                "description": "Requisição do recurso POST /v2/solicitacoes",
+                "required": [
+                    "formasPagamento",
+                    "geral"
+                ],
+                "type": "object",
+                "properties": {
+                    "geral": {
+                        "$ref": "#/components/schemas/Geral",
+                        "properties": {
+                            "numeroConvenio": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "timestampLimiteSolicitacao": {
+                                "format": "date-time",
+                                "type": "string"
+                            },
+                            "indicadorPagamentoUnico": {
+                                "type": "string"
+                            },
+                            "valorSolicitacaoPagamento": {
+                                "format": "double",
+                                "type": "number"
+                            },
+                            "codigoConciliacaoSolicitacaoPagamento": {
+                                "type": "string"
+                            },
+                            "descricaoSolicitacaoPagamento": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "devedor": {
+                        "$ref": "#/components/schemas/Devedor",
+                        "properties": {
+                            "tipoDocumento": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "numeroDocumento": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "cep": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "endereco": {
+                                "type": "string"
+                            },
+                            "bairro": {
+                                "type": "string"
+                            },
+                            "cidade": {
+                                "type": "string"
+                            },
+                            "uf": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "dddTelefone": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "telefone": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "cpfRepresentanteEmpresa": {
+                                "format": "int32",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "vencimento": {
+                        "$ref": "#/components/schemas/Vencimento",
+                        "properties": {
+                            "dataVencimento": {
+                                "format": "date",
+                                "type": "string"
+                            },
+                            "multaValorFixo": {
+                                "format": "double",
+                                "type": "number"
+                            },
+                            "jurosPercentual": {
+                                "format": "double",
+                                "type": "number"
+                            },
+                            "descontos": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "dataLimite": {
+                                            "format": "date",
+                                            "type": "string"
+                                        },
+                                        "valorFixo": {
+                                            "format": "int32",
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "formasPagamento": {
+                        "description": "Código do tipo de pagamento (PIX, BLT, ... )",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FormaPagamento"
+                        }
+                    },
+                    "repasse": {
+                        "$ref": "#/components/schemas/Repasse",
+                        "properties": {
+                            "tipoValorRepasse": {
+                                "type": "string"
+                            },
+                            "recebedores": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "identificadorRecebedor": {
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "tipoRecebedor": {
+                                            "type": "string"
+                                        },
+                                        "valorRepasse": {
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "responsavelTarifa": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "geral": {
+                        "numeroConvenio": 98825,
+                        "timestampLimiteSolicitacao": "2030-01-10T03:00:00Z",
+                        "pagamentoUnico": true,
+                        "valorSolicitacao": 1525.9,
+                        "codigoConciliacaoSolicitacao": "cobranças Openfinance",
+                        "descricaoSolicitacao": "TV LG 50 polegadas/ Pedido: 123456",
+                        "urlCallback": "https://teste.com"
+                    },
+                    "devedor": {
+                        "tipoDocumento": 1,
+                        "numeroDocumento": 303762624,
+                        "cep": 2314060,
+                        "endereco": "Rua Benvenuto, 258",
+                        "bairro": "Vila Coração",
+                        "cidade": "São Paulo",
+                        "uf": "SP",
+                        "email": "joao@gmail.com",
+                        "dddTelefone": 11,
+                        "telefone": 29918855,
+                        "cpfRepresentanteEmpresa": 123456789012
+                    },
+                    "vencimento": {
+                        "data": "2030-01-01",
+                        "multaValorFixo": 0,
+                        "jurosPercentual": 0.22,
+                        "descontos": [
+                            {
+                                "dataLimite": "2029-01-01",
+                                "valorFixo": 10
+                            }
+                        ]
+                    },
+                    "formasPagamento": [
+                        {
+                            "codigoTipoPagamento": "PIX",
+                            "quantidadeParcelas": 1
+                        }
+                    ]
+                }
+            },
+            "resposta-POST-solicitacoes": {
+                "title": "Root Type for resposta-POST-solicitacoes",
+                "description": "Resposta  do recurso POST /v2/solicitacoes",
+                "required": [
+                    "timestampCriacaoSolicitacao",
+                    "numeroSolicitacao",
+                    "urlSolicitacao"
+                ],
+                "type": "object",
+                "properties": {
+                    "numeroSolicitacao": {
+                        "format": "int32",
+                        "description": "Número identificador da solicitação de pagamento",
+                        "type": "integer"
+                    },
+                    "timestampCriacaoSolicitacao": {
+                        "format": "date-time",
+                        "description": "Timestamp da criação da solicitação",
+                        "maxLength": 26,
+                        "type": "string"
+                    },
+                    "urlSolicitacao": {
+                        "description": "Link para pagamento da solicitação",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "informacoesBoleto": {
+                        "$ref": "#/components/schemas/InformacoesBoleto",
+                        "description": "Informações do tipo de pagamento boleto (BLT)",
+                        "properties": {
+                            "linhaDigitavel": {
+                                "type": "string"
+                            },
+                            "textoCodigoBarras": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "informacoesPix": {
+                        "$ref": "#/components/schemas/InformacoesPix",
+                        "description": "Informações do QRCode Pix ",
+                        "properties": {
+                            "textoQrCode": {
+                                "type": "string"
+                            },
+                            "txId": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "numeroSolicitacao": 23452,
+                    "timestampCriacaoSolicitacao": "2022-02-23T13:02:55.000",
+                    "urlSolicitacao": "https://www49.bb.com.br/m/bb-pay/#/cm95eyJvcHIiOiJDQ0siLCJzb2xpY2l0YXRpb25OdW1iZXIiOiI0NTI4NiJ9",
+                    "informacoesPix": {
+                        "textoQrCode": "00020101021226870014br.gov.bcb.pix2565qrcodepix-h.bb.com.br/pix/v2/18fcc0ef-87ca-4dfa-bbdd-cba990ad8ab15204000053039865406100.005802BR5922TELEFONICA BRASIL S.A.6008Brasilia62070503***6304DFEF",
+                        "txId": "RxUO4OcQDA16wY8z58BQuLU1a3uDslV6v4N"
+                    },
+                    "informacoesBoleto": {
+                        "linhaDigitavel": "00190.00009 03556.926008 00052.364171 9 92590000015000",
+                        "textoCodigoBarras": "00198925900000025000000003556926000004846817"
+                    }
+                }
+            },
+            "Devedor": {
+                "title": "Root Type for SolicitacoesDevedor",
+                "description": "Informações do devedor",
+                "type": "object",
+                "properties": {
+                    "tipoDocumento": {
+                        "format": "int32",
+                        "description": "Código do tipo de pessoa do devedor (1 - CPF, 2 - CNPJ). Obrigatório, caso informado numeroDocumento",
+                        "type": "integer",
+                        "example": ""
+                    },
+                    "numeroDocumento": {
+                        "format": "int32",
+                        "description": "Número do CPF/CNPJ do devedor. Obrigatório, caso informado tipoDocumento",
+                        "type": "integer",
+                        "example": ""
+                    },
+                    "cep": {
+                        "format": "int32",
+                        "description": "CEP do devedor",
+                        "type": "integer",
+                        "example": ""
+                    },
+                    "endereco": {
+                        "description": "Texto com o endereço do devedor",
+                        "maxLength": 100,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "bairro": {
+                        "description": "Nome do bairro do devedor",
+                        "maxLength": 50,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "cidade": {
+                        "description": "Nome da cidade do devedor",
+                        "maxLength": 50,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "uf": {
+                        "description": "Sigla da Unidade da Federação (sigla do Estado) do devedor",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "email": {
+                        "description": "Texto com o endereço do e-mail do devedor",
+                        "maxLength": 100,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "dddTelefone": {
+                        "format": "int32",
+                        "description": "Número do DDD do telefone do devedor",
+                        "type": "integer",
+                        "example": ""
+                    },
+                    "telefone": {
+                        "format": "int32",
+                        "description": "Número do telefone do devedor",
+                        "type": "integer",
+                        "example": ""
+                    },
+                    "cpfRepresentanteEmpresa": {
+                        "format": "int32",
+                        "description": "CPF do representante da empresa indicada como devedora",
+                        "type": "integer",
+                        "example": ""
+                    }
+                },
+                "example": {
+                    "tipoDocumento": 1,
+                    "numeroDocumento": 30580698509,
+                    "cep": 2314060,
+                    "endereco": "Rua Benvenuto, 258",
+                    "bairro": "Vila Coração",
+                    "cidade": "São Paulo",
+                    "uf": "SP",
+                    "email": "joao@gmail.com",
+                    "dddTelefone": 11,
+                    "telefone": 29918855,
+                    "cpfRepresentanteEmpresa": 99999999999
+                }
+            },
+            "Desconto": {
+                "title": "Root Type for Desconto",
+                "description": "Objeto que representa descontos",
+                "type": "object",
+                "properties": {
+                    "dataLimite": {
+                        "format": "date",
+                        "description": "Data limite de aplicação do desconto",
+                        "maxLength": 10,
+                        "type": "string"
+                    },
+                    "valorFixo": {
+                        "format": "double",
+                        "description": "Valor de desconto do tipo fixo. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorPercentual": {
+                        "format": "double",
+                        "description": "Valor de desconto do tipo percentual. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "dataLimite": "2022-01-01",
+                    "valorFixo": 10.2,
+                    "valorPercentual": 0
+                }
+            },
+            "Vencimento": {
+                "title": "Root Type for Vencimento",
+                "description": "Informações sobre o vencimento da solicitação, como data e valores de multa",
+                "type": "object",
+                "properties": {
+                    "multaValorFixo": {
+                        "format": "double",
+                        "description": "Valor da multa do tipo fixa. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "jurosPercentual": {
+                        "format": "double",
+                        "description": "Valor dos juros percentual. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "descontos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Desconto"
+                        }
+                    },
+                    "data": {
+                        "format": "date",
+                        "description": "Data de vencimento da solicitação. Se informada, pagamentoUnico deve ser = true",
+                        "maxLength": 10,
+                        "type": "string"
+                    },
+                    "multaPercentual": {
+                        "format": "double",
+                        "description": "Valor da multa do tipo percentual. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "data": "2022-01-01",
+                    "multaValorFixo": 25.5,
+                    "multaPercentual": 0,
+                    "jurosPercentual": 1.2,
+                    "descontos": [
+                        {
+                            "dataLimite": "2022-01-01",
+                            "valorPercentual": 1.5
+                        }
+                    ]
+                }
+            },
+            "FormaPagamento": {
+                "title": "Root Type for FormaPagamento",
+                "description": "Código do tipo de pagamento (PIX, BLT, ... )",
+                "required": [
+                    "quantidadeParcelas",
+                    "codigoTipoPagamento"
+                ],
+                "type": "object",
+                "properties": {
+                    "codigoTipoPagamento": {
+                        "description": "Código do tipo de pagamento",
+                        "maxLength": 3,
+                        "minLength": 3,
+                        "type": "string"
+                    },
+                    "quantidadeParcelas": {
+                        "description": "Quantidade de parcelas do tipo de pagamento, só aceita 1",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "codigoTipoPagamento": "PIX",
+                    "quantidadeParcelas": 1
+                }
+            },
+            "Repasse": {
+                "title": "Root Type for Repasse",
+                "description": "Informações relacionadas dos participantes do split quando houver.",
+                "required": [
+                    "tipoValorRepasse"
+                ],
+                "type": "object",
+                "properties": {
+                    "tipoValorRepasse": {
+                        "description": "Tipo dos valores informados que serão utilizados para o calculo dos repasse. Se informado \"Percentual\", a soma dos valores de \"ValorRepasse\" não deve ultrapassar 100%. Se informado \"Fixo\", a soma dos valores de \"ValorRepasse\" não deve ultrapassar o valor da Solicitação",
+                        "maxLength": 11,
+                        "type": "string"
+                    },
+                    "recebedores": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Recebedores"
+                        }
+                    }
+                },
+                "example": {
+                    "tipoValorRepasse": "Percentual",
+                    "recebedores": [
+                        {
+                            "identificadorRecebedor": 1351002000,
+                            "tipoRecebedor": "Convenio",
+                            "valorRepasse": 20
+                        },
+                        {
+                            "identificadorRecebedor": 13510020001,
+                            "tipoRecebedor": "Participante",
+                            "valorRepasse": 80
+                        }
+                    ]
+                }
+            },
+            "Erro": {
+                "title": "Root Type for Erro",
+                "description": "Objeto que representa atributos de um erro",
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "description": "Codigo do erro",
+                        "type": "string"
+                    },
+                    "versao": {
+                        "description": "Versão da mensagem de erro",
+                        "type": "string"
+                    },
+                    "mensagem": {
+                        "description": "Mensagem de erro",
+                        "type": "string"
+                    },
+                    "ocorrencia": {
+                        "description": "Chave de correlação do erro",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "codigo": "9999999",
+                    "versao": "1",
+                    "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                    "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                }
+            },
+            "Erros400": {
+                "title": "Erro",
+                "description": "Erro padrão.",
+                "type": "object",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "erros": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Erro"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/Erros400"
+                    }
+                ],
+                "example": {
+                    "erros": [
+                        {
+                            "codigo": "9999999",
+                            "versao": "1",
+                            "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                            "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                        }
+                    ]
+                }
+            },
+            "Erros422": {
+                "title": "Erro",
+                "description": "Erro padrão.",
+                "type": "object",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "erros": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Erro"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/Erros400"
+                    }
+                ],
+                "example": {
+                    "erros": [
+                        {
+                            "codigo": "9999999",
+                            "versao": "1",
+                            "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                            "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                        }
+                    ]
+                }
+            },
+            "Erros500": {
+                "title": "Erro",
+                "description": "Erro padrão.",
+                "type": "object",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "erros": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Erro"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/Erros400"
+                    }
+                ],
+                "example": {
+                    "erros": [
+                        {
+                            "codigo": "9999999",
+                            "versao": "1",
+                            "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                            "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                        }
+                    ]
+                }
+            },
+            "InformacoesPix": {
+                "title": "Root Type for Pix",
+                "description": "Informações do QRCode Pix ",
+                "type": "object",
+                "properties": {
+                    "textoQrCode": {
+                        "description": "Texto QRCode para pagamento com Pix",
+                        "maxLength": 1000,
+                        "type": "string"
+                    },
+                    "txId": {
+                        "description": "Código identificador do QRCode Pix",
+                        "maxLength": 35,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "textoQrCode": "00020101021226870014br.gov.bcb.pix2565qrcodepix-h.bb.com.br/pix/v2/18fcc0ef-87ca-4dfa-bbdd-cba990ad8ab15204000053039865406100.005802BR5922TELEFONICA BRASIL S.A.6008Brasilia62070503***6304DFEF",
+                    "txId": "RxUO4OcQDA16wY8z58BQuLU1a3uDslV6v4N"
+                }
+            },
+            "InformacoesBoleto": {
+                "title": "Root Type for Boleto",
+                "description": "Informações de um boleto",
+                "type": "object",
+                "properties": {
+                    "linhaDigitavel": {
+                        "description": "Texto contendo a linha digitável do boleto",
+                        "maxLength": 54,
+                        "type": "string"
+                    },
+                    "textoCodigoBarras": {
+                        "description": "Texto contendo o código de barras do boleto",
+                        "maxLength": 44,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "linhaDigitavel": "00190.00009 03556.926008 00052.364171 9 92590000015000",
+                    "textoCodigoBarras": "00198925900000025000000003556926000004846817"
+                }
+            },
+            "Pagamento": {
+                "title": "Root Type for Pagamento",
+                "description": "Informações de um pagamento específico",
+                "type": "object",
+                "properties": {
+                    "numeroSolicitacao": {
+                        "format": "int32",
+                        "description": "Número identificador da solicitacao",
+                        "type": "integer"
+                    },
+                    "numeroPagamento": {
+                        "format": "int32",
+                        "description": "Número identificador do pagamento",
+                        "type": "integer"
+                    },
+                    "timestampPagamento": {
+                        "format": "date-time",
+                        "description": "Timestamp do pagamento",
+                        "type": "string"
+                    },
+                    "valorOriginalPagamento": {
+                        "format": "double",
+                        "description": "Valor definido na solicitação de pagamento. Se não definido, valor informado pelo pagador. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorMultaPagamento": {
+                        "format": "double",
+                        "description": "Valor da multa do pagamento. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorJurosPagamento": {
+                        "format": "double",
+                        "description": "Valor de juros do pagamento. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorAbatimentoPagamento": {
+                        "format": "double",
+                        "description": "Valor de abatimento do pagamento. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorDescontoPagamento": {
+                        "format": "double",
+                        "description": "Valor de desconto do pagamento. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorLiquidoRecebedor": {
+                        "format": "double",
+                        "description": "Valor total repassado ao convênio/participantes (acrescido/descrescido de eventuais multas, juros, abatimento, descontos, tarifas e impostos). Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorTarifaRecebedor": {
+                        "format": "double",
+                        "description": "Valor da tarifa cobrada do recebedor. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "valorImpostoRecebedor": {
+                        "format": "double",
+                        "description": "Valor de imposto cobrando do recebedor. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "codigoTipoPagamento": {
+                        "description": "Código do tipo de pagamento",
+                        "maxLength": 3,
+                        "type": "string"
+                    },
+                    "dataRepassePagamento": {
+                        "format": "date",
+                        "description": "Data de repasse do pagamento",
+                        "type": "string"
+                    },
+                    "tipoDocumentoPagador": {
+                        "format": "int32",
+                        "description": "Tipo identificador do pagador (1 - CPF, 2 - CNPJ)",
+                        "type": "integer"
+                    },
+                    "numeroDocumentoPagador": {
+                        "format": "int32",
+                        "description": "CPF ou CNPJ do pagador",
+                        "type": "integer"
+                    },
+                    "nomePagador": {
+                        "description": "Nome do pagador",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "comentarioPagador": {
+                        "description": "Comentário ou anotação do pagamento",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "e2eId": {
+                        "description": "Código identificador do pagamento Pix",
+                        "maxLength": 32,
+                        "type": "string"
+                    },
+                    "quantidadeDevolucoes": {
+                        "format": "int32",
+                        "description": "Quantidade total de devoluções do pagamento",
+                        "type": "integer"
+                    },
+                    "valorSomatorioDevolucoes": {
+                        "format": "double",
+                        "description": "Valor total dos pagamentos devolvidos. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "codigoEstadoPagamento": {
+                        "format": "int32",
+                        "description": "Código do estado do pagamento",
+                        "type": "integer"
+                    },
+                    "codigoConciliacaoSolicitacao": {
+                        "description": "Código de conciliação informado pelo convênio na solicitação de pagamento",
+                        "maxLength": 36,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "numeroSolicitacao": 56789,
+                    "numeroPagamento": 123456,
+                    "codigoEstadoPagamento": 1,
+                    "timestampPagamento": "2022-02-23T13:02:55.000",
+                    "valorOriginalPagamento": 100.2,
+                    "valorMultaPagamento": 10.3,
+                    "valorJurosPagamento": 10,
+                    "valorAbatimentoPagamento": 5,
+                    "valorDescontoPagamento": 5,
+                    "valorLiquidoRecebedor": 100.2,
+                    "valorTarifaRecebedor": 2,
+                    "valorImpostoRecebedor": 3,
+                    "codigoTipoPagamento": "PIX",
+                    "dataRepassePagamento": "2022-02-25",
+                    "tipoDocumentoPagador": 1,
+                    "numeroDocumentoPagador": 5544562701,
+                    "nomePagador": "Nome do Pagador",
+                    "comentarioPagador": "Comentario do pagador",
+                    "codigoConciliacaoSolicitacao": "cobranças Open Banking",
+                    "e2eId": "E0000000020211022201654906142204",
+                    "quantidadeDevolucoes": 1,
+                    "valorSomatorioDevolucoes": 25
+                }
+            },
+            "ListaDevolucoes": {
+                "title": "Root Type for ListaDevolucoes",
+                "description": "Lista de devoluções",
+                "type": "object",
+                "properties": {
+                    "totalRegistros": {
+                        "format": "int32",
+                        "description": "Número total de registros encontrados para a consulta",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "listaDevolucoes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Devolucao"
+                        }
+                    },
+                    "tokenPaginacao": {
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "maxLength": 60,
+                        "type": "string",
+                        "example": "20230314120310167448000000000167448"
+                    }
+                }
+            },
+            "ListaPagamentos": {
+                "title": "Root Type for ListPagamentos",
+                "description": "Lista de pagamentos",
+                "type": "object",
+                "properties": {
+                    "totalRegistros": {
+                        "format": "int32",
+                        "description": "Total de registros recuperados na lista",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "listaPagamentos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Pagamento"
+                        }
+                    },
+                    "tokenPaginacao": {
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "maxLength": 60,
+                        "type": "string",
+                        "example": "20230314120310167448000000000167448"
+                    }
+                }
+            },
+            "Devolucao": {
+                "title": "Root Type for Devolucao",
+                "description": "Informações sobre uma devolução",
+                "type": "object",
+                "properties": {
+                    "numeroDevolucao": {
+                        "format": "int32",
+                        "description": "Número identificador da devolução",
+                        "type": "integer"
+                    },
+                    "numeroPagamento": {
+                        "format": "int32",
+                        "description": "Número identificador do pagamento devolvido",
+                        "type": "integer"
+                    },
+                    "numeroSolicitacao": {
+                        "format": "int32",
+                        "description": "Numero identificador da solicitação de pagamento",
+                        "type": "integer"
+                    },
+                    "codigoEstadoDevolucao": {
+                        "format": "int32",
+                        "description": "Código do estado da devolução",
+                        "type": "integer"
+                    },
+                    "timestampDevolucao": {
+                        "format": "date-time",
+                        "description": "Timestamp de criação da devolução",
+                        "type": "string"
+                    },
+                    "codigoTipoPagamento": {
+                        "description": "Código do tipo de pagamento devolvido",
+                        "maxLength": 3,
+                        "type": "string"
+                    },
+                    "nomeRecebedor": {
+                        "description": "Nome do recebedor",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "valorDevolucao": {
+                        "format": "double",
+                        "description": "Valor da devolução. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "codigoConciliacaoSolicitacao": {
+                        "description": "Código de conciliação da solicitação de pagamento",
+                        "maxLength": 36,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "numeroDevolucao": 23457,
+                    "numeroPagamento": 123456,
+                    "numeroSolicitacao": 56789,
+                    "codigoEstadoDevolucao": 13,
+                    "timestampDevolucao": "2022-02-23T13:02:55.000",
+                    "codigoTipoPagamento": "PIX",
+                    "nomeRecebedor": "Fulano",
+                    "valorDevolucao": 7.5,
+                    "codigoConciliacaoSolicitacao": "SRF00000000000000000D"
+                }
+            },
+            "Geral": {
+                "title": "Root Type for SolicitacoesGeral",
+                "description": "Informações gerais da requisição de gerar solicitação de pagamento",
+                "required": [
+                    "numeroConvenio",
+                    "descricaoSolicitacao",
+                    "pagamentoUnico"
+                ],
+                "type": "object",
+                "properties": {
+                    "numeroConvenio": {
+                        "format": "int32",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "type": "integer",
+                        "example": ""
+                    },
+                    "pagamentoUnico": {
+                        "description": "Indica se a solicitação pode ou não ser paga mais de uma vez",
+                        "type": "boolean",
+                        "example": ""
+                    },
+                    "timestampLimiteSolicitacao": {
+                        "format": "date-time",
+                        "description": "Data e hora limite máximo para pagamento da solicitação de pagamento (timestamp). Se não informado, sistema assumirá como 365 dias",
+                        "maxLength": 26,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "valorSolicitacao": {
+                        "format": "double",
+                        "description": "Valor que o cliente deseja receber do pagador, quando não informado será definido pelo pagador. Obrigatório para pagamentoUnico = true. Aceito até 2 casas decimais.",
+                        "type": "number",
+                        "example": ""
+                    },
+                    "descricaoSolicitacao": {
+                        "description": "Descrição da solicitação do pagamento. Dado que pode estar visível ao pagador",
+                        "maxLength": 255,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "codigoConciliacaoSolicitacao": {
+                        "description": "Funciona como um identificador gerenciado por quem requisita a criação do recurso",
+                        "maxLength": 36,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "urlRetorno": {
+                        "description": "URL na qual o cliente será redirecionado após a conclusão do pagamento",
+                        "maxLength": 255,
+                        "type": "string"
+                    }
+                }
+            },
+            "requisicao-POST-participantes": {
+                "title": "Root Type for requisicao-POST-participantes",
+                "description": "Requisição do recurso POST /v2/participantes",
+                "required": [
+                    "numeroConvenio",
+                    "nomeParticipante",
+                    "numeroDocumento",
+                    "tipoDocumento",
+                    "tipoConta",
+                    "numeroConta",
+                    "numeroAgencia",
+                    "codigoIspb"
+                ],
+                "type": "object",
+                "properties": {
+                    "numeroConvenio": {
+                        "format": "int32",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "type": "integer"
+                    },
+                    "nomeParticipante": {
+                        "description": "Nome identificador do Participante para controle do Cliente.",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "tipoDocumento": {
+                        "format": "int32",
+                        "description": "Código do tipo de pessoa do Participante (1 - CPF, 2 - CNPJ)",
+                        "type": "integer"
+                    },
+                    "numeroDocumento": {
+                        "format": "int32",
+                        "description": "Número do CPF/CNPJ do Participante   ",
+                        "type": "integer"
+                    },
+                    "numeroConta": {
+                        "format": "int32",
+                        "description": "Número da Conta utilizada para fazer o repasse para o Participante",
+                        "type": "integer"
+                    },
+                    "tipoConta": {
+                        "format": "int32",
+                        "description": "Código do tipo de conta do repasse do participante. As opções disponiveis são: (1 - Conta Corrente,  2 - Conta Poupança, 3 - Conta Salario 4 - Conta pré-paga)",
+                        "type": "integer"
+                    },
+                    "variacaoPoupanca": {
+                        "format": "int32",
+                        "description": "Valor de variação da poupança. Deve ser informado se tipo de conta for Poupança",
+                        "type": "integer"
+                    },
+                    "codigoIspb": {
+                        "format": "int32",
+                        "description": "Código identificador do Sistema de Pagamentos Brasileiro. Atualmente aceitamos apenas Banco do Brasil, codigoIspb igual a 0 ",
+                        "type": "integer"
+                    },
+                    "numeroAgencia": {
+                        "format": "int32",
+                        "description": "Número da Agência (sem dígito verificador) utilizada para fazer o repasse para o Participante ",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "numeroConvenio": 701,
+                    "nomeParticipante": "Participante Teste",
+                    "tipoDocumento": 1,
+                    "numeroDocumento": 64655215801,
+                    "numeroConta": 1033,
+                    "numeroAgencia": 551,
+                    "tipoConta": 1,
+                    "variacaoPoupanca": 51,
+                    "codigoIspb": 0
+                }
+            },
+            "ListaParticipantes": {
+                "title": "Root Type for ListaParticipantes",
+                "description": "Lista de participantes",
+                "type": "object",
+                "properties": {
+                    "totalRegistros": {
+                        "format": "int32",
+                        "description": "Número total de registros encontrados para a consulta  ",
+                        "type": "integer"
+                    },
+                    "tokenPaginacao": {
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "listaParticipantes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Participante"
+                        }
+                    }
+                },
+                "example": {
+                    "totalRegistros": 4,
+                    "tokenPaginacao": "000000000000701000000000000003",
+                    "listaParticipantes": [
+                        {
+                            "numeroConvenio": 701,
+                            "numeroParticipante": 2,
+                            "nomeParticipante": "participante def",
+                            "tipoDocumento": 1,
+                            "numeroDocumento": 22233344456,
+                            "codigoEstadoParticipante": 1,
+                            "numeroConta": 56578,
+                            "numeroAgencia": 512,
+                            "tipoConta": 1,
+                            "variacaoPoupanca": 51,
+                            "codigoIspb": 60746948
+                        },
+                        {
+                            "numeroConvenio": 701,
+                            "numeroParticipante": 3,
+                            "nomeParticipante": "empresa hij",
+                            "tipoDocumento": 2,
+                            "numeroDocumento": 11222333444455,
+                            "codigoEstadoParticipante": 0,
+                            "numeroConta": 155431,
+                            "numeroAgencia": 513,
+                            "tipoConta": 2,
+                            "variacaoPoupanca": 1,
+                            "codigoIspb": 60746948
+                        }
+                    ]
+                }
+            },
+            "resposta-POST-participantes": {
+                "title": "Root Type for resposta-POST-participantes",
+                "description": "Resposta  do recurso POST /v2/participantes",
+                "type": "object",
+                "properties": {
+                    "numeroParticipante": {
+                        "format": "int32",
+                        "description": "Número identificador único do Participante",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "numeroParticipante": 26
+                }
+            },
+            "Recebedores": {
+                "title": "Root Type for Recebedor",
+                "description": "Informações sobre recebedores",
+                "required": [
+                    "identificadorRecebedor",
+                    "tipoRecebedor",
+                    "valorRepasse"
+                ],
+                "type": "object",
+                "properties": {
+                    "identificadorRecebedor": {
+                        "format": "int32",
+                        "description": "Código identificador do recebedor. Pode ser o número do convênio ou o identificador de um participante",
+                        "type": "integer"
+                    },
+                    "tipoRecebedor": {
+                        "description": "Tipo do recebedor \"Participante\" ou \"Convenio\"",
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "valorRepasse": {
+                        "format": "double",
+                        "description": "Valor usado para o calculo do repasse. Pode ser um valor percentual entre 0.01 e 100, ou um valor fixo entre 0.01 e o Valor da Solicitação de Pagamento. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "identificadorRecebedor": 1351002000,
+                    "tipoRecebedor": "Convenio",
+                    "valorRepasse": 20
+                }
+            },
+            "Participante": {
+                "title": "Root Type for Participante",
+                "description": "Informações sobre os participantes no split de pagamentos",
+                "type": "object",
+                "properties": {
+                    "numeroConvenio": {
+                        "format": "int32",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "type": "integer"
+                    },
+                    "numeroParticipante": {
+                        "format": "int32",
+                        "description": "Número identificador do Participante Relacionado ao Convenio",
+                        "type": "integer"
+                    },
+                    "nomeParticipante": {
+                        "description": "Nome identificador do Participante para controle do Cliente",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "tipoDocumento": {
+                        "format": "int32",
+                        "description": "Código do tipo de pessoa do Participante (1 - CPF, 2 - CNPJ)",
+                        "type": "integer"
+                    },
+                    "numeroDocumento": {
+                        "format": "int32",
+                        "description": "Número do CPF/CNPJ do Participante ",
+                        "type": "integer"
+                    },
+                    "codigoEstadoParticipante": {
+                        "format": "int32",
+                        "description": "Código do estado do Participante. (0 - Ativo, 1 - Pendente, 900 - Cancelado)",
+                        "type": "integer"
+                    },
+                    "numeroConta": {
+                        "format": "int32",
+                        "description": "Número da Conta utilizada para fazer o repasse para o Participante ",
+                        "type": "integer"
+                    },
+                    "numeroAgencia": {
+                        "format": "int32",
+                        "description": "Número da Agência (sem dígito verificador) utilizada para fazer o repasse para o Participante ",
+                        "type": "integer"
+                    },
+                    "tipoConta": {
+                        "format": "int32",
+                        "description": "Código do tipo de conta do repasse do participante. As opções disponiveis são: (1 - Conta Corrente,  2 - Conta Poupança, 3 - Conta Salario 4 - Conta pré-paga)",
+                        "type": "integer"
+                    },
+                    "variacaoPoupanca": {
+                        "format": "int32",
+                        "description": "Valor de variação da poupança. Só deve ser informado se tipo de conta for Poupança",
+                        "type": "integer"
+                    },
+                    "codigoIspb": {
+                        "description": "Código identificador do Sistema de Pagamentos Brasileiro. Atualmente aceitamos apenas Banco do Brasil, codigoIspb igual a 0",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "numeroConvenio": 701,
+                    "numeroParticipante": 2,
+                    "nomeParticipante": "participante def",
+                    "tipoDocumento": 1,
+                    "numeroDocumento": 22233344456,
+                    "codigoEstadoParticipante": 1,
+                    "numeroConta": 56578,
+                    "numeroAgencia": 512,
+                    "tipoConta": 1,
+                    "variacaoPoupanca": 0,
+                    "codigoIspb": 60746948
+                }
+            },
+            "resposta-POST-devolucoes": {
+                "title": "Root Type for resposta-POST-devolucoes-devolver",
+                "description": "Resposta do recurso POST /v2/devolucoes",
+                "type": "object",
+                "properties": {
+                    "numeroDevolucao": {
+                        "format": "int32",
+                        "description": "Número identificador da devolução",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "numeroDevolucao": 1234
+                }
+            },
+            "requisicao-PUT-participante": {
+                "title": "Root Type for resposta-DELETE-participante",
+                "description": "Requisição do recurso PUT /v2/participantes/editar",
+                "type": "object",
+                "properties": {
+                    "nomeParticipante": {
+                        "description": "Nome identificador do Participante para controle do Cliente",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "numeroConta": {
+                        "format": "int32",
+                        "description": "Número da Conta utilizada para fazer o repasse para o Participante ",
+                        "type": "integer"
+                    },
+                    "numeroAgencia": {
+                        "format": "int32",
+                        "description": "Número da Agência (sem dígito verificador) utilizada para fazer o repasse para o Participante",
+                        "type": "integer"
+                    },
+                    "codigoTipoConta": {
+                        "format": "int32",
+                        "description": "Código do tipo de conta do repasse do participante. As opções disponiveis são: (1 - Conta Corrente,  2 - Conta Poupança, 3 - Conta Salario 4 - Conta pré-paga)",
+                        "type": "integer"
+                    },
+                    "numeroVariacaoPoupanca": {
+                        "format": "int32",
+                        "description": "Valor de variação da poupança. Só deve ser informado se tipo de conta for Poupança",
+                        "type": "integer"
+                    },
+                    "codigoIspb": {
+                        "format": "int32",
+                        "description": "Código identificador do Sistema de Pagamentos Brasileiro. Atualmente aceitamos apenas Banco do Brasil, codigoIspb igual a 0",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "nomeParticipante": "participante A",
+                    "numeroConta": 5446,
+                    "numeroAgencia": 551,
+                    "codigoTipoConta": 2,
+                    "numeroVariacaoPoupanca": 1,
+                    "codigoIspb": 0
+                }
+            },
+            "requisicao-POST-devolucoes": {
+                "title": "Root Type for resisicao-POST-devolucoes-devolver",
+                "description": "Requisição do recurso POST /v2/devolucoes",
+                "required": [
+                    "valorDevolucao",
+                    "numeroPagamento",
+                    "numeroConvenio"
+                ],
+                "type": "object",
+                "properties": {
+                    "numeroPagamento": {
+                        "format": "int32",
+                        "description": "Número identificador do pagamento",
+                        "type": "integer"
+                    },
+                    "numeroConvenio": {
+                        "format": "int32",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "type": "integer"
+                    },
+                    "valorDevolucao": {
+                        "format": "double",
+                        "description": "Valor que o convênio deseja devolver ao pagador. Pode ser de 0,01 até o valor final do pagamento. É possível fazer 'n' devoluções, desde que a soma das devoluções não extrapole o valor final do pagamento. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "textoMotivoDevolucao": {
+                        "description": "Descrição do motivo da devolução. Pode ser apresentado ao pagador, beneficiário da devolução",
+                        "maxLength": 255,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "numeroPagamento": 23457,
+                    "numeroConvenio": 123456,
+                    "valorDevolucao": 25.9,
+                    "textoMotivoDevolucao": "Cancelamento de compra"
+                }
+            },
+            "MarcaAtiva": {
+                "title": "Root Type for MarcaAtiva",
+                "description": "Marca ativa",
+                "type": "object",
+                "properties": {
+                    "numeroMarca": {
+                        "format": "int32",
+                        "description": "Número da marca do participante Open Finance",
+                        "type": "integer"
+                    },
+                    "nomeMarca": {
+                        "description": "Nome da marca do participante Open Finance",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "cnpjInstituicao": {
+                        "format": "int32",
+                        "description": "Número do CNPJ da marca do participante Open Finance",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "numeroMarca": 1234,
+                    "nomeMarca": "Homologa Marca",
+                    "cnpjInstituicao": 191
+                }
+            },
+            "requisicao-POST-openfinance-autorizacoes": {
+                "title": "Root Type for requisicao-POST-openbanking-autorizacoes",
+                "description": "Requisição do recurso POST /v2/openfinance/autorizacoes",
+                "required": [
+                    "numeroMarcaParticipanteOpenfinance",
+                    "numeroConvenio"
+                ],
+                "type": "object",
+                "properties": {
+                    "numeroSolicitacao": {
+                        "format": "int64",
+                        "description": "Número identificador da solicitação de pagamento",
+                        "type": "integer"
+                    },
+                    "numeroConvenio": {
+                        "format": "int32",
+                        "description": "Número do convênio do cliente no BB Pay",
+                        "type": "integer"
+                    },
+                    "informacaoPagador": {
+                        "description": "Texto do pagador para identificar o pagamento",
+                        "maxLength": 140,
+                        "type": "string"
+                    },
+                    "agenciaPagador": {
+                        "format": "int32",
+                        "description": "Código da agência do pagador",
+                        "type": "integer"
+                    },
+                    "tipoContaPagador": {
+                        "format": "int32",
+                        "description": "Código do tipo de conta do pagador",
+                        "type": "integer"
+                    },
+                    "contaCorrentePagador": {
+                        "format": "int64",
+                        "description": "Número da conta corrente do Pagador",
+                        "type": "integer"
+                    },
+                    "numeroMarcaParticipanteOpenfinance": {
+                        "format": "int32",
+                        "description": "Número da marca do participante Open Finance escolhido pelo usuário pagador",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "numeroSolicitacao": 389686,
+                    "numeroConvenio": 5446,
+                    "numeroMarcaParticipanteOpenfinance": 55253,
+                    "informacaoPagador": "IdentificadorCompra",
+                    "agenciaPagador": 3374,
+                    "tipoContaPagador": 1,
+                    "contaCorrentePagador": 569987
+                }
+            },
+            "resposta-GET-openfinance-autorizacao": {
+                "title": "Root Type for resposta-GET-openbanking-autorizacao",
+                "description": "Resposta do recurso GET /v2/openfinance/autorizacoes",
+                "type": "object",
+                "properties": {
+                    "autorizacaoCriada": {
+                        "description": "Indicador de criação da autorização de pagamento no Open Finance",
+                        "type": "boolean"
+                    },
+                    "urlRedirecionamentoPagamento": {
+                        "description": "Texto Universal Resource Locator (URL) informado pela instituição detentora da conta do pagador, para redirecionamento ao ambiente de pagamento",
+                        "maxLength": 255,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "autorizacaoCriada": true,
+                    "urlRedirecionamentoPagamento": "https://url-exemplo.com.br"
+                }
+            },
+            "resposta-GET-openfinance-marcas-ativas": {
+                "title": "Root Type for resposta-GET-openbanking-marcas-ativas",
+                "description": "Resposta do recurso GET /v2/openfinance/marcas-ativas",
+                "type": "object",
+                "properties": {
+                    "tokenPaginacao": {
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "listaMarcaAtiva": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MarcaAtiva"
+                        }
+                    }
+                },
+                "example": {
+                    "tokenPaginacao": "20230314120310167448000000000167448",
+                    "listaMarcaAtiva": [
+                        {
+                            "numeroMarca": 1234,
+                            "nomeMarca": "Homologa Marca",
+                            "cnpjInstituicao": 191
+                        }
+                    ]
+                }
+            },
+            "resposta-POST-openfinance-autorizacoes": {
+                "title": "Root Type for resposta-POST-openbanking-autorizacoes",
+                "description": "Resposta do recurso POST /v2/openfinance/autorizacoes",
+                "type": "object",
+                "properties": {
+                    "numeroPagamento": {
+                        "description": "Número do pagamento da solicitação",
+                        "type": "number"
+                    },
+                    "autorizacaoCriada": {
+                        "description": "Indicador de criação da autorização de pagamento no Open Finance",
+                        "type": "boolean"
+                    }
+                },
+                "example": {
+                    "numeroPagamento": 5489757,
+                    "autorizacaoCriada": true
+                }
+            },
+            "resposta-GET-solicitacao": {
+                "title": "Root Type for resposta-GET-solicitacao",
+                "description": "Resposta do recurso GET /v2/solicitacoes/{numeroSolicitacao}",
+                "type": "object",
+                "properties": {
+                    "numeroSolicitacao": {
+                        "format": "int64",
+                        "description": "Número identificador da solicitação de pagamento",
+                        "type": "integer"
+                    },
+                    "descricaoSolicitacao": {
+                        "description": "Descrição da solicitação de pagamento",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "codigoEstadoSolicitacao": {
+                        "format": "int32",
+                        "description": "Código do estado da solicitação",
+                        "type": "integer"
+                    },
+                    "timestampCriacaoSolicitacao": {
+                        "format": "date-time",
+                        "description": "Timestamp da criação da solicitação",
+                        "maxLength": 26,
+                        "type": "string"
+                    },
+                    "timestampLimiteSolicitacao": {
+                        "format": "date-time",
+                        "description": "Timestamp de expiração da solicitação",
+                        "maxLength": 26,
+                        "type": "string"
+                    },
+                    "urlSolicitacao": {
+                        "description": "Link para pagamento da solicitação",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "quantidadePagamentosEfetivados": {
+                        "format": "int32",
+                        "description": "Quantidade total de pagamentos efetivados para a solicitação",
+                        "type": "integer"
+                    },
+                    "valorSomatorioPagamentosEfetivados": {
+                        "format": "double",
+                        "description": "Valor total da soma de todos os pagamentos efetivados. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "quantidadeDevolucoes": {
+                        "format": "int32",
+                        "description": "Quantidade total de devoluções de pagamento",
+                        "type": "integer"
+                    },
+                    "valorSomatorioDevolucoes": {
+                        "format": "double",
+                        "description": "Valor total da soma de todas as devoluções. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "pagamentoUnico": {
+                        "description": "Indicador se a solicitação aceita um ou mais pagamentos",
+                        "type": "boolean"
+                    },
+                    "valorSolicitacao": {
+                        "format": "double",
+                        "description": "Valor que o cliente deseja receber do pagador. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "codigoConciliacaoSolicitacao": {
+                        "description": "Código da conciliação da solicitação de pagamento",
+                        "maxLength": 36,
+                        "type": "string"
+                    },
+                    "informacoesPix": {
+                        "$ref": "#/components/schemas/InformacoesPix",
+                        "properties": {
+                            "txId": {
+                                "type": "string"
+                            },
+                            "textoQrCode": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "informacoesBoleto": {
+                        "$ref": "#/components/schemas/InformacoesBoleto",
+                        "properties": {
+                            "linhaDigitavel": {
+                                "type": "string"
+                            },
+                            "textoCodigoBarras": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "vencimento": {
+                        "$ref": "#/components/schemas/Vencimento",
+                        "properties": {
+                            "data": {
+                                "format": "date",
+                                "type": "string"
+                            },
+                            "multaPercentual": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "multaValorFixo": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "jurosPercentual": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "descontos": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "dataLimite": {
+                                            "format": "date",
+                                            "type": "string"
+                                        },
+                                        "valorFixo": {
+                                            "format": "int32",
+                                            "type": "integer"
+                                        },
+                                        "valorPercentual": {
+                                            "format": "int32",
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "repasse": {
+                        "$ref": "#/components/schemas/Repasse",
+                        "description": ""
+                    }
+                },
+                "example": {
+                    "numeroSolicitacao": 71491,
+                    "descricaoSolicitacao": "Descriçao desta solicitação",
+                    "codigoEstadoSolicitacao": 1,
+                    "timestampCriacaoSolicitacao": "2023-05-31T15:16:09.358603",
+                    "timestampLimiteSolicitacao": "2024-06-31T15:16:09.358603",
+                    "urlSolicitacao": "https://www49.bb.com.br/m/bb-pay/#/cm49eyJvcHIiOiJDQ0siLCJzb2xpY2l0YXRpb25OdW1iZXIiOiI3MTQ5MSJ9",
+                    "quantidadePagamentosEfetivados": 1,
+                    "valorSomatorioPagamentosEfetivados": 147,
+                    "quantidadeDevolucoes": 0,
+                    "valorSomatorioDevolucoes": 0,
+                    "pagamentoUnico": true,
+                    "valorSolicitacao": 150,
+                    "codigoConciliacaoSolicitacao": "CONCILIACAO",
+                    "informacoesPix": {
+                        "txId": "aIbupfFpBZd45Vj0Ys5mITwQOC",
+                        "textoQrCode": "00020101021226920014br.gov.bcb.pix2570qrcodepix-h.bb.com.br/pix/v2/cobv/f9f99708-51b0-49fe-92da-8bd2c715b5ad5204000053039865406150.005802BR5925CAROLINA MINERADORA E TRA6008BRASILIA62070503***6304283D"
+                    },
+                    "informacoesBoleto": {
+                        "linhaDigitavel": "00190000090355692600800071491179895800000015000",
+                        "textoCodigoBarras": "00198958000000150000000003556926000007149117"
+                    },
+                    "vencimento": {
+                        "data": "2023-12-30",
+                        "multaPercentual": 2,
+                        "multaValorFixo": 0,
+                        "jurosPercentual": 1,
+                        "descontos": [
+                            {
+                                "dataLimite": "2023-12-18",
+                                "valorFixo": 3,
+                                "valorPercentual": 0
+                            },
+                            {
+                                "dataLimite": "2023-12-19",
+                                "valorFixo": 2,
+                                "valorPercentual": 0
+                            },
+                            {
+                                "dataLimite": "2023-12-20",
+                                "valorFixo": 1,
+                                "valorPercentual": 0
+                            }
+                        ]
+                    },
+                    "repasse": {
+                        "tipoValorRepasse": "Percentual",
+                        "recebedores": [
+                            {
+                                "identificadorRecebedor": 1351002000,
+                                "tipoRecebedor": "Convenio",
+                                "valorRepasse": 20
+                            },
+                            {
+                                "identificadorRecebedor": 13510020001,
+                                "tipoRecebedor": "Participante",
+                                "valorRepasse": 80
+                            }
+                        ]
+                    }
+                }
+            },
+            "Solicitacao": {
+                "title": "Root Type for Solicitacao",
+                "description": "Informações de uma solicitação de pagamento",
+                "type": "object",
+                "properties": {
+                    "numeroSolicitacao": {
+                        "format": "int32",
+                        "description": "Número identificador da solicitação de pagamento",
+                        "type": "integer"
+                    },
+                    "descricaoSolicitacao": {
+                        "description": "Descrição da solicitação de pagamento",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "codigoEstadoSolicitacao": {
+                        "format": "int32",
+                        "description": "Código do estado da solicitação",
+                        "type": "integer"
+                    },
+                    "codigoConciliacaoSolicitacao": {
+                        "description": "Código da conciliação da solicitação de pagamento",
+                        "maxLength": 36,
+                        "type": "string"
+                    },
+                    "timestampCriacaoSolicitacao": {
+                        "format": "date-time",
+                        "description": "Timestamp da criação da solicitação",
+                        "maxLength": 26,
+                        "type": "string"
+                    },
+                    "timestampLimiteSolicitacao": {
+                        "format": "date-time",
+                        "description": "Timestamp de expiração da solicitação",
+                        "maxLength": 26,
+                        "type": "string"
+                    },
+                    "indicadorPagamentoUnico": {
+                        "description": "Indicador se a solicitação aceita um ou mais pagamentos",
+                        "type": "boolean"
+                    },
+                    "valorSolicitacao": {
+                        "format": "double",
+                        "description": "Valor que o cliente deseja receber do pagador. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "vencimento": {
+                        "$ref": "#/components/schemas/Vencimento",
+                        "properties": {
+                            "data": {
+                                "format": "date",
+                                "type": "string"
+                            },
+                            "multaPercentual": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "multaValorFixo": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "jurosPercentual": {
+                                "format": "int32",
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "numeroSolicitacao": 70968,
+                    "descricaoSolicitacao": "Descriçao desta solicitação",
+                    "codigoEstadoSolicitacao": 0,
+                    "codigoConciliacaoSolicitacao": "conciliacao",
+                    "timestampCriacaoSolicitacao": "2023-05-29T10:39:27.916512",
+                    "timestampLimiteSolicitacao": "2024-12-30T08:00",
+                    "indicadorPagamentoUnico": true,
+                    "valorSolicitacao": 150,
+                    "vencimento": {
+                        "data": "2023-12-30",
+                        "multaPercentual": 2,
+                        "multaValorFixo": 0,
+                        "jurosPercentual": 1
+                    }
+                }
+            },
+            "resposta-GET-solicitacoes": {
+                "title": "Root Type for resposta-GET-solicitacoes",
+                "description": "Resposta do recurso GET /v2/solicitacoes",
+                "type": "object",
+                "properties": {
+                    "totalRegistros": {
+                        "format": "int64",
+                        "description": "Número total de registros encontrados para a consulta",
+                        "type": "integer"
+                    },
+                    "tokenPaginacao": {
+                        "description": "Token para continuação de pesquisa (paginação)",
+                        "maxLength": 60,
+                        "type": "string"
+                    },
+                    "listaSolicitacoes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SolicitacaoSemDesconto"
+                        }
+                    }
+                },
+                "example": {
+                    "totalRegistros": 1,
+                    "tokenPaginacao": "",
+                    "listaSolicitacoes": [
+                        {
+                            "numeroSolicitacao": 70968,
+                            "descricaoSolicitacao": "Descriçao desta solicitação",
+                            "codigoEstadoSolicitacao": 0,
+                            "codigoConciliacaoSolicitacao": "conciliacao",
+                            "timestampCriacaoSolicitacao": "2023-05-29T10:39:27.916512",
+                            "timestampLimiteSolicitacao": "2024-06-31T15:16:09.358603",
+                            "indicadorPagamentoUnico": true,
+                            "valorSolicitacao": 150,
+                            "vencimento": {
+                                "data": "2023-12-30",
+                                "multaPercentual": 2,
+                                "multaValorFixo": 0,
+                                "jurosPercentual": 1
+                            }
+                        }
+                    ]
+                }
+            },
+            "requisicao-PUT-solicitacao": {
+                "title": "Root Type for requisicao-PUT-solicitacao",
+                "description": "Requisição do recurso PUT /v2/solicitacoes/{numeroSolicitacao}",
+                "type": "object",
+                "properties": {
+                    "valorSolicitacao": {
+                        "format": "double",
+                        "description": "Valor que o cliente deseja receber do pagador. É possível alterar apenas solicitações que tenham valor definido. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "descricaoSolicitacao": {
+                        "description": "Descrição da solicitação do pagamento",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "dataVencimento": {
+                        "format": "date",
+                        "description": "Data de vencimento da solicitação. É possível alterar apenas solicitações que tenham data de vencimento definida",
+                        "maxLength": 10,
+                        "type": "string"
+                    },
+                    "timestampLimiteSolicitacao": {
+                        "format": "date-time",
+                        "description": "Data e hora limite máximo para pagamento da solicitação de pagamento (timestamp)",
+                        "maxLength": 26,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "valorSolicitacao": 152.9,
+                    "descricaoSolicitacao": "Pedido: 1234",
+                    "dataVencimento": "2025-01-31",
+                    "timestampLimiteSolicitacao": "2025-06-31T15:16:09.358603"
+                }
+            },
+            "VencimentoSemDesconto": {
+                "title": "Root Type for Vencimento",
+                "description": "Informações sobre o vencimento da solicitação, como data e valores de multa",
+                "type": "object",
+                "properties": {
+                    "multaValorFixo": {
+                        "format": "double",
+                        "description": "Valor da multa do tipo fixa. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "jurosPercentual": {
+                        "format": "double",
+                        "description": "Valor dos juros percentual. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "data": {
+                        "format": "date",
+                        "description": "Data de vencimento da solicitação. Se informada, pagamentoUnico deve ser = true",
+                        "maxLength": 10,
+                        "type": "string"
+                    },
+                    "multaPercentual": {
+                        "format": "double",
+                        "description": "Valor da multa do tipo percentual. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "data": "2022-01-01",
+                    "multaValorFixo": 25.5,
+                    "multaPercentual": 0,
+                    "jurosPercentual": 1.2
+                }
+            },
+            "SolicitacaoSemDesconto": {
+                "title": "Root Type for Solicitacao",
+                "description": "Informações de uma solicitação de pagamento",
+                "type": "object",
+                "properties": {
+                    "numeroSolicitacao": {
+                        "format": "int32",
+                        "description": "Número identificador da solicitação de pagamento",
+                        "type": "integer"
+                    },
+                    "descricaoSolicitacao": {
+                        "description": "Descrição da solicitação de pagamento",
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "codigoEstadoSolicitacao": {
+                        "format": "int32",
+                        "description": "Código do estado da solicitação",
+                        "type": "integer"
+                    },
+                    "codigoConciliacaoSolicitacao": {
+                        "description": "Código da conciliação da solicitação de pagamento",
+                        "maxLength": 36,
+                        "type": "string"
+                    },
+                    "timestampCriacaoSolicitacao": {
+                        "format": "date-time",
+                        "description": "Timestamp da criação da solicitação",
+                        "maxLength": 26,
+                        "type": "string"
+                    },
+                    "timestampLimiteSolicitacao": {
+                        "format": "date-time",
+                        "description": "Timestamp de expiração da solicitação",
+                        "maxLength": 26,
+                        "type": "string"
+                    },
+                    "indicadorPagamentoUnico": {
+                        "description": "Indicador se a solicitação aceita um ou mais pagamentos",
+                        "type": "boolean"
+                    },
+                    "valorSolicitacao": {
+                        "format": "double",
+                        "description": "Valor que o cliente deseja receber do pagador. Aceito até 2 casas decimais.",
+                        "type": "number"
+                    },
+                    "vencimento": {
+                        "$ref": "#/components/schemas/VencimentoSemDesconto",
+                        "properties": {
+                            "data": {
+                                "format": "date",
+                                "type": "string"
+                            },
+                            "multaPercentual": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "multaValorFixo": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "jurosPercentual": {
+                                "format": "int32",
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "numeroSolicitacao": 70968,
+                    "descricaoSolicitacao": "Descriçao desta solicitação",
+                    "codigoEstadoSolicitacao": 0,
+                    "codigoConciliacaoSolicitacao": "conciliacao",
+                    "timestampCriacaoSolicitacao": "2023-05-29T10:39:27.916512",
+                    "timestampLimiteSolicitacao": "2024-12-30T08:00",
+                    "indicadorPagamentoUnico": true,
+                    "valorSolicitacao": 150,
+                    "vencimento": {
+                        "data": "2023-12-30",
+                        "multaPercentual": 2,
+                        "multaValorFixo": 0,
+                        "jurosPercentual": 1
+                    }
+                }
+            }
+        },
+        "responses": {
+            "responseErrorOAuthUnauthorized": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErroOAuthUnauthorized"
+                        },
+                        "examples": {
+                            "example-1": {
+                                "value": {
+                                    "statusCode": 401,
+                                    "error": "Unauthorized",
+                                    "message": "Bad Credentials",
+                                    "attributes": {
+                                        "error": "Bad Credentials"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Erro de autenticação do OAuth 2.0"
+            },
+            "responseErro500": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Erros500"
+                        },
+                        "examples": {
+                            "example-1": {
+                                "value": {
+                                    "erros": [
+                                        {
+                                            "codigo": "9999999",
+                                            "versao": "1",
+                                            "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                                            "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Erro interno no provimento de um recurso"
+            },
+            "responseErro400": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Erros400"
+                        },
+                        "examples": {
+                            "example-1": {
+                                "value": {
+                                    "erros": [
+                                        {
+                                            "codigo": "9999999",
+                                            "versao": "1",
+                                            "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                                            "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Erro campo obrigatório nao informado"
+            },
+            "responseErro422": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Erros422"
+                        },
+                        "examples": {
+                            "example-1": {
+                                "value": {
+                                    "erros": [
+                                        {
+                                            "codigo": "9999999",
+                                            "versao": "1",
+                                            "mensagem": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                                            "ocorrencia": "2AzBShK/zFE=C0700051620C"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Erro de valor inválido em algum campo da requisição após validação/processamento do recurso"
+            },
+            "response-resposta-GET-pagamento": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Pagamento"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-pagamentos": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ListaPagamentos"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-POST-solicitacoes": {
+                "headers": {
+                    "Location": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "Exemplo de produção": {
+                                "value": "(GET) https://api.bb.com.br/checkout/v2/solicitacoes/1234"
+                            }
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-POST-solicitacoes"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-devolucao": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Devolucao"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-devolucoes": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ListaDevolucoes"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-POST-participantes": {
+                "headers": {
+                    "Location": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "Exemplo de produção": {
+                                "value": "(GET) https://api.bb.com.br/checkout/v2/participantes/1234"
+                            }
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-POST-participantes"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-participantes": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ListaParticipantes"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-participante": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Participante"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-POST-devolucoes": {
+                "headers": {
+                    "Location": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "Exemplo de produção": {
+                                "value": "(GET) https://api.bb.com.br/checkout/v2/devolucoes/1234"
+                            }
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-POST-devolucoes"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-PUT-participante": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/requisicao-PUT-participante"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-openfinance-autorizacao": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-GET-openfinance-autorizacao"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-openfinance-marcas-ativas": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-GET-openfinance-marcas-ativas"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-POST-openfinance-autorizacoes": {
+                "headers": {
+                    "Location": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "Exemplo de produção": {
+                                "value": "(GET) https://api.bb.com.br/checkout/v2/openfinance/autorizacoes/1234"
+                            }
+                        }
+                    }
+                },
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-POST-openfinance-autorizacoes"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-solicitacao": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-GET-solicitacao"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "response-resposta-GET-solicitacoes": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/resposta-GET-solicitacoes"
+                        }
+                    }
+                },
+                "description": ""
+            }
+        },
+        "securitySchemes": {
+            "OAuth2-ClientCredentials-sandbox": {
+                "flows": {
+                    "clientCredentials": {
+                        "tokenUrl": "https://oauth.hm.bb.com.br/oauth/token",
+                        "refreshUrl": "https://oauth.hm.bb.com.br/oauth/token",
+                        "scopes": {
+                            "checkout.solicitacoes-info": "",
+                            "checkout.solicitacoes-requisicao": "",
+                            "checkout.pagamentos-info": "",
+                            "checkout.pagamentos-requisicao": "",
+                            "checkout.devolucoes-info": "",
+                            "checkout.devolucoes-requisicao": "",
+                            "checkout.participantes-info": "",
+                            "checkout.participantes-requisicao": "",
+                            "checkout.openfinance-info": "",
+                            "checkout.openfinance-requisicao": ""
+                        }
+                    }
+                },
+                "type": "oauth2",
+                "description": "Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros.\nOpção para ambiente de teste/sandbox."
+            },
+            "OAuth2-ClientCredentials": {
+                "flows": {
+                    "clientCredentials": {
+                        "tokenUrl": "https://oauth.bb.com.br/oauth/token",
+                        "refreshUrl": "https://oauth.bb.com.br/oauth/token",
+                        "scopes": {
+                            "checkout.solicitacoes-info": "",
+                            "checkout.solicitacoes-requisicao": "",
+                            "checkout.pagamentos-info": "",
+                            "checkout.pagamentos-requisicao": "",
+                            "checkout.devolucoes-info": "",
+                            "checkout.devolucoes-requisicao": "",
+                            "checkout.participantes-info": "",
+                            "checkout.participantes-requisicao": "",
+                            "checkout.openfinance-info": "",
+                            "checkout.openfinance-requisicao": ""
+                        }
+                    }
+                },
+                "type": "oauth2",
+                "description": "Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros."
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Solicitacoes"
+        },
+        {
+            "name": "Pagamentos",
+            "description": ""
+        },
+        {
+            "name": "Devolucoes",
+            "description": ""
+        },
+        {
+            "name": "Participantes",
+            "description": ""
+        },
+        {
+            "name": "Openfinance",
+            "description": ""
+        }
+    ],
+    "externalDocs": {
+        "url": "https://developers.bb.com.br/"
+    }
+}

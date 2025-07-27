@@ -39,8 +39,10 @@ def generate_openapi_client(
     )
     code_parts = [
         '"""',
-        open_api_data["info"]["title"] + " v" + open_api_data["info"]["version"],
-        open_api_data["info"]["description"],
+        open_api_data["info"].get("title", "")
+        + " v"
+        + open_api_data["info"].get("version", ""),
+        open_api_data["info"].get("description", ""),
         '"""',
         "import requests",
         "from typing import Optional",
@@ -70,12 +72,16 @@ def generate_openapi_client(
         path_dict = resolve(open_api_data, path_dict)
         assert isinstance(path_dict, dict), f"Path {path_template} must be a dictionary"
         for method, method_dict in path_dict.items():
+            if method not in ["get", "post", "put", "patch", "delete", "options"]:
+                continue
             method_dict = resolve(open_api_data, method_dict)
             assert isinstance(method_dict, dict), (
                 f"Method {method} in path {path_template} must be a dictionary"
             )
             method_name = make_method_name(method, path_template)
-            parameters = method_dict.get("parameters", [])
+            parameters = method_dict.get("parameters", []) + path_dict.get(
+                "parameters", []
+            )
             assert isinstance(parameters, list), "Parameters must be a list"
             if method_dict.get("requestBody"):
                 assert "content" in method_dict["requestBody"], (
@@ -95,7 +101,7 @@ def generate_openapi_client(
                     }
                 )
             method_params = [
-                f"{snake_case(parameter['name'])}: {python_type_from_json_type(resolve(open_api_data, parameter['schema'])['type'], parameter.get('required', False))} = None"
+                f"{snake_case(parameter['name'])}: {python_type_from_json_type(resolve(open_api_data, parameter['schema']).get('type', 'string'), parameter.get('required', False))} = None"
                 for parameter in map(
                     lambda p: resolve(open_api_data, p),
                     parameters,
@@ -105,7 +111,9 @@ def generate_openapi_client(
             function_code = "\n".join(
                 indent(
                     [
-                        f"def {method_name}(self, *, {method_params_code}):",
+                        f"def {method_name}(self, *, {method_params_code}):"
+                        if method_params_code
+                        else f"def {method_name}(self):",
                         *indent(
                             [
                                 '"""',
@@ -139,47 +147,71 @@ def generate_openapi_client(
                                     ],
                                     [],
                                 ),
-                                "query = {",
-                                *indent(
+                                "query = {}",
+                                *functools.reduce(
+                                    lambda a, b: a + b,
                                     [
-                                        f"{repr(parameter['name'])}: {snake_case(parameter['name'])},"
+                                        [
+                                            f"if {snake_case(parameter['name'])} is not None:",
+                                            *indent(
+                                                [
+                                                    f"query[{repr(parameter['name'])}] = {snake_case(parameter['name'])}"
+                                                ]
+                                            ),
+                                        ]
                                         for parameter in map(
                                             lambda p: resolve(open_api_data, p),
                                             parameters,
                                         )
                                         if parameter.get("in") == "query"
-                                    ]
+                                    ],
+                                    [],
                                 ),
-                                "}",
-                                "headers = {",
-                                *indent(
+                                "headers = {}",
+                                *functools.reduce(
+                                    lambda a, b: a + b,
                                     [
-                                        f"{repr(header['name'])}: {snake_case(header['name'])},"
+                                        [
+                                            f"if {snake_case(header['name'])} is not None:",
+                                            *indent(
+                                                [
+                                                    f"headers[{repr(header['name'])}] = {snake_case(header['name'])}"
+                                                ]
+                                            ),
+                                        ]
                                         for header in map(
                                             lambda p: resolve(open_api_data, p),
                                             parameters,
                                         )
                                         if header.get("in") == "header"
-                                    ]
+                                    ],
+                                    [],
                                 ),
-                                "}",
-                                "path_params = {",
-                                *indent(
+                                "path_params = {}",
+                                *functools.reduce(
+                                    lambda a, b: a + b,
                                     [
-                                        f"{repr(snake_case(param['name']))}: {snake_case(param['name'])},"
-                                        for param in map(
+                                        [
+                                            f"if {snake_case(parameter['name'])} is not None:",
+                                            *indent(
+                                                [
+                                                    f"path_params[{repr(parameter['name'])}] = {snake_case(parameter['name'])}"
+                                                ]
+                                            ),
+                                        ]
+                                        for parameter in map(
                                             lambda p: resolve(open_api_data, p),
                                             parameters,
                                         )
-                                        if param.get("in") == "path"
-                                    ]
+                                        if parameter.get("in") == "path"
+                                    ],
+                                    [],
                                 ),
-                                "}",
                                 f"path_rendered = {repr(path_template)}.format(**path_params)",
                                 f"response = requests.{method}(",
                                 *indent(
                                     [
-                                        "path_rendered,",
+                                        "self.base_url + path_rendered,",
                                         "params=query,",
                                         "headers=headers,",
                                         *[

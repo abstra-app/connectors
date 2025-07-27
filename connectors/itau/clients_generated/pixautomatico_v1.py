@@ -28,14 +28,15 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Content-Type": content_type,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if content_type is not None:
+            headers["Content-Type"] = content_type
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/locrec".format(**path_params)
         response = requests.post(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -71,23 +72,30 @@ class PixautomaticoV1Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "idRecPresente": id_rec_presente,
-            "convenio": convenio,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if id_rec_presente is not None:
+            query["idRecPresente"] = id_rec_presente
+        if convenio is not None:
+            query["convenio"] = convenio
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/locrec".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -114,17 +122,19 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "id": id,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/locrec/{id}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -142,15 +152,15 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "id": id,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if id is not None:
+            path_params["id"] = id
         path_rendered = "/locrec/{id}/idRec".format(**path_params)
         response = requests.delete(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -180,17 +190,19 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "rec_url_access_token": rec_url_access_token,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if rec_url_access_token is not None:
+            path_params["recUrlAccessToken"] = rec_url_access_token
         path_rendered = "/token/rec/{recUrlAccessToken}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -239,15 +251,20 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
         path_params = {}
         path_rendered = "/webhookrec".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -270,15 +287,17 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/webhookrec".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -304,15 +323,17 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/webhookrec".format(**path_params)
         response = requests.delete(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -361,15 +382,20 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
         path_params = {}
         path_rendered = "/webhookcobr".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -392,15 +418,17 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/webhookcobr".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -425,15 +453,17 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/webhookcobr".format(**path_params)
         response = requests.delete(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -461,20 +491,22 @@ class PixautomaticoV1Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "txid": txid,
-        }
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "id_rec": id_rec,
-        }
+        query = {}
+        if txid is not None:
+            query["txid"] = txid
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if id_rec is not None:
+            path_params["idRec"] = id_rec
         path_rendered = "/rec/{idRec}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -505,18 +537,21 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
-        path_params = {
-            "id_rec": id_rec,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
+        path_params = {}
+        if id_rec is not None:
+            path_params["idRec"] = id_rec
         path_rendered = "/rec/{idRec}".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -556,26 +591,36 @@ class PixautomaticoV1Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "cpf": cpf,
-            "cnpj": cnpj,
-            "convenio": convenio,
-            "locationPresente": location_presente,
-            "status": status,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if cpf is not None:
+            query["cpf"] = cpf
+        if cnpj is not None:
+            query["cnpj"] = cnpj
+        if convenio is not None:
+            query["convenio"] = convenio
+        if location_presente is not None:
+            query["locationPresente"] = location_presente
+        if status is not None:
+            query["status"] = status
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/rec".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -604,16 +649,19 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
         path_params = {}
         path_rendered = "/rec".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -640,16 +688,19 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
         path_params = {}
         path_rendered = "/solicrec".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -674,17 +725,19 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "id_solic_rec": id_solic_rec,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if id_solic_rec is not None:
+            path_params["idSolicRec"] = id_solic_rec
         path_rendered = "/solicrec/{idSolicRec}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -715,18 +768,21 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
-        path_params = {
-            "id_solic_rec": id_solic_rec,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
+        path_params = {}
+        if id_solic_rec is not None:
+            path_params["idSolicRec"] = id_solic_rec
         path_rendered = "/solicrec/{idSolicRec}".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -755,17 +811,22 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cobr/{txid}".format(**path_params)
-        response = requests.put(path_rendered, params=query, headers=headers, json=body)
+        response = requests.put(
+            self.base_url + path_rendered, params=query, headers=headers, json=body
+        )
         response.raise_for_status()
         return response.json()
 
@@ -793,18 +854,21 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cobr/{txid}".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -829,17 +893,19 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "txid": txid,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
         path_rendered = "/cobr/{txid}".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -868,16 +934,19 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
         path_params = {}
         path_rendered = "/cobr".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -915,25 +984,34 @@ class PixautomaticoV1Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "inicio": inicio,
-            "fim": fim,
-            "idRec": id_rec,
-            "cpf": cpf,
-            "cnpj": cnpj,
-            "convenio": convenio,
-            "paginacao.paginaAtual": paginacao_pagina_atual,
-            "paginacao.itensPorPagina": paginacao_itens_por_pagina,
-        }
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        query = {}
+        if inicio is not None:
+            query["inicio"] = inicio
+        if fim is not None:
+            query["fim"] = fim
+        if id_rec is not None:
+            query["idRec"] = id_rec
+        if cpf is not None:
+            query["cpf"] = cpf
+        if cnpj is not None:
+            query["cnpj"] = cnpj
+        if convenio is not None:
+            query["convenio"] = convenio
+        if paginacao_pagina_atual is not None:
+            query["paginacao.paginaAtual"] = paginacao_pagina_atual
+        if paginacao_itens_por_pagina is not None:
+            query["paginacao.itensPorPagina"] = paginacao_itens_por_pagina
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/cobr".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -964,19 +1042,23 @@ class PixautomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "Authorization": authorization,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-            "Content-Type": content_type,
-        }
-        path_params = {
-            "txid": txid,
-            "data": data,
-        }
+        headers = {}
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if content_type is not None:
+            headers["Content-Type"] = content_type
+        path_params = {}
+        if txid is not None:
+            path_params["txid"] = txid
+        if data is not None:
+            path_params["data"] = data
         path_rendered = "/cobr/{txid}/retentativa/{data}".format(**path_params)
         response = requests.post(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )

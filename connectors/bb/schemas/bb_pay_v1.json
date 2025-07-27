@@ -1,0 +1,1643 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BBPay",
+    "version": "1.7",
+    "description": "Api para realizar consultas e solicitações de pagamentos para clientes do Banco do Brasil S.A.",
+    "contact": {
+      "name": "Banco do Brasil S.A. - BB for Developers",
+      "url": "https://developers.bb.com.br"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.sandbox.bb.com.br/checkout/v1",
+      "description": "Servidor de testes"
+    },
+    {
+      "url": "https://api.hm.bb.com.br/checkout/v1",
+      "description": "Homologação"
+    },
+    {
+      "url": "https://api.bb.com.br/checkout/v1",
+      "description": "Produção"
+    }
+  ],
+  "paths": {
+    "/solicitacao-pagamento": {
+      "post": {
+        "summary": "Criar Solicitação de Pagamento",
+        "operationId": "post-solicitacao-pagamento",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RespostaSolicitacaoPagamento"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "description": "Cria uma solicitação de pagamentos para clientes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          }
+        ],
+        "tags": [
+          "solicitacao-pagamento"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroConvenio": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 9999999999,
+                    "example": 1351002000,
+                    "description": "Número de Convênio do cliente com o Checkout "
+                  },
+                  "timestampLimiteSolicitacaoPagamento": {
+                    "type": "string",
+                    "maxLength": 26,
+                    "minLength": 0,
+                    "example": "2010-01-10T03:00:00.000000",
+                    "description": "Data e hora limite máximo para pagamento  da solicitação de pagamento (timestamp)"
+                  },
+                  "indicadorPagamentoUnico": {
+                    "type": "string",
+                    "maxLength": 1,
+                    "minLength": 0,
+                    "example": "S",
+                    "description": "Indicador se a solicitação aceita um ou mais pagamentos, se aceitar Open Banking  é obrigatório ser \"S\""
+                  },
+                  "valorSolicitacaoPagamento": {
+                    "type": "number",
+                    "format": "double",
+                    "maximum": 1000000000000000,
+                    "minimum": 0,
+                    "description": "Valor que o cliente deseja receber do pagador, quando não informado será definido pelo pagador; se aceitar Open Banking  é obrigatório"
+                  },
+                  "codigoConciliacaoSolicitacaoPagamento": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 36,
+                    "example": "cobranças Open Banking",
+                    "description": "Código da conciliação da solicitação de pagamento"
+                  },
+                  "descricaoSolicitacaoPagamento": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 0,
+                    "example": "TV LG 50 polegadas/ Pedido: 123456 ",
+                    "description": "Descrição da solicitação do pagamento"
+                  },
+                  "tipoPessoaDevedor": {
+                    "type": "integer",
+                    "maximum": 9999,
+                    "minimum": 0,
+                    "format": "int32",
+                    "example": 0,
+                    "description": "Código do tipo da pessoa do devedor, se aceitar Open Banking  é obrigatório"
+                  },
+                  "cpfCnpjDevedor": {
+                    "type": "integer",
+                    "example": 30580698509,
+                    "maximum": 99999999999999,
+                    "minimum": 0,
+                    "format": "int64",
+                    "description": "Número do CPF/CNPJ do devedor, ´e obrigatório se tiver o tipo de pessoa preenchido"
+                  },
+                  "cepDevedor": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 999999999,
+                    "example": 2314060,
+                    "description": "Número do CEP do devedor "
+                  },
+                  "enderecoDevedor": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Rua Benvenuto, 258",
+                    "minLength": 0,
+                    "description": "Texto com o endereço do devedor"
+                  },
+                  "bairroDevedor": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 0,
+                    "example": "Vila Coração",
+                    "description": "Nome do bairro do devedor"
+                  },
+                  "cidadeDevedor": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 0,
+                    "example": "São Paulo",
+                    "description": "Nome do bairro do devedor"
+                  },
+                  "ufDevedor": {
+                    "type": "string",
+                    "maxLength": 2,
+                    "minLength": 0,
+                    "example": "SP",
+                    "description": "Sigla da Unidade da Federação (sigla do Estado) do devedor"
+                  },
+                  "emailDevedor": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 0,
+                    "example": "joao@gmail.com",
+                    "description": "Texto com o endereço do e-mail do  devedor"
+                  },
+                  "dddTelefoneDevedor": {
+                    "type": "integer",
+                    "maximum": 9999,
+                    "minimum": 0,
+                    "format": "int32",
+                    "example": 11,
+                    "description": "Número do DDD do telefone do devedor "
+                  },
+                  "telefoneDevedor": {
+                    "type": "integer",
+                    "maximum": 999999999,
+                    "minimum": 0,
+                    "format": "int32",
+                    "example": 29918855,
+                    "description": "Número do telefone do devedor "
+                  },
+                  "cpfCnpjRepresentanteEmpresa": {
+                    "type": "integer",
+                    "format": "int64",
+                    "maximum": 99999999999999,
+                    "minimum": 0,
+                    "description": "CPF ou CNPJ do representante da empresa indicada como devedora"
+                  },
+                  "quantidadeTiposPagamentosLista": {
+                    "type": "integer",
+                    "maximum": 9999,
+                    "minimum": 0,
+                    "format": "int32",
+                    "example": 2,
+                    "description": "Quantidade de tipos de pagamentos da solicitação de cobrança,"
+                  },
+                  "listaPagamentos": {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 100,
+                    "description": "Lista de pagamentos",
+                    "items": {
+                      "type": "object",
+                      "description": "Lista de pagamentos",
+                      "properties": {
+                        "codigoTipoPagamento": {
+                          "type": "string",
+                          "maxLength": 3,
+                          "minLength": 0,
+                          "example": "PIX",
+                          "description": "Código do tipo de pagamentos"
+                        }
+                      },
+                      "required": [
+                        "codigoTipoPagamento"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "numeroConvenio",
+                  "indicadorPagamentoUnico",
+                  "descricaoSolicitacaoPagamento",
+                  "quantidadeTiposPagamentosLista",
+                  "listaPagamentos"
+                ]
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Objeto JSON com campos de entrada do recurso POST"
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.solicitacao-pagamento-requisicao"
+            ]
+          }
+        ]
+      }
+    },
+    "/solicitacao-pagamento/{numeroSolicitacaoPagamento}": {
+      "get": {
+        "summary": "Listar Pagamentos de uma Solicitação de Pagamento ou de uma Data",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RespostaListarPagamentos"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "operationId": "get-pagamentos",
+        "description": "Listar os pagamentos de um cliente em uma data ou por uma solicitação de pagamento especifica.",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.solicitacao-pagamento-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          },
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 100,
+              "minimum": 0,
+              "maximum": 999999999,
+              "format": "int32"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "example": 100,
+            "description": "Número de Convênio do cliente com o Checkout ",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 10
+            },
+            "in": "query",
+            "name": "dataPagamento",
+            "description": "Data do pagamento. Se não informar número da solicitação de pagamento, é obrigatório informar a data."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "maximum": 999999999999999,
+              "minimum": 0,
+              "format": "int64"
+            },
+            "in": "query",
+            "required": true,
+            "name": "numeroUltimoPagamentoConsultado",
+            "description": "Número do último pagamento enviado em resposta devolvida pelo banco anteriormente, com os mesmos campos de entrada"
+          }
+        ],
+        "tags": [
+          "solicitacao-pagamento"
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer"
+          },
+          "name": "numeroSolicitacaoPagamento",
+          "in": "path",
+          "required": true,
+          "description": "Número da solicitação de pagamento"
+        }
+      ]
+    },
+    "/pagamentos/{numeroPagamentoSolicitacao}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": "numeroPagamentoSolicitacao",
+          "in": "path",
+          "required": true,
+          "description": "Número do pagamento da solicitação"
+        }
+      ],
+      "get": {
+        "summary": "Detalhar um Pagamento",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RespostaInformacoesPagamentoSolicitacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "404": {
+            "$ref": ""
+          },
+          "409": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "422": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "operationId": "get-pagamentos-numeroPagamentoSolicitacao",
+        "description": "Consulta Informações relativas a um Pagamento específico de uma Solicitação de Pagamentos",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.solicitacao-pagamento-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 35,
+              "format": "int32"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número de Convênio do cliente",
+            "required": true
+          }
+        ],
+        "tags": [
+          "pagamentos"
+        ]
+      }
+    },
+    "/pagamentos/{numeroPagamentoSolicitacao}/devolver": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100000000000000000,
+            "minimum": 1
+          },
+          "name": "numeroPagamentoSolicitacao",
+          "example": 1,
+          "in": "path",
+          "required": true,
+          "description": "Número do pagamento da solicitação que será devolvido."
+        }
+      ],
+      "post": {
+        "summary": "Devolver um Pagamento",
+        "operationId": "post-devolver-pagamento",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RespostaDevolucaoPagamento"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "404": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "description": "Devolve um pagamento",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          }
+        ],
+        "tags": [
+          "pagamentos"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroConvenio": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 999999999,
+                    "example": 1,
+                    "description": "Número de convênio do cliente com o Checkout."
+                  },
+                  "valorDevolucao": {
+                    "type": "number",
+                    "format": "double",
+                    "maximum": 1000000000000000,
+                    "minimum": 0.01,
+                    "example": 10,
+                    "description": "Valor que o cliente deseja solicitar devolução."
+                  },
+                  "motivoDevolucao": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "OUTROS",
+                    "description": "Motivo da devolução.",
+                    "enum": [
+                      "COBRANCA_EM_DUPLICIDADE",
+                      "SOLICITADA_PELO_PAGADOR",
+                      "VALOR_RECUSADO_PELO_PAGADOR",
+                      "AJUSTE_DE_VALOR",
+                      "OUTROS"
+                    ]
+                  },
+                  "textoMotivoDevolucao": {
+                    "type": "string",
+                    "maxLength": 140,
+                    "example": "Pagador devolveu mercadoria",
+                    "description": "Texto do usuário para identificar a devolução, caso tenha informado o motivo OUTROS."
+                  }
+                },
+                "required": [
+                  "numeroConvenio",
+                  "valorDevolucao"
+                ]
+              }
+            }
+          },
+          "description": "Objeto JSON com campos de entrada do recurso POST"
+        },
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.pagamentos-requisicao"
+            ]
+          }
+        ]
+      }
+    },
+    "/solicitacao-pagamentos/{numeroSolicitacaoPagamento}/autorizacoes": {
+      "post": {
+        "summary": "Iniciar Fluxo de Autorização de Pagamento no Open Banking",
+        "operationId": "post-solicitacao-autorizacao-pagamento",
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/RespostaAutorizacaoPagamento"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "404": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "tags": [
+          "autorizacao-pagamento"
+        ],
+        "description": "Cria uma solicitação de autorização de pagamento",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.solicitacao-pagamento-requisicao"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numeroMarcaParticipanteOpenbanking": {
+                    "type": "integer",
+                    "description": "Número da marca do participante OpenBanking escolhido pelo usuário pagador."
+                  },
+                  "informacaoPagador": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 140,
+                    "description": "Texto do pagador para identificar o pagamento."
+                  },
+                  "agenciaPagador": {
+                    "type": "integer",
+                    "format": "int32",
+                    "maximum": 9999,
+                    "minimum": 0,
+                    "description": "Código da agência do pagador."
+                  },
+                  "tipoContaPagador": {
+                    "type": "integer",
+                    "maximum": 9999,
+                    "minimum": 0,
+                    "format": "int32",
+                    "description": "Código do tipo de conta do pagador."
+                  },
+                  "contaCorrentePagador": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 99999999999,
+                    "format": "int64",
+                    "description": "Número da conta corrente do Pagador."
+                  },
+                  "numeroConvenio": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "maximum": 999999999,
+                    "description": "Número do convênio do cliente com o checkout."
+                  }
+                },
+                "required": [
+                  "numeroMarcaParticipanteOpenbanking",
+                  "numeroConvenio"
+                ]
+              }
+            }
+          },
+          "description": "Objeto JSON com campos de entrada do recurso POST"
+        }
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "example": 999999
+          },
+          "name": "numeroSolicitacaoPagamento",
+          "in": "path",
+          "required": true,
+          "description": "Número da solicitação do pagamento que será autorizado."
+        }
+      ]
+    },
+    "/{id}/marcas-ativas": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1,
+            "minimum": 0
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Número da marca do participante Open Banking do débito para rechamada."
+        }
+      ],
+      "get": {
+        "summary": "Listar Marcas de Instituições de Débito Ativas Open Banking",
+        "tags": [
+          "marcas-ativas"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RespostaListarMarcasAtivas"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "operationId": "get-marcas-ativas",
+        "description": "Lista as marcas ativas participantes do Open Banking para utilização no processo de iniciação de pagamento.",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.marcas-ativas-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número de convênio do cliente com o Checkout.",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/pagamentos/{numeroPagamentoSolicitacao}/autorizacoes": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer"
+          },
+          "name": "numeroPagamentoSolicitacao",
+          "in": "path",
+          "required": true,
+          "description": "Número do pagamento da solicitação que foi autorizado."
+        }
+      ],
+      "get": {
+        "summary": "Consultar Autorização de Pagamento no Open Banking",
+        "operationId": "get-autorizacao-pagamentos-numeroPagamentoSolicitacao",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RespostaConsultarAutorizacaoPagamento"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "description": "Consulta a autorização de pagamento (consentimento) de um pagamento em outra instituição financeira",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.pagamentos-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/gw-dev-app-key"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 9999
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número do convênio do cliente",
+            "required": true
+          }
+        ],
+        "tags": [
+          "autorizacao-pagamento"
+        ]
+      }
+    },
+    "/devolucoes-pagamentos": {
+      "get": {
+        "summary": "Listar Devolucoes de Solicitacao de Pagamento ou de uma Data",
+        "tags": [
+          "listar-devolucoes"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RepostaListarDevolucoes"
+          },
+          "400": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErrorOAuthUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "404": {
+            "$ref": "#/components/responses/Erro"
+          },
+          "500": {
+            "$ref": "#/components/responses/Erro"
+          }
+        },
+        "operationId": "get-devolucoes-pagamentos",
+        "description": "Lista as devoluções de uma solicitação de pagamento especifica ou as devoluções realizadas em uma data. Na requisição deve ser informada a data do pagamento ou a solicitação de pagamento. ",
+        "security": [
+          {
+            "OAuth2-ClientCredentials": [
+              "checkout.pagamentos-info"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Authorization",
+            "description": "É o valor do token de acesso fornecido pelo OAuth."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "gw-dev-app-key",
+            "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "example": 35,
+              "minimum": 0,
+              "maximum": 999999999,
+              "format": "int32"
+            },
+            "in": "query",
+            "name": "numeroConvenio",
+            "description": "Número de Convênio do cliente com o BB Pay ",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000000000000000,
+              "format": "int64"
+            },
+            "in": "query",
+            "description": "Numero Solicitacao Pagamento, só deve ser inserido se a data não for informada",
+            "name": "numeroSolicitacaoPagamento"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 10
+            },
+            "in": "query",
+            "name": "dataPagamento",
+            "description": "Data das devoluções, só deve ser inserida se o número da solicitação de pagamento não for informado"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 999999999999999
+            },
+            "in": "query",
+            "description": "Número se referente ao ultimo valor de numeroDevolucao retornado na resposta anterior, e se este é o ultimo valor da pesquisa (medida necessária devido ao limite de resposta de 250 itens por requisição)",
+            "name": "numeroUltimaDevolucao"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "OAuth2-ClientCredentials": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.sandbox.bb.com.br/oauth/token",
+            "scopes": {
+              "checkout.solicitacao-pagamento-info": "Consultar as solicitações de pagamento efetuadas via API de Checkout",
+              "checkout.solicitacao-pagamento-requisicao": "Permite realizar requisições (incluir, alterar, excluir) nos recursos da API Checkout",
+              "checkout.pagamentos-requisicao": "",
+              "checkout.pagamentos-info": "Consulta Informações relativas a um Pagamento específico de uma Solicitação de Pagamentos",
+              "checkout.marcas-ativas-info": "Consulta as marcas ativas participantes do Open Banking para utilização no processo de iniciação de pagamento"
+            },
+            "refreshUrl": "https://oauth.desenv.bb.com.br/oauth/token"
+          }
+        },
+        "description": "Com a proteção de credenciais de usuários, o OAuth 2.0 permite a recuperação segura de recursos seguros."
+      }
+    },
+    "responses": {
+      "Erro": {
+        "description": "Representa os campos de erro de uma requisição a um recurso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "erros": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "description": "Lista que contém os objetos de erro",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "codigo": {
+                        "type": "string",
+                        "example": "9999999",
+                        "description": "Código da mensagem de erro"
+                      },
+                      "versao": {
+                        "type": "string",
+                        "example": "1",
+                        "description": "Versão da mensagem de erro"
+                      },
+                      "mensagem": {
+                        "type": "string",
+                        "example": "Erros do tipo 4XX são erros de chamada de responsabilidade de quem está acionando este recurso. Erros do tipo 5XX são erros internos no BB.",
+                        "description": "Mensagem de erro"
+                      },
+                      "ocorrencia": {
+                        "type": "string",
+                        "example": "2AzBShK/zFE=C0700051620C",
+                        "description": "Código da ocorrência do erro. Não se trata de código HTTP"
+                      }
+                    },
+                    "required": [
+                      "codigo",
+                      "versao",
+                      "mensagem",
+                      "ocorrencia"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "erros"
+              ]
+            }
+          }
+        },
+        "headers": {
+          "Content-type": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "application/json"
+          }
+        }
+      },
+      "ErrorOAuthUnauthorized": {
+        "description": "Representação de um objeto de erro do OAuth 2.0.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "number",
+                  "description": "Código do estado do erro."
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Tipo do erro."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Mensagem do erro."
+                },
+                "attributes": {
+                  "type": "object",
+                  "description": "Atributos do erro.",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Mensagem do erro."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "headers": {
+          "Content-type": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "application/json"
+          }
+        }
+      },
+      "RespostaSolicitacaoPagamento": {
+        "description": "Representação do objeto de resposta do recurso de Criar Solicitação de Pagamento.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "numeroSolicitacaoPagamento": {
+                  "type": "integer",
+                  "maximum": 100000000000000000,
+                  "minimum": 0,
+                  "format": "int64",
+                  "description": "Número da solicitação de pagamento",
+                  "example": 2
+                },
+                "dataCriacaoSolicitacaoPagamento": {
+                  "type": "string",
+                  "description": "Data da criação da solicitação do pagamento",
+                  "minLength": 0,
+                  "maxLength": 10
+                },
+                "horaSolicitacaoPagamento": {
+                  "type": "string",
+                  "maxLength": 8,
+                  "minLength": 0,
+                  "description": "Hora da criação da solcicitação do pagamento"
+                },
+                "codigoTipoSolicitacaoPagamento": {
+                  "type": "integer",
+                  "maximum": 9999,
+                  "minimum": 0,
+                  "example": 9999,
+                  "description": "Códito do tipo da solicitação do pagamento"
+                },
+                "textoUrlSolicitacao": {
+                  "type": "string",
+                  "maxLength": 255,
+                  "minLength": 0,
+                  "description": "Texto da URL da solicitação de pagamento"
+                },
+                "textoQrcode": {
+                  "type": "string",
+                  "description": "Texto QRCODE da solicitação."
+                }
+              },
+              "required": [
+                "numeroSolicitacaoPagamento",
+                "dataCriacaoSolicitacaoPagamento",
+                "horaSolicitacaoPagamento",
+                "textoUrlSolicitacao",
+                "textoQrcode"
+              ]
+            }
+          }
+        },
+        "links": {
+          "get-pagamentos": {
+            "operationId": "get-pagamentos",
+            "parameters": {
+              "numeroSolicitacaoPagamento": "$response.body#/numeroSolicitacaoPagamento"
+            },
+            "description": "O campo 'numeroSolicitacaoPagamento' deve ser usado no path parameter"
+          },
+          "post-solicitacao-autorizacao-pagamento": {
+            "operationId": "post-solicitacao-autorizacao-pagamento",
+            "parameters": {
+              "numeroSolicitacaoPagamento": "$response.body#/numeroSolicitacaoPagamento"
+            },
+            "description": "O campo 'numeroSolicitacaoPagamento' deve ser usado no path parameter"
+          }
+        }
+      },
+      "RespostaDevolucaoPagamento": {
+        "description": "Representação do objeto de resposta do recurso Devolver Pagamento",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "numeroDevolucao": {
+                  "type": "integer",
+                  "maximum": 100000000000000000,
+                  "minimum": 1,
+                  "format": "int64",
+                  "description": "Número criado para o cancelamento, que ficará sempre vinculado ao pagamento original.",
+                  "example": 1
+                }
+              },
+              "required": [
+                "numeroDevolucao"
+              ]
+            }
+          }
+        }
+      },
+      "RespostaListarPagamentos": {
+        "description": "Representação do objeto de resposta do recurso de Listar Pagamentos",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "quantidadeOcorrenciasLista": {
+                  "type": "integer",
+                  "description": "Quantidade de ocorrências de pagamentos na lista",
+                  "format": "int32",
+                  "minimum": 0,
+                  "maximum": 9999
+                },
+                "indicadorContinuidadePesquisa": {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 1,
+                  "description": "indicador que informa se há mais pagamentos."
+                },
+                "listaPagamento": {
+                  "type": "array",
+                  "description": "lista de pagamentos ",
+                  "items": {
+                    "type": "object",
+                    "minProperties": 0,
+                    "maxProperties": 250,
+                    "description": "lista de pagamentos ",
+                    "properties": {
+                      "numeroPagamento": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 999999999999999,
+                        "format": "int64",
+                        "description": "Número do pagamento "
+                      },
+                      "numeroSolicitacaoPagamento": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100000000000000000,
+                        "format": "int64",
+                        "description": "Número da solicitação de pagamento"
+                      },
+                      "codigoTipoEstadoPagamento": {
+                        "type": "integer",
+                        "description": "DOMÍNIOS:\n\n200 Pagamento Efetivado; \n201 Pagamento Iniciado; \n202 Pagamento Agendado;\n203 Pagamento Em processamento; \n204 Pagamento Bloqueado; \n205 Pagamento Pendente Assinatura;\n206 Cancelamento em Processamento; \n207 Cancelado;\n208 Pagamento abandonado;\n209 Pagamento Não efetivado; \n210 Devolvido Parcialmente; \n211 Devolvido Integralmente;\n212 Devolução em Processamento",
+                        "minimum": 0,
+                        "format": "int32",
+                        "maximum": 9999
+                      },
+                      "dataPagamento": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 10,
+                        "description": "Data do pagamento"
+                      },
+                      "horaPagamento": {
+                        "type": "string",
+                        "maxLength": 8,
+                        "minLength": 0,
+                        "description": "Hora do pagamento"
+                      },
+                      "codigoTipoPagamento": {
+                        "type": "string",
+                        "example": "CRT",
+                        "minLength": 0,
+                        "maxLength": 3,
+                        "description": "Código do Tipo do Pagamento"
+                      },
+                      "nomePagador": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 60,
+                        "description": "Nome do Pagador"
+                      },
+                      "valorOriginalPagamento": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 10000000000000000,
+                        "description": "Valor original do pagamento"
+                      },
+                      "valorRecebedor": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000000000000,
+                        "description": "Valor repassado ao convênio (acrescido/descrescido de eventuais multa, juros, abatimento, desconto, tarifas e impostos)"
+                      },
+                      "codigoConciliacaoSolicitacaoPagamento": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 35,
+                        "description": "Código de conciliação informado pelo convênio na solicitação de pagamento."
+                      }
+                    },
+                    "required": [
+                      "numeroPagamento",
+                      "numeroSolicitacaoPagamento",
+                      "codigoTipoEstadoPagamento",
+                      "dataPagamento",
+                      "horaPagamento",
+                      "codigoTipoPagamento",
+                      "nomePagador",
+                      "valorOriginalPagamento",
+                      "valorRecebedor",
+                      "codigoConciliacaoSolicitacaoPagamento"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "quantidadeOcorrenciasLista",
+                "indicadorContinuidadePesquisa",
+                "listaPagamento"
+              ]
+            }
+          }
+        }
+      },
+      "RespostaInformacoesPagamentoSolicitacao": {
+        "description": "Representação do objeto de resposta do recurso de Consultar o Pagamento de Solicitações",
+        "content": {
+          "application/json": {
+            "schema": {
+              "description": "",
+              "type": "object",
+              "properties": {
+                "numeroSolicitacaoPagamento": {
+                  "type": "integer",
+                  "description": "Número da solicitação de pagamento"
+                },
+                "codigoTipoEstadoPagamento": {
+                  "type": "integer",
+                  "description": "DOMÍNIOS:\n\n200 Pagamento Efetivado; \n201 Pagamento Iniciado; \n202 Pagamento Agendado;\n203 Pagamento Em processamento; \n204 Pagamento Bloqueado; \n205 Pagamento Pendente Assinatura;\n206 Cancelamento em Processamento; \n207 Cancelado;\n208 Pagamento abandonado;\n209 Pagamento Não efetivado; \n210 Devolvido Parcialmente; \n211 Devolvido Integralmente;\n212 Devolução em Processamento"
+                },
+                "dataPagamento": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Data do pagamento"
+                },
+                "horaPagamento": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Hora do pagamento"
+                },
+                "valorOriginalPagamento": {
+                  "type": "number",
+                  "description": "Valor Cobrado na Solicitação de Pagamento ou Informado pelo Pagador"
+                },
+                "valorMultaPagamento": {
+                  "type": "number",
+                  "description": "Valor de multa eventualmente cobrado"
+                },
+                "valorJurosPagamento": {
+                  "type": "number",
+                  "description": "Valor de juros eventualmente cobrado"
+                },
+                "valorAbatimentoPagamento": {
+                  "type": "number",
+                  "description": "Valor de abatimento, eventualmente concedido"
+                },
+                "valorDescontoPagamento": {
+                  "type": "number",
+                  "description": "Valor do desconto, eventualmente concedido"
+                },
+                "codigoTipoPagamento": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Código do tipo do pagamento",
+                  "example": "CRT",
+                  "enum": [
+                    "CRT",
+                    "DEB",
+                    "PIX",
+                    "CDC",
+                    "PTS",
+                    "BLT",
+                    "OPB"
+                  ]
+                },
+                "dataRepasse": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Data que o valor líquido do pagamento foi repassado ao convênio"
+                },
+                "valorRepassado": {
+                  "type": "number",
+                  "description": "Valor repassado ao convênio (acrescido/descrescido de eventuais multa, juros, abatimento, desconto, tarifas e impostos)"
+                },
+                "valorTarifaRecebedor": {
+                  "type": "number",
+                  "description": "Valor da tarifa do recebedor"
+                },
+                "valorImpostoRecebedor": {
+                  "type": "number",
+                  "description": "Valor do imposto do recebedor"
+                },
+                "codigoTipoPessoaPagador": {
+                  "type": "integer",
+                  "description": "Código tipo pessoa do pagador"
+                },
+                "cpfCnpjPagador": {
+                  "type": "integer",
+                  "description": "Número identificador pagador Secretaria da Receita Federal"
+                },
+                "nomePagador": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nome do pagador"
+                },
+                "codigoAutenticacaoPagamento": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Código da autenticação do pagamento"
+                },
+                "descricaoSolicitacaoPagamento": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Descrição da solicitação de pagamento (descrição da cobrança)."
+                },
+                "numeroMarcaParticipanteOpenBankingDebito": {
+                  "description": "Número da marca do participante do Open Banking Débito",
+                  "type": "integer"
+                },
+                "codigoConciliacaoSolicitacaoPagamento": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Código de conciliação informado pelo convênio na solicitação de pagamento"
+                },
+                "nomeMarcaParticipanteOpenbanking": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nome da marca do participante do Open Banking"
+                }
+              },
+              "required": [
+                "numeroSolicitacaoPagamento",
+                "codigoTipoEstadoPagamento",
+                "dataPagamento",
+                "horaPagamento",
+                "valorOriginalPagamento",
+                "valorMultaPagamento",
+                "valorJurosPagamento",
+                "valorAbatimentoPagamento",
+                "valorDescontoPagamento",
+                "codigoTipoPagamento",
+                "dataRepasse",
+                "valorRepassado",
+                "valorTarifaRecebedor",
+                "valorImpostoRecebedor",
+                "codigoTipoPessoaPagador",
+                "cpfCnpjPagador",
+                "nomePagador",
+                "codigoAutenticacaoPagamento",
+                "descricaoSolicitacaoPagamento",
+                "numeroMarcaParticipanteOpenBankingDebito",
+                "codigoConciliacaoSolicitacaoPagamento",
+                "nomeMarcaParticipanteOpenbanking"
+              ]
+            }
+          }
+        }
+      },
+      "RespostaAutorizacaoPagamento": {
+        "description": "Representação do objeto de resposta do recurso de Solicitar autorização de pagamento em outra instituição\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "numeroPagamentoSolicitacao": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 999999999999999,
+                  "format": "int64",
+                  "description": "Número do pagamento da solicitação."
+                },
+                "indicadorAutorizacaoCriado": {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 1,
+                  "description": "Indicador de criação da autorização de pagamento no Openbanking ."
+                }
+              },
+              "required": [
+                "numeroPagamentoSolicitacao",
+                "indicadorAutorizacaoCriado"
+              ]
+            }
+          }
+        },
+        "links": {
+          "get-solicitacao-pagamentos-numeroPagamentoSolicitacao-autorizacoes": {
+            "operationId": "get-solicitacao-pagamentos-numeroPagamentoSolicitacao-autorizacoes",
+            "parameters": {
+              "numeroPagamentoSolicitacao": "$response.body#/numeroPagamentoSolicitacao"
+            },
+            "description": "O campo 'numeroPagamentoSolicitacao' deve ser usado no path parameter"
+          },
+          "get-pagamentos-numeroPagamentoSolicitacao": {
+            "operationId": "get-pagamentos-numeroPagamentoSolicitacao",
+            "parameters": {
+              "numeroPagamentoSolicitacao": "$response.body#/numeroPagamentoSolicitacao"
+            },
+            "description": "O campo 'numeroPagamentoSolicitacao' deve ser usado no path parameter"
+          },
+          "post-cancelar-pagamento": {
+            "operationId": "post-cancelar-pagamento",
+            "parameters": {
+              "numeroPagamento": "$response.body#/numeroPagamentoSolicitacao"
+            },
+            "description": "O campo 'numeroPagamento' deve ser usado no path parameter"
+          }
+        }
+      },
+      "RespostaListarMarcasAtivas": {
+        "description": "Representação do objeto de resposta do recurso de Listar Marcas Ativas Participantes OpenBanking",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "indicadorContinuidadeMarca": {
+                  "type": "string",
+                  "description": "Indicador de que informa que há mais marcas ativas participante do Open Banking"
+                },
+                "quantidadeMarca": {
+                  "type": "integer",
+                  "description": "Quantidade de ocorrências de marcas ativas participante do Open Banking.",
+                  "format": "int32"
+                },
+                "listaMarcaAtiva": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "minItems": 1,
+                  "description": "Lista de de marcas ativas participante do Open Banking\n",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "numeroMarca": {
+                        "type": "integer",
+                        "description": "Número da marca do participante OpenBanking \n",
+                        "format": "int32"
+                      },
+                      "nomeMarca": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Nome da marca do participante Open Banking \n"
+                      },
+                      "cnpjInstituicao": {
+                        "type": "integer",
+                        "description": "Número do CNPJ da marca do participante Open Banking \n",
+                        "format": "int64"
+                      }
+                    },
+                    "required": [
+                      "numeroMarca",
+                      "nomeMarca",
+                      "cnpjInstituicao"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "indicadorContinuidadeMarca",
+                "quantidadeMarca",
+                "listaMarcaAtiva"
+              ]
+            }
+          }
+        }
+      },
+      "RespostaConsultarAutorizacaoPagamento": {
+        "description": "Representação do objeto de resposta do recurso de Consultar a autorização de pagamento (consentimento) em outras instituições",
+        "content": {
+          "application/json": {
+            "schema": {
+              "description": "",
+              "type": "object",
+              "x-examples": {
+                "example-1": {
+                  "indicadorAutorizacaoCriado": "S",
+                  "textoUniversalResourceLocatorAprovacaoPagamento": "https://url-exemplo.com.br"
+                }
+              },
+              "properties": {
+                "indicadorAutorizacaoCriado": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Indicador de criação da autorização de pagamento no Open Banking",
+                  "example": "S"
+                },
+                "textoUniversalResourceLocatorAprovacaoPagamento": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Texto Universal Resource Locator (URL) da Aprovação do Pagamento",
+                  "example": "https://url-exemplo.com.br"
+                }
+              },
+              "required": [
+                "indicadorAutorizacaoCriado",
+                "textoUniversalResourceLocatorAprovacaoPagamento"
+              ]
+            }
+          }
+        }
+      },
+      "RepostaListarDevolucoes": {
+        "description": "Representação do objeto de resposta do recurso Listar Devolucoes de Solicitacao de Pagamento ou de uma Data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "quantidadeOcorrenciaLista": {
+                  "type": "integer",
+                  "description": "Número de resultados obtidos na pesquisa",
+                  "example": 1,
+                  "minimum": 0,
+                  "maximum": 9999,
+                  "format": "int32"
+                },
+                "indicadorContinuacaoPesquisa": {
+                  "type": "string",
+                  "description": "Número de resultados obtidos na pesquisa",
+                  "minLength": 0,
+                  "maxLength": 1,
+                  "example": "S"
+                },
+                "listaOcorrencia": {
+                  "type": "object",
+                  "properties": {
+                    "numeroDevolucao": {
+                      "type": "integer",
+                      "description": "Número da devolução",
+                      "minimum": 0,
+                      "maximum": 10000000000000000,
+                      "format": "int64"
+                    },
+                    "numeroPagamentoSolicitacaoOriginal": {
+                      "type": "integer",
+                      "description": "Número pagamento original objeto da devolução",
+                      "minimum": 0,
+                      "maximum": 100000000000000000,
+                      "format": "int64"
+                    },
+                    "numeroSolicitacaoPagamento": {
+                      "type": "integer",
+                      "description": "Número solicitação pagamento",
+                      "minimum": 0,
+                      "maximum": 999999999999999
+                    },
+                    "codigoTipoEstadoDevolucao": {
+                      "type": "integer",
+                      "description": "Código do tipo do estado do pagamento",
+                      "minimum": 0,
+                      "maximum": 9999,
+                      "format": "int32",
+                      "example": 212,
+                      "enum": [
+                        212
+                      ]
+                    },
+                    "dataDevolucao": {
+                      "type": "string",
+                      "description": "Data da devolução",
+                      "minLength": 0,
+                      "maxLength": 10
+                    },
+                    "horaDevolucao": {
+                      "type": "string",
+                      "description": "Hora do devolução",
+                      "minLength": 0,
+                      "maxLength": 8
+                    },
+                    "codigoTipoPagamento": {
+                      "type": "string",
+                      "description": "Código do tipo do pagamento ultilizado para pagar a devolução",
+                      "minLength": 0,
+                      "maxLength": 3,
+                      "enum": [
+                        "CRT",
+                        "DEB",
+                        "CDC",
+                        "PIX",
+                        "PTS",
+                        "BLT",
+                        "OPB"
+                      ],
+                      "example": "CRT"
+                    },
+                    "nomeRecebedorDevolucao": {
+                      "type": "string",
+                      "description": "Nome do recebedor da devolução",
+                      "minLength": 0,
+                      "maxLength": 3
+                    },
+                    "valorDevolucao": {
+                      "type": "number",
+                      "description": "Valor recebido da devolução",
+                      "minimum": 0,
+                      "maximum": 1000000000000000
+                    },
+                    "codigoConciliacaoSolicitacaoPagamento": {
+                      "type": "string",
+                      "description": "Codigo Conciliacao Solicitacao Pagamento",
+                      "minLength": 0,
+                      "maxLength": 36
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "Authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "Bearer <access_token>"
+        },
+        "description": "É o valor do token de acesso fornecido pelo OAuth."
+      },
+      "gw-dev-app-key": {
+        "name": "gw-dev-app-key",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "0021239456d80136bebf005056891bed"
+        },
+        "description": "É a chave de acesso do aplicativo do desenvolvedor obtida no Portal do Desenvolvedor. Essa chave será usada para identificação do aplicativo."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "autorizacao-pagamento"
+    },
+    {
+      "name": "marcas-ativas"
+    },
+    {
+      "name": "pagamentos"
+    },
+    {
+      "name": "solicitacao-pagamento"
+    },
+    {
+      "name": "listar-devolucoes"
+    }
+  ]
+}

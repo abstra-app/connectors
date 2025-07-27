@@ -38,20 +38,24 @@ class BoletosV3Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "agencia": agencia,
-            "conta": conta,
-            "dac": dac,
-            "mes_referencia": mes_referencia,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
+        query = {}
+        if agencia is not None:
+            query["agencia"] = agencia
+        if conta is not None:
+            query["conta"] = conta
+        if dac is not None:
+            query["dac"] = dac
+        if mes_referencia is not None:
+            query["mes_referencia"] = mes_referencia
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
         path_params = {}
         path_rendered = "/francesas".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -89,25 +93,32 @@ class BoletosV3Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "data": data,
-            "tipo_cobranca": tipo_cobranca,
-            "tipo_movimentacao": tipo_movimentacao,
-            "nosso_numero": nosso_numero,
-            "seu_numero": seu_numero,
-            "numero_carteira": numero_carteira,
-            "nome_pagador": nome_pagador,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_francesa": id_francesa,
-        }
+        query = {}
+        if data is not None:
+            query["data"] = data
+        if tipo_cobranca is not None:
+            query["tipo_cobranca"] = tipo_cobranca
+        if tipo_movimentacao is not None:
+            query["tipo_movimentacao"] = tipo_movimentacao
+        if nosso_numero is not None:
+            query["nosso_numero"] = nosso_numero
+        if seu_numero is not None:
+            query["seu_numero"] = seu_numero
+        if numero_carteira is not None:
+            query["numero_carteira"] = numero_carteira
+        if nome_pagador is not None:
+            query["nome_pagador"] = nome_pagador
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_francesa is not None:
+            path_params["id_francesa"] = id_francesa
         path_rendered = "/francesas/{id_francesa}/movimentacoes".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -133,21 +144,22 @@ class BoletosV3Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "data": data,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-        }
-        path_params = {
-            "id_francesa": id_francesa,
-        }
+        query = {}
+        if data is not None:
+            query["data"] = data
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        path_params = {}
+        if id_francesa is not None:
+            path_params["id_francesa"] = id_francesa
         path_rendered = "/francesas/{id_francesa}/movimentacoes_resumidas".format(
             **path_params
         )
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -203,33 +215,50 @@ class BoletosV3Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "codigo_carteira": codigo_carteira,
-            "data_inicial": data_inicial,
-            "data_final": data_final,
-            "id_beneficiario": id_beneficiario,
-            "nome_pagador": nome_pagador,
-            "numero_cpf_cnpj_pagador": numero_cpf_cnpj_pagador,
-            "numero_nosso_numero": numero_nosso_numero,
-            "seu_numero": seu_numero,
-            "situacao_geral_boleto": situacao_geral_boleto,
-            "situacao_negativacao": situacao_negativacao,
-            "situacao_protesto": situacao_protesto,
-            "status_vencimento": status_vencimento,
-            "tipo_boleto": tipo_boleto,
-            "tipo_data": tipo_data,
-            "page": page,
-            "page_size": page_size,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-flowid": x_itau_flowid,
-        }
+        query = {}
+        if codigo_carteira is not None:
+            query["codigo_carteira"] = codigo_carteira
+        if data_inicial is not None:
+            query["data_inicial"] = data_inicial
+        if data_final is not None:
+            query["data_final"] = data_final
+        if id_beneficiario is not None:
+            query["id_beneficiario"] = id_beneficiario
+        if nome_pagador is not None:
+            query["nome_pagador"] = nome_pagador
+        if numero_cpf_cnpj_pagador is not None:
+            query["numero_cpf_cnpj_pagador"] = numero_cpf_cnpj_pagador
+        if numero_nosso_numero is not None:
+            query["numero_nosso_numero"] = numero_nosso_numero
+        if seu_numero is not None:
+            query["seu_numero"] = seu_numero
+        if situacao_geral_boleto is not None:
+            query["situacao_geral_boleto"] = situacao_geral_boleto
+        if situacao_negativacao is not None:
+            query["situacao_negativacao"] = situacao_negativacao
+        if situacao_protesto is not None:
+            query["situacao_protesto"] = situacao_protesto
+        if status_vencimento is not None:
+            query["status_vencimento"] = status_vencimento
+        if tipo_boleto is not None:
+            query["tipo_boleto"] = tipo_boleto
+        if tipo_data is not None:
+            query["tipo_data"] = tipo_data
+        if page is not None:
+            query["page"] = page
+        if page_size is not None:
+            query["page_size"] = page_size
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_flowid is not None:
+            headers["x-itau-flowid"] = x_itau_flowid
         path_params = {}
         path_rendered = "/boletos".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -258,15 +287,17 @@ class BoletosV3Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "Authorization": authorization,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if authorization is not None:
+            headers["Authorization"] = authorization
         path_params = {}
         path_rendered = "/notificacoes_boletos".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -290,18 +321,20 @@ class BoletosV3Client:
         """
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
-        query = {
-            "id_beneficiario": id_beneficiario,
-        }
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "Authorization": authorization,
-        }
+        query = {}
+        if id_beneficiario is not None:
+            query["id_beneficiario"] = id_beneficiario
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if authorization is not None:
+            headers["Authorization"] = authorization
         path_params = {}
         path_rendered = "/notificacoes_boletos".format(**path_params)
         response = requests.get(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -328,19 +361,21 @@ class BoletosV3Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "Authorization": authorization,
-        }
-        path_params = {
-            "id_notificacao_boleto": id_notificacao_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        path_params = {}
+        if id_notificacao_boleto is not None:
+            path_params["id_notificacao_boleto"] = id_notificacao_boleto
         path_rendered = "/notificacoes_boletos/{id_notificacao_boleto}".format(
             **path_params
         )
         response = requests.delete(
-            path_rendered,
+            self.base_url + path_rendered,
             params=query,
             headers=headers,
         )
@@ -369,19 +404,21 @@ class BoletosV3Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-apikey": x_itau_apikey,
-            "x-itau-correlationID": x_itau_correlation_id,
-            "Authorization": authorization,
-        }
-        path_params = {
-            "id_notificacao_boleto": id_notificacao_boleto,
-        }
+        headers = {}
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if authorization is not None:
+            headers["Authorization"] = authorization
+        path_params = {}
+        if id_notificacao_boleto is not None:
+            path_params["id_notificacao_boleto"] = id_notificacao_boleto
         path_rendered = "/notificacoes_boletos/{id_notificacao_boleto}".format(
             **path_params
         )
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()

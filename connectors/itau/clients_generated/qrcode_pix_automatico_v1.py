@@ -39,14 +39,15 @@ class QrcodePixAutomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
         path_params = {}
         path_rendered = "/cobrancas".format(**path_params)
         response = requests.post(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()
@@ -80,16 +81,17 @@ class QrcodePixAutomaticoV1Client:
         if x_itau_apikey is None:
             x_itau_apikey = self.x_itau_apikey
         query = {}
-        headers = {
-            "x-itau-correlationID": x_itau_correlation_id,
-            "x-itau-apikey": x_itau_apikey,
-        }
-        path_params = {
-            "cobranca_id": cobranca_id,
-        }
+        headers = {}
+        if x_itau_correlation_id is not None:
+            headers["x-itau-correlationID"] = x_itau_correlation_id
+        if x_itau_apikey is not None:
+            headers["x-itau-apikey"] = x_itau_apikey
+        path_params = {}
+        if cobranca_id is not None:
+            path_params["cobrancaId"] = cobranca_id
         path_rendered = "/cobrancas/{cobrancaId}".format(**path_params)
         response = requests.patch(
-            path_rendered, params=query, headers=headers, json=body
+            self.base_url + path_rendered, params=query, headers=headers, json=body
         )
         response.raise_for_status()
         return response.json()

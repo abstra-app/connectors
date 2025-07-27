@@ -11,7 +11,7 @@ class Credentials:
     client_secret: str
 
     @classmethod
-    def from_json_file(cls, file_path: PathLike = ".env"):
+    def from_json_file(cls, file_path: PathLike):
         if not Path(file_path).exists():
             raise FileNotFoundError(f"Credentials file not found: {file_path}")
         with open(file_path, "r") as file:
