@@ -30,6 +30,7 @@ ITEM_FRAGMENT = """
     }
 """
 
+DEFAULT_PAGE_LIMIT = 250
 
 class AbstraMondayException(Exception):
     def __init__(self, message: str, original_exception: Optional[Exception] = None):
@@ -230,11 +231,11 @@ class MondayConnector:
                 e,
             )
 
-    def get_all_items(self, board_id: str) -> List["Item"]:
+    def get_all_items(self, board_id: str, limit: int = DEFAULT_PAGE_LIMIT) -> List["Item"]:
         items = []
         cursor = None
         while True:
-            items_page = self._get_items_page_dto(board_id, cursor=cursor)
+            items_page = self._get_items_page_dto(board_id, cursor=cursor, limit=limit)
             cursor = items_page.cursor
             items.extend(
                 [Item(api=self, dto=item_dto) for item_dto in items_page.items]
@@ -245,7 +246,7 @@ class MondayConnector:
         return items
 
     def _get_items_page_dto(
-        self, board_id: str, cursor: Optional[str], limit=250
+        self, board_id: str, cursor: Optional[str], limit=DEFAULT_PAGE_LIMIT
     ) -> ItemsPageDTO:
         query = gql(
             """
